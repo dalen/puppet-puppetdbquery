@@ -8,11 +8,18 @@ module Puppet::Parser::Functions
 
     Examples:
     # Return an array of hashes describing all files that are owned by root.
-    pdbresourcequery(['and',['=','type','File'],['=',['parameter','owner'],'root'],])
+    $ret = pdbresourcequery(
+      ['and',
+        ['=',['node','active'],true],
+        ['=','type','File'],
+        ['=',['parameter','owner'],'root']])
 
     # Return an array of host names having those resources
-    pdbresourcequery(['and',['=','type','File'],['=',['parameter','owner'],'root'],], 'certname')
-") do |args|
+    $ret = pdbresourcequery(
+      ['and',
+        ['=',['node','active'],true],
+        ['=','type','File'],
+        ['=',['parameter','owner'],'root']], 'certname')") do |args|
     Puppet::Parser::Functions.autoloader.loadall
 
     ret = function_pdbquery(['resources', args[0]])

@@ -6,14 +6,22 @@ module Puppet::Parser::Functions
     Second argument is optional but allows you to specify a resource query
     that the nodes returned also have to match.
 
-    Examples:
     # Return an array of active nodes with an uptime more than 30 days
-    pdbnodequery(['and',['=',['node','active'],true],['>',['fact','uptime_days'],30]])
+    $ret = pdbnodequery(
+      ['and',
+        ['=',['node','active'],true],
+        ['>',['fact','uptime_days'],30]])
 
     # Return an array of active nodes with an uptime more than 30 days and
     # having the class 'apache'
-    pdbnodequery(['and',['=',['node','active'],true],['>',['fact','uptime_days'],30]],
-      ['and',['=','type','Class'],['=','title','Apache']])") do |args|
+    $ret = pdbnodequery(
+      ['and',
+        ['=',['node','active'],true],
+        ['>',['fact','uptime_days'],30]],
+      ['and',
+        ['=',['node','active'],true],
+        ['=','type','Class'],
+        ['=','title','Apache']])") do |args|
     Puppet::Parser::Functions.autoloader.loadall
 
     nodeqnodes = function_pdbquery(['nodes', args[0]])
