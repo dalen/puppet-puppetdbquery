@@ -66,3 +66,16 @@ Second argument is optional, if specified only return that specific fact.
     pdbfactquery('foo.example.com')
     # Get the uptime fact for foo.example.com
     pdbfactquery('foo.example.com', 'uptime')
+
+### pdbstatusquery
+
+The first argument is the node to get facts for.
+Second argument is optional, if specified only return that specific bit of
+status, one of 'name', 'deactivated', 'catalog_timestamp' and 'facts_timestamp'.
+
+#### Examples
+
+    # Get status for foo.example.com
+    pdbstatusquery('foo.example.com')
+    # Get catalog_timestamp for foo.example.com
+    pdbstatusquery('foo.example.com', 'catalog_timestamp')
