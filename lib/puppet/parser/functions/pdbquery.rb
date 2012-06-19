@@ -1,8 +1,3 @@
-require 'rubygems'
-require 'json'
-require 'rest_client'
-require 'puppet/util/puppetdb'
-
 module Puppet::Parser::Functions
   newfunction(:pdbquery, :type => :rvalue, :doc => "\
     Perform a PuppetDB query
@@ -14,6 +9,11 @@ module Puppet::Parser::Functions
     anything else is converted to JSON and then sent.
 
     Example: pdbquery('nodes', ['=', ['node', 'active'], true ])") do |args|
+    require 'rubygems'
+    require 'json'
+    require 'rest_client'
+    require 'puppet/util/puppetdb'
+
     Puppet.parse_config
 
     # Query type (URL path)
