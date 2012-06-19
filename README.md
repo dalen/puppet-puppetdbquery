@@ -11,6 +11,9 @@ Usage
 
 ### pdbquery
 
+This is the generic query function that the others make use of, you probably
+don't have to use it and can use one of the specific functions below instead.
+
 The first argument is the URL path that should be queried, for
 example 'nodes' or 'status/nodes/<nodename>'.
 The second argument if supplied if the query parameter, if it is
