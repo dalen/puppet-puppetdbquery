@@ -58,16 +58,20 @@ module Puppet::Parser::Functions
       params = {}
     end
 
-    response = RestClient::Resource.new(
-      "https://#{Puppet::Util::Puppetdb.server}:#{Puppet::Util::Puppetdb.port}/#{t}",
-      :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read(Puppet.settings[:hostcert])),
-      :ssl_client_key  => OpenSSL::PKey::RSA.new(File.read(Puppet.settings[:hostprivkey])),
-      :ssl_ca_file     => Puppet.settings[:localcacert],
-      :verify_ssl      => OpenSSL::SSL::VERIFY_PEER
-    ).get({
-      :accept          => :json,
-      :params          => params
-    })
+    begin
+      response = RestClient::Resource.new(
+        "https://#{Puppet::Util::Puppetdb.server}:#{Puppet::Util::Puppetdb.port}/#{t}",
+        :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read(Puppet.settings[:hostcert])),
+        :ssl_client_key  => OpenSSL::PKey::RSA.new(File.read(Puppet.settings[:hostprivkey])),
+        :ssl_ca_file     => Puppet.settings[:localcacert],
+        :verify_ssl      => OpenSSL::SSL::VERIFY_PEER
+      ).get({
+        :accept          => :json,
+        :params          => params
+      })
+    rescue => e
+      raise Puppet::ParseError, "PuppetDB query error: #{e.message}"
+    end
     JSON.parse(response.to_str)
   end
 end
