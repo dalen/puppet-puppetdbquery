@@ -38,3 +38,19 @@ from the returned hash.
 
     # Return an array of host names having those resources
     $ret = pdbresourcequery(['and',['=','type','File'],['=',['parameter','owner'],'root'],], 'certname')
+
+### pdbnodequery
+
+The first argument is the node query.
+Second argument is optional but allows you to specify a resource query
+that the nodes returned also have to match.
+
+#### Examples
+
+    # Return an array of active nodes with an uptime more than 30 days
+    pdbnodequery(['and',['=',['node','active'],true],['>',['fact','uptime_days'],30]])
+
+    # Return an array of active nodes with an uptime more than 30 days and
+    # having the class 'apache'
+    pdbnodequery(['and',['=',['node','active'],true],['>',['fact','uptime_days'],30]],
+      ['and',['=','type','Class'],['=','title','Apache']])"
