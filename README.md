@@ -54,3 +54,15 @@ that the nodes returned also have to match.
     # having the class 'apache'
     pdbnodequery(['and',['=',['node','active'],true],['>',['fact','uptime_days'],30]],
       ['and',['=','type','Class'],['=','title','Apache']])"
+
+### pdbfactquery
+
+The first argument is the node to get facts for.
+Second argument is optional, if specified only return that specific fact.
+
+#### Examples
+
+    # Get hash of facts for foo.example.com
+    pdbfactquery('foo.example.com')
+    # Get the uptime fact for foo.example.com
+    pdbfactquery('foo.example.com', 'uptime')
