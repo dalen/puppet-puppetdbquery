@@ -77,7 +77,9 @@ that the nodes returned also have to match.
 
 ### pdbfactquery
 
-The first argument is the node to get facts for.
+The first argument is the node to get facts for. It can be either a single node
+or an array of nodes. If it is an array the return value of the function will also
+be an array.
 Second argument is optional, if specified only return that specific fact.
 
 #### Examples
@@ -86,6 +88,8 @@ Second argument is optional, if specified only return that specific fact.
     pdbfactquery('foo.example.com')
     # Get the uptime fact for foo.example.com
     pdbfactquery('foo.example.com', 'uptime')
+    # Get the uptime fact for foo.example.com and bar.example.com
+    pdbfactquery(['foo.example.com', 'bar.example.com'], 'uptime')
 
 ### pdbstatusquery
 

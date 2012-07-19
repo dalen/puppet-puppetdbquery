@@ -12,11 +12,19 @@ module Puppet::Parser::Functions
     pdbfactquery('foo.example.com', 'uptime')") do |args|
     Puppet::Parser::Functions.autoloader.loadall
 
-    facts = function_pdbquery(["facts/#{args[0]}"])['facts']
-    if args.length > 1 then
-      facts[args[1]]
+    if args[0].is_a?(Array) then
+      if args.length > 1 then
+        args[0].collect { |n| function_pdbfactquery([n,args[1]]) }
+      else
+        args[0].collect { |n| function_pdbfactquery([n]) }
+      end
     else
-      facts
+      facts = function_pdbquery(["facts/#{args[0]}"])['facts']
+      if args.length > 1 then
+        facts[args[1]]
+      else
+        facts
+      end
     end
   end
 end
