@@ -2,7 +2,7 @@ PuppetDB query functions
 ========================
 
 This module contains query functions for PuppetDB for use from Puppet.
-They require the json and rest-client ruby gems and the puppetdb-terminus.
+They require the json ruby gem and the puppetdb-terminus.
 
 Only queries over HTTPS are supported atm.
 

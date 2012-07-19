@@ -11,7 +11,8 @@ module Puppet::Parser::Functions
     Example: pdbquery('nodes', ['=', ['node', 'active'], true ])") do |args|
     require 'rubygems'
     require 'json'
-    require 'rest_client'
+    require 'puppet/network/http_pool'
+    require 'uri'
     require 'puppet/util/puppetdb'
 
     Puppet.parse_config
@@ -27,25 +28,22 @@ module Puppet::Parser::Functions
       if ! q.is_a? String then
         q=JSON[q]
       end
-      params = {:query => q}
+      params = URI.escape("?query=#{q}")
     else
-      params = {}
+      params = ''
     end
 
-    begin
-      response = RestClient::Resource.new(
-        "https://#{Puppet::Util::Puppetdb.server}:#{Puppet::Util::Puppetdb.port}/#{t}",
-        :ssl_client_cert => OpenSSL::X509::Certificate.new(File.read(Puppet.settings[:hostcert])),
-        :ssl_client_key  => OpenSSL::PKey::RSA.new(File.read(Puppet.settings[:hostprivkey])),
-        :ssl_ca_file     => Puppet.settings[:localcacert],
-        :verify_ssl      => OpenSSL::SSL::VERIFY_PEER
-      ).get({
-        :accept          => :json,
-        :params          => params
-      })
-    rescue => e
-      raise Puppet::ParseError, "PuppetDB query error: #{e.message}"
-    end
-    JSON.parse(response.to_str)
+    url = URI.parse("https://#{Puppet::Util::Puppetdb.server}:#{Puppet::Util::Puppetdb.port}/#{t}#{params}")
+    req = Net::HTTP::Get.new(url.request_uri)
+    req['Accept'] = 'application/json'
+    conn = Puppet::Network::HttpPool.http_instance(url.host, url.port,
+                                                   ssl=(url.scheme == 'https'))
+    conn.start {|http|
+      response = http.request(req)
+      unless response.kind_of?(Net::HTTPSuccess)
+        raise Puppet::ParseError, "PuppetDB query error: [#{response.code}] #{response.msg}"
+      end
+      JSON.parse(response.body)
+    }
   end
 end
