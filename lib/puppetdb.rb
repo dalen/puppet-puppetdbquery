@@ -37,7 +37,7 @@ class PuppetDB
       resource_name = $2
 
       # in puppetdb class names are all capitalized but resource named arent
-      resource_name = resource_name.capitalize if resource_type == "Class"
+      resource_name = resource_name.split("::").map{|c| c.capitalize}.join("::") if resource_type == "Class"
 
       return {"resources" => ["and", ["=", "type", resource_type], ["=", "title", resource_name]]}
     elsif statement =~ /^(\w+)\s*=\s*(\w+)$/
