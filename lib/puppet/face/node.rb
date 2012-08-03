@@ -24,7 +24,7 @@ Puppet::Indirector::Face.define(:node, '0.0.1') do
 
     option "--query QUERY", "-q QUERY" do
       summary 'query string'
-      required
+      default_to { '' }
     end
 
     when_invoked do |options|
