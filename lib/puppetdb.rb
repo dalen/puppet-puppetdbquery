@@ -34,6 +34,33 @@ class PuppetDB
     truth_values << '&' << query_puppetdb(host, port, get_active_query).inspect if only_active
 
     eval(truth_values.join(" "))
+
+  end
+
+  def find_node_facts(host, port, node_name, filter = [])
+
+    facts = query_puppetdb(host, port, "facts" => node_name)
+    return facts['facts'] if ! filter || filter.empty?
+    # return an array with only facts specified in the filter
+    return facts['facts'].reject{|k,v| ! filter.include?(k) }
+  end
+
+  def find_node_resources(host, port, node_name, resource_filter)
+    node_name = ["=", ["node", "name"], node_name]
+    if resource_filter.empty?
+      #str = ["and", ["=", ["node", "name"], "openstack-controller-20120802081343966964"]]
+      query_puppetdb(host, port, {"resources" => ["and", node_name]})
+    else
+      # I should make a single resource query and not multiples
+      query = resource_filter.collect do |r|
+        query = parse_statement(r)
+        #require 'ruby-debug';debugger
+        query['resources'].push(node_name)
+        query_puppetdb(host, port, query)[0]
+      end
+    end
+  end
+
   def get_active_query
     { "nodes" => ["=", ["node", "active"], true] }
   end
@@ -79,6 +106,9 @@ class PuppetDB
           return JSON.parse(data)
         when "nodes"
           resp, data = http.get("/nodes?query=%s" % URI.escape(query[type].to_json), headers)
+          return JSON.parse(data)
+        when "facts"
+          resp, data = http.get("/facts/#{query[type]}", headers)
           return JSON.parse(data)
       end
     end
