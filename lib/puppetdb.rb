@@ -16,7 +16,10 @@ class PuppetDB
     stack.each do |exp|
       case exp.keys.first
         when "statement"
-          truth_values << query_puppetdb(host, port, parse_statement(exp)).inspect
+          query   = parse_statement(exp)
+          results = query_puppetdb(host, port, parse_statement(exp))
+          results = query.keys.first == "resources" ? results.map{|f| f["certname"]} : results
+          truth_values << results.inspect
         when "and"
           truth_values << "&"
         when "or"
@@ -72,8 +75,8 @@ class PuppetDB
 
       case type
         when "resources"
-          return JSON.parse(data).map{|f| f["certname"]}
           resp, data = http.get("/resources?query=%s" % URI.escape(query[type].to_json), headers)
+          return JSON.parse(data)
         when "nodes"
           resp, data = http.get("/nodes?query=%s" % URI.escape(query[type].to_json), headers)
           return JSON.parse(data)
