@@ -67,14 +67,15 @@ class PuppetDB
 
     else
 
-      type = query.keys.first
+      type   = query.keys.first
+      headers = {"accept" => "application/json"}
 
       case type
         when "resources"
-          resp, data = http.get("/resources?query=%s" % URI.escape(query[type].to_json), {"accept" => "application/json"})
           return JSON.parse(data).map{|f| f["certname"]}
+          resp, data = http.get("/resources?query=%s" % URI.escape(query[type].to_json), headers)
         when "nodes"
-          resp, data = http.get("/nodes?query=%s" % URI.escape(query[type].to_json), {"accept" => "application/json"})
+          resp, data = http.get("/nodes?query=%s" % URI.escape(query[type].to_json), headers)
           return JSON.parse(data)
       end
     end
