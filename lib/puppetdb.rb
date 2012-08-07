@@ -42,6 +42,10 @@ class PuppetDB
       resource_type = $1.capitalize
       resource_name = $2
 
+      if resource_name.start_with?('"') or resource_name.start_with?("'")
+        raise(Puppet::Error, 'Resource titles should not be surrounded by quotes')
+      end
+
       # in puppetdb class names are all capitalized but resource named arent
       resource_name = resource_name.split("::").map{|c| c.capitalize}.join("::") if resource_type == "Class"
 
