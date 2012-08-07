@@ -124,7 +124,7 @@ Puppet::Face.define(:query, '0.0.1') do
       end
       munged_hash = {}
       nodes.each do |resources|
-        resources.each do |resource|
+        resources.compact.each do |resource|
           id = resource['resource']
           if munged_hash[id]
             munged_hash[id]['nodes'].push(resource['certname'])
