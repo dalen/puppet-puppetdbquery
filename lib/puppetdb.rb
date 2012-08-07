@@ -6,7 +6,7 @@ require 'net/http'
 require 'net/https'
 
 class PuppetDB
-  def find_nodes_matching(host, port, query_string)
+  def find_nodes_matching(host, port, query_string, only_active = false)
     stack = PuppetDB::Matcher.create_callstack(query_string)
 
     truth_values = []
@@ -16,7 +16,10 @@ class PuppetDB
     stack.each do |exp|
       case exp.keys.first
         when "statement"
-          truth_values << query_puppetdb(host, port, parse_statement(exp)).inspect
+          query   = parse_statement(exp)
+          results = query_puppetdb(host, port, parse_statement(exp))
+          results = query.keys.first == "resources" ? results.map{|f| f["certname"]} : results
+          truth_values << results.inspect
         when "and"
           truth_values << "&"
         when "or"
@@ -28,7 +31,38 @@ class PuppetDB
       end
     end
 
+    truth_values << '&' << query_puppetdb(host, port, get_active_query).inspect if only_active
+
     eval(truth_values.join(" "))
+
+  end
+
+  def find_node_facts(host, port, node_name, filter = [])
+
+    facts = query_puppetdb(host, port, "facts" => node_name)
+    return facts['facts'] if ! filter || filter.empty?
+    # return an array with only facts specified in the filter
+    return facts['facts'].reject{|k,v| ! filter.include?(k) }
+  end
+
+  def find_node_resources(host, port, node_name, resource_filter)
+    node_name = ["=", ["node", "name"], node_name]
+    if resource_filter.empty?
+      #str = ["and", ["=", ["node", "name"], "openstack-controller-20120802081343966964"]]
+      query_puppetdb(host, port, {"resources" => ["and", node_name]})
+    else
+      # I should make a single resource query and not multiples
+      query = resource_filter.collect do |r|
+        query = parse_statement(r)
+        #require 'ruby-debug';debugger
+        query['resources'].push(node_name)
+        query_puppetdb(host, port, query)[0]
+      end
+    end
+  end
+
+  def get_active_query
+    { "nodes" => ["=", ["node", "active"], true] }
   end
 
   def parse_statement(statement)
@@ -37,6 +71,10 @@ class PuppetDB
     if statement =~ /^([\w:]+)\[(.+)\]$/
       resource_type = $1.capitalize
       resource_name = $2
+
+      if resource_name.start_with?('"') or resource_name.start_with?("'")
+        raise(Puppet::Error, 'Resource titles should not be surrounded by quotes')
+      end
 
       # in puppetdb class names are all capitalized but resource named arent
       resource_name = resource_name.split("::").map{|c| c.capitalize}.join("::") if resource_type == "Class"
@@ -59,14 +97,18 @@ class PuppetDB
 
     else
 
-      type = query.keys.first
+      type   = query.keys.first
+      headers = {"accept" => "application/json"}
 
       case type
         when "resources"
-          resp, data = http.get("/resources?query=%s" % URI.escape(query[type].to_json), {"accept" => "application/json"})
-          return JSON.parse(data).map{|f| f["certname"]}
+          resp, data = http.get("/resources?query=%s" % URI.escape(query[type].to_json), headers)
+          return JSON.parse(data)
         when "nodes"
-          resp, data = http.get("/nodes?query=%s" % URI.escape(query[type].to_json), {"accept" => "application/json"})
+          resp, data = http.get("/nodes?query=%s" % URI.escape(query[type].to_json), headers)
+          return JSON.parse(data)
+        when "facts"
+          resp, data = http.get("/facts/#{query[type]}", headers)
           return JSON.parse(data)
       end
     end
