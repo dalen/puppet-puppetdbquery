@@ -81,7 +81,7 @@ Puppet::Indirector::Face.define(:query, '0.0.1') do
     when_invoked do |options|
       p = PuppetDB.new
       nodes = p.find_nodes_matching(options[:puppetdb_host], options[:puppetdb_port], options[:query], options[:only_active])
-      if options[:return_fact]
+      if options[:filter]
         nodes.map! do |node_name|
           p.find_node_facts(options[:puppetdb_host], options[:puppetdb_port], node_name, options[:filter]).values[0]
         end
