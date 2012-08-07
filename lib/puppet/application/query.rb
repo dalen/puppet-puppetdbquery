@@ -1,3 +1,3 @@
-require 'puppet/application/indirection_base'
-class Puppet::Application::Query < Puppet::Application::IndirectionBase
+require 'puppet/application/face_base'
+class Puppet::Application::Query < Puppet::Application::FaceBase
 end
