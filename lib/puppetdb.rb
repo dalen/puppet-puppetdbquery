@@ -6,7 +6,7 @@ require 'net/http'
 require 'net/https'
 
 class PuppetDB
-  def find_nodes_matching(host, port, query_string)
+  def find_nodes_matching(host, port, query_string, only_active = false)
     stack = PuppetDB::Matcher.create_callstack(query_string)
 
     truth_values = []
@@ -28,7 +28,11 @@ class PuppetDB
       end
     end
 
+    truth_values << '&' << query_puppetdb(host, port, get_active_query).inspect if only_active
+
     eval(truth_values.join(" "))
+  def get_active_query
+    { "nodes" => ["=", ["node", "active"], true] }
   end
 
   def parse_statement(statement)
