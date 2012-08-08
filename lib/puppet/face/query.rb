@@ -125,15 +125,19 @@ Puppet::Face.define(:query, '0.0.1') do
       munged_hash = {}
       nodes.each do |resources|
         resources.compact.each do |resource|
-          id = resource['resource']
+          id = "#{resource['type']}[#{resource['title']}]"
           if munged_hash[id]
-            munged_hash[id]['nodes'].push(resource['certname'])
+            # if the ids are the same, then push it, otherwise fail
+            if munged_hash[id]['resource_hash'] == resource['resource']
+              munged_hash[id]['nodes'].push(resource['certname'])
+            else
+              raise(Puppet::Error, "Conflicting definitions of resource #{id} were found on #{resource['certname']} and #{munged_hash[id]['nodes'].inspect}")
+            end
           else
-            munged_hash[id]               = {}
-            munged_hash[id]['type']       = resource['type']
-            munged_hash[id]['title']      = resource['title']
-            munged_hash[id]['parameters'] = resource['parameters']
-            munged_hash[id]['nodes']      = [resource['certname']]
+            munged_hash[id]                  = {}
+            munged_hash[id]['resource_hash'] = resource['resource']
+            munged_hash[id]['parameters']    = resource['parameters']
+            munged_hash[id]['nodes']         = [resource['certname']]
           end
         end
       end
