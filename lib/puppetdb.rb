@@ -46,7 +46,8 @@ class PuppetDB
   end
 
   def find_node_resources(host, port, node_name, resource_filter)
-    node_name = ["=", ["node", "name"], node_name]
+    # if there
+    node_name = node_name ? ["=", ["node", "name"], node_name] : nil
     if resource_filter.empty?
       #str = ["and", ["=", ["node", "name"], "openstack-controller-20120802081343966964"]]
       query_puppetdb(host, port, {"resources" => ["and", node_name]})
@@ -54,7 +55,7 @@ class PuppetDB
       # I should make a single resource query and not multiples
       query = resource_filter.collect do |r|
         query = parse_statement(r)
-        query['resources'].push(node_name)
+        query['resources'].push(node_name) if node_name
         query_puppetdb(host, port, query)[0]
       end
     end
