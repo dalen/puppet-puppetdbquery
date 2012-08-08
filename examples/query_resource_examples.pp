@@ -13,7 +13,7 @@
 
 # this syntax is a little strange ...
 # it makes the resource look a little extraneous
-$rabbit_resources = query_resources('Class[nova::rabbitmq]','Class[nova::rabbitmq]')
+$rabbit_resources = query_resource('Class[nova::rabbitmq]')
 
 $rabbit_class     = $rabbit_resources['Class[Nova::Rabbitmq]']
 $rabbit_params     = $rabbit_class['parameters']
@@ -36,7 +36,7 @@ notice("vnc proxy host ${vnc_proxy_host}")
 
 # figure out sql connection
 $nova_db_host      = unique(query_nodes('Class[nova::db::mysql]', 'fqdn')) 
-$nova_db_resources = query_resources('Class[nova::db::mysql]', 'Class[nova::db::mysql]')
+$nova_db_resources = query_resource('Class[nova::db::mysql]', 'architecture=amd64')
 $nova_db_class     = $nova_db_resources['Class[Nova::Db::Mysql]']
 $nova_db_params    = $nova_db_class['parameters']
 $nova_db_name      = $nova_db_params['dbname']

@@ -115,6 +115,20 @@ Puppet::Face.define(:query, '0.0.1') do
       end
     end
 
+    option '--allow-conflicts' do
+      summary 'If conflicting resources should be returned, or raise an exception.'
+      description <<-EOT
+      If parameter conflicts between resources should raise an exception.
+      By default if the same resources is returned with multiple different variations,
+      an exception is raised.
+      Unfortunately, allow-conflicts also changes the format of the hashes that are returned.
+      If it is set to false, the type/title pairs hash to the resources, otherwise, the
+      resource hash is used to hash to the resources.
+      I am not currently happy with this implementation and it is likely to change.
+      EOT
+      default_to { false }
+    end
+
     when_invoked do |options|
       p = PuppetDB.new
       # first find the nodes that match the query
@@ -125,19 +139,33 @@ Puppet::Face.define(:query, '0.0.1') do
       munged_hash = {}
       nodes.each do |resources|
         resources.compact.each do |resource|
-          id = "#{resource['type']}[#{resource['title']}]"
+          # NOTE - I am not happy with the fact that I am returning different hashes
+          # depending on if we care about conflicts or not.
+          # I should probably have the type/title hash to an array of the variations
+          # instead of this,but for now, this is easier
+          if options[:allow_conflicts]
+            id = resource['resource']
+          else
+            id = "#{resource['type']}[#{resource['title']}]"
+          end
           if munged_hash[id]
             # if the ids are the same, then push it, otherwise fail
-            if munged_hash[id]['resource_hash'] == resource['resource']
+            if options[:allow_conflicts] || munged_hash[id]['resource_hash'] == resource['resource']
               munged_hash[id]['nodes'].push(resource['certname'])
             else
+              # failing on conflicts allows me to key the resources off of type/title
+              # I probably need to return a different data structure if I allow conflicts
               raise(Puppet::Error, "Conflicting definitions of resource #{id} were found on #{resource['certname']} and #{munged_hash[id]['nodes'].inspect}")
             end
           else
-            munged_hash[id]                  = {}
-            munged_hash[id]['resource_hash'] = resource['resource']
-            munged_hash[id]['parameters']    = resource['parameters']
-            munged_hash[id]['nodes']         = [resource['certname']]
+            munged_hash[id]                    = {}
+            munged_hash[id]['parameters']      = resource['parameters']
+            munged_hash[id]['nodes']           = [resource['certname']]
+            if options[:allow_conflicts]
+              munged_hash[id]['reference']     = "#{resource['type']}[#{resource['title']}]"
+            else
+              munged_hash[id]['resource_hash'] = resource['resource']
+            end
           end
         end
       end

@@ -46,7 +46,8 @@ class PuppetDB
   end
 
   def find_node_resources(host, port, node_name, resource_filter)
-    node_name = ["=", ["node", "name"], node_name]
+    # if there
+    node_name = node_name ? ["=", ["node", "name"], node_name] : nil
     if resource_filter.empty?
       #str = ["and", ["=", ["node", "name"], "openstack-controller-20120802081343966964"]]
       query_puppetdb(host, port, {"resources" => ["and", node_name]})
@@ -54,8 +55,7 @@ class PuppetDB
       # I should make a single resource query and not multiples
       query = resource_filter.collect do |r|
         query = parse_statement(r)
-        #require 'ruby-debug';debugger
-        query['resources'].push(node_name)
+        query['resources'].push(node_name) if node_name
         query_puppetdb(host, port, query)[0]
       end
     end
@@ -102,13 +102,16 @@ class PuppetDB
 
       case type
         when "resources"
-          resp, data = http.get("/resources?query=%s" % URI.escape(query[type].to_json), headers)
+          query = "/resources?query=%s" % URI.escape(query[type].to_json)
+          resp, data = http.get(query, headers)
           return JSON.parse(data)
         when "nodes"
-          resp, data = http.get("/nodes?query=%s" % URI.escape(query[type].to_json), headers)
+          query = "/nodes?query=%s" % URI.escape(query[type].to_json)
+          resp, data = http.get(query, headers)
           return JSON.parse(data)
         when "facts"
-          resp, data = http.get("/facts/#{query[type]}", headers)
+          query = "/facts/#{query[type]}"
+          resp, data = http.get(query, headers)
           return JSON.parse(data)
       end
     end

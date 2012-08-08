@@ -12,7 +12,9 @@ Puppet::Parser::Functions.newfunction(:query_resource, :type => :rvalue, :doc =>
 
 EOT
 ) do |args|
-  query, filter = args
-  raise(Puppet::Error, 'Query is a required parameter') unless query
+  filter, query = args
+  query ||= ''
+  # check that the filter is only one resource
+  raise(Puppet::Error, 'Must specify at least one argument (resource to query for)') unless filter
   result = Puppet::Face[:query, :current].resource(:query => query, :filter => filter)
 end
