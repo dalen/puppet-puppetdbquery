@@ -102,13 +102,16 @@ class PuppetDB
 
       case type
         when "resources"
-          resp, data = http.get("/resources?query=%s" % URI.escape(query[type].to_json), headers)
+          query = "/resources?query=%s" % URI.escape(query[type].to_json)
+          resp, data = http.get(query, headers)
           return JSON.parse(data)
         when "nodes"
-          resp, data = http.get("/nodes?query=%s" % URI.escape(query[type].to_json), headers)
+          query = "/nodes?query=%s" % URI.escape(query[type].to_json)
+          resp, data = http.get(query, headers)
           return JSON.parse(data)
         when "facts"
-          resp, data = http.get("/facts/#{query[type]}", headers)
+          query = "/facts/#{query[type]}"
+          resp, data = http.get(query, headers)
           return JSON.parse(data)
       end
     end
