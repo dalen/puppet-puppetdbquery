@@ -54,7 +54,6 @@ class PuppetDB
       # I should make a single resource query and not multiples
       query = resource_filter.collect do |r|
         query = parse_statement(r)
-        #require 'ruby-debug';debugger
         query['resources'].push(node_name)
         query_puppetdb(host, port, query)[0]
       end
