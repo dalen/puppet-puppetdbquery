@@ -11,7 +11,7 @@ module Puppet::Parser::Functions
     pdbstatusquery('foo.example.com')
     # Get catalog_timestamp for foo.example.com
     pdbstatusquery('foo.example.com', 'catalog_timestamp')") do |args|
-    Puppet::Parser::Functions.autoloader.loadall
+    Puppet::Parser::Functions.autoloader.load(:pdbquery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbquery)
 
     ret = function_pdbquery(["status/nodes/#{args[0]}"])
     if args.length > 1 then
