@@ -61,6 +61,55 @@ class PuppetDB
     end
   end
 
+  # take an array of nodes returned with their resources to puppetdb and simplify
+  # the data structure into something easier to read.
+  # NOTE maybe arrays filtering methods could do this?
+  def compact_nodes_resources(nodes)
+    munged_hash = {}
+    nodes.each do |resources|
+      resources.compact.each do |resource|
+        id = "#{resource['type']}[#{resource['title']}]"
+        if munged_hash[id]
+          # if the ids are the same, then push it, otherwise fail
+          #require 'ruby-debug';debugger
+          matching_index = -1
+          munged_hash[id].each_index do |i|
+            matching_index = i if munged_hash[id][i]['resource_hash'] == resource['resource']
+          end
+          if matching_index != -1
+            # if we are a duplicate
+            munged_hash[id][matching_index]['nodes'].push(resource['certname'])
+          else
+            # if we are not a duplicate
+            munged_hash[id].push(simplify_resource(resource))
+            munged_hash[id].last['nodes'] = [resource['certname']]
+          end
+        else
+          munged_hash[id] = [simplify_resource(resource)]
+          munged_hash[id].first['nodes'] = [resource['certname']]
+        end
+      end
+    end
+    munged_hash
+  end
+
+  # determines if a groups of reformatted resources have conflicts
+  def has_conflicts?(resources)
+    resources.each do |id, r|
+      return id if r.size != 1
+    end
+    return false
+  end
+
+  # converts a resource_hash returned by puppetdb into something
+  # much simpler
+  def simplify_resource(resource_hash)
+    {
+      'parameters'    => resource_hash['parameters'],
+      'resource_hash' => resource_hash['resource']
+    }
+  end
+
   def get_active_query
     { "nodes" => ["=", ["node", "active"], true] }
   end
