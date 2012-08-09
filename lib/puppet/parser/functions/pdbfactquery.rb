@@ -10,7 +10,7 @@ module Puppet::Parser::Functions
     pdbfactquery('foo.example.com')
     # Get the uptime fact for foo.example.com
     pdbfactquery('foo.example.com', 'uptime')") do |args|
-    Puppet::Parser::Functions.autoloader.loadall
+    Puppet::Parser::Functions.autoloader.load(:pdbquery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbquery)
 
     if args[0].is_a?(Array) then
       if args.length > 1 then

@@ -20,7 +20,7 @@ module Puppet::Parser::Functions
         ['=',['node','active'],true],
         ['=','type','File'],
         ['=',['parameter','owner'],'root']], 'certname')") do |args|
-    Puppet::Parser::Functions.autoloader.loadall
+    Puppet::Parser::Functions.autoloader.load(:pdbquery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbquery)
 
     ret = function_pdbquery(['resources', args[0]])
     if args.length > 1 then
