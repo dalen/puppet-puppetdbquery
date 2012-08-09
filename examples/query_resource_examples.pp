@@ -15,7 +15,7 @@
 # it makes the resource look a little extraneous
 $rabbit_resources = query_resource('Class[nova::rabbitmq]')
 
-$rabbit_class     = $rabbit_resources['Class[Nova::Rabbitmq]']
+$rabbit_class      = $rabbit_resources['Class[Nova::Rabbitmq]']
 $rabbit_params     = $rabbit_class['parameters']
 
 # check that only one host has been found
@@ -47,31 +47,5 @@ $nova_sql_conn = "mysql://${nova_db_user}:${nova_db_password}@${nova_db_host}/${
 
 notice("nova sql connection: ${nova_sql_conn}")
 
-#$x = inline_template("<% puts nova_sql_conn  %>")
 
-# figure out glance api servers 
-# there can be multiples of these...
-
-#$rabbit_class = get_query_result_resource($rabbitmq_query)
-
-#  class { 'openstack::compute':
-#    public_interface   => 'eth1',
-#    private_interface  => 'eth2',
-#    internal_address   => $ipaddress_eth1,
-#    libvirt_type       => 'qemu',
-#    fixed_range        => $fixed_network_range,
-#    network_manager    => 'nova.network.manager.FlatDHCPManager',
-#    multi_host         => true,
-#    sql_connection     => $sql_connection,
-#    nova_user_password => $nova_user_password,
-#    # these are my searched parameters!!
-#    rabbit_host        => $rabbit_host,
-#    rabbit_password    => $rabbit_password,
-#    rabbit_user        => $rabbit_user,
-#    glance_api_servers => "${controller_node_internal}:9292",
-#    vncproxy_host      => $vnc_proxy_host,
-#    vnc_enabled        => true,
-#    verbose            => true,
-#    manage_volumes     => true,
-#    nova_volume        => 'nova-volumes'
-#  }
+$conection_hash = nova_connections()

@@ -17,4 +17,6 @@ EOT
   # check that the filter is only one resource
   raise(Puppet::Error, 'Must specify at least one argument (resource to query for)') unless filter
   result = Puppet::Face[:query, :current].resource(:query => query, :filter => filter)
+  raise(Puppet::Error, 'Function should only return one resource') if result.size > 1
+  {result.keys.first => result.values.first.first}
 end

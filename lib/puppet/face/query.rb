@@ -133,43 +133,18 @@ Puppet::Face.define(:query, '0.0.1') do
       p = PuppetDB.new
       # first find the nodes that match the query
       nodes = p.find_nodes_matching(options[:puppetdb_host], options[:puppetdb_port], options[:query], options[:only_active])
+      # now use the filter to find the specified resources for that node
       nodes.map! do |node_name|
         p.find_node_resources(options[:puppetdb_host], options[:puppetdb_port], node_name, options[:filter])
       end
-      munged_hash = {}
-      nodes.each do |resources|
-        resources.compact.each do |resource|
-          # NOTE - I am not happy with the fact that I am returning different hashes
-          # depending on if we care about conflicts or not.
-          # I should probably have the type/title hash to an array of the variations
-          # instead of this,but for now, this is easier
-          if options[:allow_conflicts]
-            id = resource['resource']
-          else
-            id = "#{resource['type']}[#{resource['title']}]"
-          end
-          if munged_hash[id]
-            # if the ids are the same, then push it, otherwise fail
-            if options[:allow_conflicts] || munged_hash[id]['resource_hash'] == resource['resource']
-              munged_hash[id]['nodes'].push(resource['certname'])
-            else
-              # failing on conflicts allows me to key the resources off of type/title
-              # I probably need to return a different data structure if I allow conflicts
-              raise(Puppet::Error, "Conflicting definitions of resource #{id} were found on #{resource['certname']} and #{munged_hash[id]['nodes'].inspect}")
-            end
-          else
-            munged_hash[id]                    = {}
-            munged_hash[id]['parameters']      = resource['parameters']
-            munged_hash[id]['nodes']           = [resource['certname']]
-            if options[:allow_conflicts]
-              munged_hash[id]['reference']     = "#{resource['type']}[#{resource['title']}]"
-            else
-              munged_hash[id]['resource_hash'] = resource['resource']
-            end
-          end
-        end
+      # compact the resource for all nodes into
+      # a single simplified list
+      munged_resources = p.compact_nodes_resources(nodes)
+      if conflict = p.has_conflicts?(munged_resources) and options[:allow_conflicts]
+        params = munged_resources[conflict].collect {|x| x['parameters'] }
+        raise(Puppet::Error, "Conflicting definitions of resource #{conflict} #{params.inspect}")
       end
-      munged_hash
+      munged_resources
     end
 
   end
