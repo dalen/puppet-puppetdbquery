@@ -22,7 +22,8 @@ module Puppet::Parser::Functions
         ['=',['node','active'],true],
         ['=','type','Class'],
         ['=','title','Apache']])") do |args|
-    Puppet::Parser::Functions.autoloader.loadall
+    Puppet::Parser::Functions.autoloader.load(:pdbquery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbquery)
+    Puppet::Parser::Functions.autoloader.load(:pdbresourcequery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbresourcequery)
 
     nodeqnodes = function_pdbquery(['nodes', args[0]])
 
