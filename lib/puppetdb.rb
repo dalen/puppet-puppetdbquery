@@ -1,11 +1,66 @@
-require 'rubygems'
-require 'puppetdb/util'
-require 'puppetdb/matcher'
-require 'json'
-require 'net/http'
-require 'net/https'
-
 class PuppetDB
+
+  libdir = File.expand_path(File.dirname(__FILE__))
+  require 'rubygems'
+  require File.join(libdir, 'puppetdb/util')
+  require File.join(libdir, 'puppetX/puppetdb_query')
+  require File.join(libdir, 'puppetdb/matcher')
+  require 'json'
+  require 'net/http'
+  require 'net/https'
+
+
+  def query_facts(options)
+    options = PuppetX::Puppetdb_query.set_common_defaults(options)
+    nodes = find_nodes_matching(options[:puppetdb_host], options[:puppetdb_port], options[:query], options[:only_active])
+    options[:filter] = options[:filter] ? options[:filter].split(',') : []
+    node_hash = {}
+    nodes.each do |node_name|
+      node_hash[node_name] = find_node_facts(options[:puppetdb_host], options[:puppetdb_port], node_name, options[:filter])
+    end
+    node_hash
+  end
+
+  def query_nodes(options)
+    options = PuppetX::Puppetdb_query.set_common_defaults(options)
+
+    p = PuppetDB.new
+    nodes = find_nodes_matching(options[:puppetdb_host], options[:puppetdb_port], options[:query], options[:only_active])
+    if options[:filter]
+      nodes.map! do |node_name|
+        find_node_facts(options[:puppetdb_host], options[:puppetdb_port], node_name, options[:filter]).values[0]
+      end
+      raise(Puppet::Error, "Duplicate facts found and fail on dups specified") if options[:fail_on_dups] and nodes.uniq.size != nodes.size
+      if options[:unique]
+        nodes.uniq
+      else
+        nodes
+      end
+    else
+      nodes
+    end
+
+  end
+
+  def query_resources(options)
+    options = PuppetX::Puppetdb_query.set_common_defaults(options)
+    nodes = find_nodes_matching(options[:puppetdb_host], options[:puppetdb_port], options[:query], options[:only_active])
+    # now use the filter to find the specified resources for that node
+    nodes.map! do |node_name|
+      find_node_resources(options[:puppetdb_host], options[:puppetdb_port], node_name, options[:filter])
+    end
+    # compact the resource for all nodes into
+    # a single simplified list
+    munged_resources = compact_nodes_resources(nodes)
+    if conflict = has_conflicts?(munged_resources) and options[:allow_conflicts]
+      params = munged_resources[conflict].collect {|x| x['parameters'] }
+      raise(Puppet::Error, "Conflicting definitions of resource #{conflict} #{params.inspect}")
+    end
+    munged_resources
+  end
+
+
+
   def find_nodes_matching(host, port, query_string, only_active = false)
     stack = PuppetDB::Matcher.create_callstack(query_string)
 
@@ -149,6 +204,7 @@ class PuppetDB
       type   = query.keys.first
       headers = {"accept" => "application/json"}
 
+      puts 'querying db'
       case type
         when "resources"
           query = "/resources?query=%s" % URI.escape(query[type].to_json)
