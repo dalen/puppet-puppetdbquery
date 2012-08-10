@@ -1,13 +1,12 @@
-require 'puppet/indirector/face'
 Puppet::Face.define(:query, '0.0.1') do
 
   copyright "Puppet Labs", 2011
   license   "Apache 2 license; see COPYING"
 
-
   require 'puppetdb'
   require 'puppet/util/puppetdb'
   require 'puppetX/puppetdb_query'
+  require 'puppet/indirector/face'
 
   PuppetX::Puppetdb_query.add_puppetdb_host_option(self)
   PuppetX::Puppetdb_query.add_puppetdb_port_option(self)
