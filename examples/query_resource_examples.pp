@@ -46,6 +46,3 @@ $nova_db_password  = $nova_db_params['password']
 $nova_sql_conn = "mysql://${nova_db_user}:${nova_db_password}@${nova_db_host}/${nova_db_name}"
 
 notice("nova sql connection: ${nova_sql_conn}")
-
-
-$conection_hash = nova_connections()

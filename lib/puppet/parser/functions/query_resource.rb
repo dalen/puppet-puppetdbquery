@@ -1,4 +1,3 @@
-require 'puppet/face'
 Puppet::Parser::Functions.newfunction(:query_resource, :type => :rvalue, :doc => <<-EOT
 
   accepts two arguments, a query used to discover nodes, and a filter used to
@@ -12,11 +11,12 @@ Puppet::Parser::Functions.newfunction(:query_resource, :type => :rvalue, :doc =>
 
 EOT
 ) do |args|
+  require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppetdb'))
   filter, query = args
   query ||= ''
   # check that the filter is only one resource
   raise(Puppet::Error, 'Must specify at least one argument (resource to query for)') unless filter
-  result = Puppet::Face[:query, :current].resource(:query => query, :filter => filter)
+  result = PuppetDB.new.query_resources(:query => query, :filter => filter)
   raise(Puppet::Error, 'Function should only return one resource') if result.size > 1
   {result.keys.first => result.values.first.first}
 end

@@ -38,5 +38,14 @@ module PuppetX
         summary 'only match active nodes'
       end
     end
+
+    # set all of the common defaults to the options
+    def self.set_common_defaults(options)
+      {
+        :puppetdb_host => 'localhost',
+        :puppetdb_port => '8080',
+        :query         => ''
+      }.merge(options)
+    end
   end
 end

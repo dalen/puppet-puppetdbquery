@@ -1,4 +1,3 @@
-require 'puppet/face'
 Puppet::Parser::Functions.newfunction(:query_active_nodes, :type => :rvalue, :doc => <<-EOT
 
   accepts two arguments, a query used to discover nodes, and a filter used to
@@ -13,6 +12,7 @@ Puppet::Parser::Functions.newfunction(:query_active_nodes, :type => :rvalue, :do
 EOT
 ) do |args|
   query, filter = args
+  require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppetdb'))
   raise(Puppet::Error, 'Query is a required parameter') unless query
-  Puppet::Face[:query, :current].node(:query => query, :filter => filter, :only_active => true)
+  PuppetDB.new.query_nodes(:query => query, :filter => filter, :only_active => true)
 end

@@ -1,12 +1,11 @@
+require 'puppet/face'
 Puppet::Face.define(:query, '0.0.1') do
 
   copyright "Puppet Labs", 2011
   license   "Apache 2 license; see COPYING"
 
   require 'puppetdb'
-  require 'puppet/util/puppetdb'
   require 'puppetX/puppetdb_query'
-  require 'puppet/indirector/face'
 
   PuppetX::Puppetdb_query.add_puppetdb_host_option(self)
   PuppetX::Puppetdb_query.add_puppetdb_port_option(self)
@@ -30,19 +29,10 @@ Puppet::Face.define(:query, '0.0.1') do
         It accepts either a string or a comma delimited list of facts.
       EOT
       default_to { '' }
-      before_action do |action, args, options|
-        options[:filter] = options[:filter].split(',')
-      end
     end
 
     when_invoked do |options|
-      p = PuppetDB.new
-      nodes = p.find_nodes_matching(options[:puppetdb_host], options[:puppetdb_port], options[:query], options[:only_active])
-      node_hash = {}
-      nodes.each do |node_name|
-        node_hash[node_name] = p.find_node_facts(options[:puppetdb_host], options[:puppetdb_port], node_name, options[:filter])
-      end
-      node_hash
+      PuppetDB.new.query_facts(options)
     end
 
   end
@@ -78,21 +68,7 @@ Puppet::Face.define(:query, '0.0.1') do
 #    end
 
     when_invoked do |options|
-      p = PuppetDB.new
-      nodes = p.find_nodes_matching(options[:puppetdb_host], options[:puppetdb_port], options[:query], options[:only_active])
-      if options[:filter]
-        nodes.map! do |node_name|
-          p.find_node_facts(options[:puppetdb_host], options[:puppetdb_port], node_name, options[:filter]).values[0]
-        end
-        raise(Puppet::Error, "Duplicate facts found and fail on dups specified") if options[:fail_on_dups] and nodes.uniq.size != nodes.size
-        if options[:unique]
-          nodes.uniq
-        else
-          nodes
-        end
-      else
-        nodes
-      end
+      p = PuppetDB.new.query_nodes(options)
     end
 
   end
@@ -109,9 +85,6 @@ Puppet::Face.define(:query, '0.0.1') do
         Used to specify the resources that should be queries out of each host.
       EOT
       default_to { '' }
-      before_action do |action, args, options|
-        options[:filter] = options[:filter].split(',')
-      end
     end
 
     option '--allow-conflicts' do
@@ -129,22 +102,7 @@ Puppet::Face.define(:query, '0.0.1') do
     end
 
     when_invoked do |options|
-      p = PuppetDB.new
-      # first find the nodes that match the query
-      nodes = p.find_nodes_matching(options[:puppetdb_host], options[:puppetdb_port], options[:query], options[:only_active])
-      # now use the filter to find the specified resources for that node
-      nodes.map! do |node_name|
-        p.find_node_resources(options[:puppetdb_host], options[:puppetdb_port], node_name, options[:filter])
-      end
-      # compact the resource for all nodes into
-      # a single simplified list
-      munged_resources = p.compact_nodes_resources(nodes)
-      if conflict = p.has_conflicts?(munged_resources) and options[:allow_conflicts]
-        params = munged_resources[conflict].collect {|x| x['parameters'] }
-        raise(Puppet::Error, "Conflicting definitions of resource #{conflict} #{params.inspect}")
-      end
-      munged_resources
+      p = PuppetDB.new.query_resources(options)
     end
-
   end
 end
