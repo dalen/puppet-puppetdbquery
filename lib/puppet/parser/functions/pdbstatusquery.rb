@@ -2,9 +2,11 @@ module Puppet::Parser::Functions
   newfunction(:pdbstatusquery, :type => :rvalue, :doc => "\
     Perform a PuppetDB node status query
 
-    The first argument is the node to get facts for.
+    The first argument is the node to get the status for.
     Second argument is optional, if specified only return that specific bit of
     status, one of 'name', 'deactivated', 'catalog_timestamp' and 'facts_timestamp'.
+
+    Returns an array of hashes or a array of strings if second argument is supplied.
 
     Examples:
     # Get status for foo.example.com

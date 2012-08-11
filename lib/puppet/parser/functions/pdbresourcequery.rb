@@ -6,6 +6,8 @@ module Puppet::Parser::Functions
     Second argument is optional but allows you to specify the item you want
     from the returned hash.
 
+    Returns an array of hashes or array of strings if second argument is provided.
+
     Examples:
     # Return an array of hashes describing all files that are owned by root.
     $ret = pdbresourcequery(

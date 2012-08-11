@@ -6,6 +6,8 @@ module Puppet::Parser::Functions
     Second argument is optional but allows you to specify a resource query
     that the nodes returned also have to match.
 
+    Returns a array of strings with the certname of the nodes (fqdn by default).
+
     # Return an array of active nodes with an uptime more than 30 days
     $ret = pdbnodequery(
       ['and',

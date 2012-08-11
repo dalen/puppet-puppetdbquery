@@ -9,30 +9,13 @@ Only queries over HTTPS are supported atm.
 Usage
 -----
 
-### pdbquery
-
-This is the generic query function that the others make use of, you probably
-don't have to use it and can use one of the specific functions below instead.
-
-The first argument is the URL path that should be queried, for
-example 'nodes' or 'status/nodes/<nodename>'.
-The second argument if supplied if the query parameter, if it is
-a string it is assumed to be JSON formatted and sent as is,
-anything else is converted to JSON and then sent.
-
-#### Examples
-
-    # Get list of all active nodes
-    $ret = pdbquery('nodes', ['=', ['node', 'active'], true ])
-
-    # Query status of current node
-    $ret2 = pdbquery("status/nodes/${settings::certname}")
-
 ### pdbresourcequery
 
 The first argument is the resource query.
 Second argument is optional but allows you to specify the item you want
 from the returned hash.
+
+Returns an array of hashes or array of strings if second argument is provided.
 
 #### Examples
 
@@ -55,6 +38,8 @@ from the returned hash.
 The first argument is the node query.
 Second argument is optional but allows you to specify a resource query
 that the nodes returned also have to match.
+
+Returns a array of strings with the certname of the nodes (fqdn by default).
 
 #### Examples
 
@@ -93,9 +78,11 @@ Second argument is optional, if specified only return that specific fact.
 
 ### pdbstatusquery
 
-The first argument is the node to get facts for.
+The first argument is the node to get the status for.
 Second argument is optional, if specified only return that specific bit of
 status, one of 'name', 'deactivated', 'catalog_timestamp' and 'facts_timestamp'.
+
+Returns an array of hashes or a array of strings if second argument is supplied.
 
 #### Examples
 
@@ -103,3 +90,25 @@ status, one of 'name', 'deactivated', 'catalog_timestamp' and 'facts_timestamp'.
     pdbstatusquery('foo.example.com')
     # Get catalog_timestamp for foo.example.com
     pdbstatusquery('foo.example.com', 'catalog_timestamp')
+
+### pdbquery
+
+This is the generic query function that the others make use of, you probably
+don't have to use it and can use one of the specific functions below instead.
+
+The first argument is the URL path that should be queried, for
+example 'nodes' or 'status/nodes/<nodename>'.
+The second argument if supplied if the query parameter, if it is
+a string it is assumed to be JSON formatted and sent as is,
+anything else is converted to JSON and then sent.
+
+#### Examples
+
+    # Get list of all active nodes
+    $ret = pdbquery('nodes', ['=', ['node', 'active'], true ])
+
+    # Query status of current node
+    $ret2 = pdbquery("status/nodes/${settings::certname}")
+
+See [http://docs.puppetlabs.com/puppetdb](http://docs.puppetlabs.com/puppetdb) for
+more info and examples about the PuppetDB API.
