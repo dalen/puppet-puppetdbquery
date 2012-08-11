@@ -22,6 +22,10 @@ module Puppet::Parser::Functions
         ['=',['node','active'],true],
         ['=','type','File'],
         ['=',['parameter','owner'],'root']], 'certname')") do |args|
+
+    raise(Puppet::ParseError, "pdbquery(): Wrong number of arguments " +
+                "given (#{args.size} for 1 or 2)") if args.size < 1 or args.size > 2
+
     Puppet::Parser::Functions.autoloader.load(:pdbquery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbquery)
 
     ret = function_pdbquery(['resources', args[0]])

@@ -13,6 +13,10 @@ module Puppet::Parser::Functions
     pdbstatusquery('foo.example.com')
     # Get catalog_timestamp for foo.example.com
     pdbstatusquery('foo.example.com', 'catalog_timestamp')") do |args|
+
+    raise(Puppet::ParseError, "pdbquery(): Wrong number of arguments " +
+      "given (#{args.size} for 1 or 2)") if args.size < 1 or args.size > 2
+
     Puppet::Parser::Functions.autoloader.load(:pdbquery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbquery)
 
     ret = function_pdbquery(["status/nodes/#{args[0]}"])

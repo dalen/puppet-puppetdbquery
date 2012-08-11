@@ -9,6 +9,10 @@ module Puppet::Parser::Functions
     anything else is converted to JSON and then sent.
 
     Example: pdbquery('nodes', ['=', ['node', 'active'], true ])") do |args|
+
+    raise(Puppet::ParseError, "pdbquery(): Wrong number of arguments " +
+      "given (#{args.size} for 1 or 2)") if args.size < 1 or args.size > 2
+
     require 'rubygems'
     require 'json'
     require 'puppet/network/http_pool'
