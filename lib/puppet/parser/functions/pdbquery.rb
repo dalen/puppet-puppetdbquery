@@ -19,8 +19,6 @@ module Puppet::Parser::Functions
     require 'uri'
     require 'puppet/util/puppetdb'
 
-    Puppet.parse_config
-
     # Query type (URL path)
     t=args[0]
 
