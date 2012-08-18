@@ -46,6 +46,7 @@ class PuppetDB
     options = PuppetX::Puppetdb_query.set_common_defaults(options)
     nodes = find_nodes_matching(options[:puppetdb_host], options[:puppetdb_port], options[:query], options[:only_active])
     # now use the filter to find the specified resources for that node
+    options[:filter] = options[:filter] ? options[:filter].split(',') : []
     nodes.map! do |node_name|
       find_node_resources(options[:puppetdb_host], options[:puppetdb_port], node_name, options[:filter])
     end
@@ -97,7 +98,7 @@ class PuppetDB
     facts = query_puppetdb(host, port, "facts" => node_name)
     return facts['facts'] if ! filter || filter.empty?
     # return an array with only facts specified in the filter
-    return facts['facts'].reject{|k,v| ! filter.include?(k) }
+    return facts['facts'].reject{|k,v| ! filter.to_a.include?(k) }
   end
 
   def find_node_resources(host, port, node_name, resource_filter)
