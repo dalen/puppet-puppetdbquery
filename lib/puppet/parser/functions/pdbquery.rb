@@ -13,39 +13,29 @@ module Puppet::Parser::Functions
     raise(Puppet::ParseError, "pdbquery(): Wrong number of arguments " +
       "given (#{args.size} for 1 or 2)") if args.size < 1 or args.size > 2
 
-    require 'rubygems'
-    require 'json'
     require 'puppet/network/http_pool'
     require 'uri'
     require 'puppet/util/puppetdb'
+    require 'puppet/indirector/rest'
 
     # Query type (URL path)
-    t=args[0]
+    t, q = args
 
     # Query contents
-    if args.length > 1 then
-      q=args[1]
-
+    if q then
       # Convert to JSON if it isn't already
-      if ! q.is_a? String then
-        q=JSON[q]
-      end
+      q=q.to_pson unless q.is_a? String
       params = URI.escape("?query=#{q}")
     else
       params = ''
     end
 
-    url = URI.parse("https://#{Puppet::Util::Puppetdb.server}:#{Puppet::Util::Puppetdb.port}/#{t}#{params}")
-    req = Net::HTTP::Get.new(url.request_uri)
-    req['Accept'] = 'application/json'
-    conn = Puppet::Network::HttpPool.http_instance(url.host, url.port,
-                                                   ssl=(url.scheme == 'https'))
-    conn.start {|http|
-      response = http.request(req)
-      unless response.kind_of?(Net::HTTPSuccess)
-        raise Puppet::ParseError, "PuppetDB query error: [#{response.code}] #{response.msg}"
-      end
-      JSON.parse(response.body)
-    }
+    conn = Puppet::Network::HttpPool.http_instance(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port, use_ssl = true)
+    response = conn.get("/#{t}#{params}", { "Accept" => "application/json",})
+
+    unless response.kind_of?(Net::HTTPSuccess)
+      raise Puppet::ParseError, "PuppetDB query error: [#{response.code}] #{response.msg}"
+    end
+    PSON.load(response.body)
   end
 end
