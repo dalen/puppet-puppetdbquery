@@ -28,11 +28,12 @@ module Puppet::Parser::Functions
 
     Puppet::Parser::Functions.autoloader.load(:pdbquery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbquery)
 
-    ret = function_pdbquery(['resources', args[0]])
-    if args.length > 1 then
-      ret = ret.collect {|x| x[args[1]]}
+    resq, info = args
+    ret = function_pdbquery(['resources', resq])
+    if info then
+      ret.collect {|x| x[info]}
+    else
+      ret
     end
-
-    ret
   end
 end

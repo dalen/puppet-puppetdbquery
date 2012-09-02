@@ -19,9 +19,11 @@ module Puppet::Parser::Functions
 
     Puppet::Parser::Functions.autoloader.load(:pdbquery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbquery)
 
-    ret = function_pdbquery(["status/nodes/#{args[0]}"])
-    if args.length > 1 then
-      ret[args[1]]
+    node, status = args
+
+    ret = function_pdbquery(["status/nodes/#{node}"])
+    if status then
+      ret[status]
     else
       ret
     end

@@ -31,12 +31,13 @@ module Puppet::Parser::Functions
     Puppet::Parser::Functions.autoloader.load(:pdbquery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbquery)
     Puppet::Parser::Functions.autoloader.load(:pdbresourcequery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbresourcequery)
 
-    nodeqnodes = function_pdbquery(['nodes', args[0]])
+    nodeq, resq = args
 
-    if args.length > 1 then
-      resourceqnodes = function_pdbresourcequery([args[1], 'certname'])
+    nodeqnodes = function_pdbquery(['nodes', nodeq])
 
-      nodeqnodes & resourceqnodes
+    if resq then
+      resqnodes = function_pdbresourcequery([resq, 'certname'])
+      nodeqnodes & resqnodes
     else
       # No resource query to worry about, just return the nodequery
       nodeqnodes

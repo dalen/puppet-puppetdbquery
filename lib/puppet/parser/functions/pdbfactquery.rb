@@ -16,16 +16,13 @@ module Puppet::Parser::Functions
 
     Puppet::Parser::Functions.autoloader.load(:pdbquery) unless Puppet::Parser::Functions.autoloader.loaded?(:pdbquery)
 
-    if args[0].is_a?(Array) then
-      if args.length > 1 then
-        args[0].collect { |n| function_pdbfactquery([n,args[1]]) }
-      else
-        args[0].collect { |n| function_pdbfactquery([n]) }
-      end
+    node, fact = args
+    if node.is_a?(Array) then
+      node.collect { |n| function_pdbfactquery([n,fact]) }
     else
       facts = function_pdbquery(["facts/#{args[0]}"])['facts']
-      if args.length > 1 then
-        facts[args[1]]
+      if fact then
+        facts[fact]
       else
         facts
       end
