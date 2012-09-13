@@ -4,18 +4,38 @@
 #
 module PuppetX
   class Puppetdb_query
+    def self.setting
+      begin
+        require 'puppet'
+        require 'puppet/util/puppetdb'
+        host = Puppet::Util::Puppetdb.server || 'localhost'
+        port = 8080
+        #port = Puppet::Util::Puppetdb.port || 8080
+      rescue Exception => e
+        Puppet.debug(e.message)
+        host = 'localhost'
+        port = 8080
+      end
+
+      Puppet.debug(host)
+      Puppet.debug(port)
+
+      { :host => host,
+        :port => port }
+    end
 
     def self.add_puppetdb_host_option(action)
       action.option '--puppetdb_host PUPPETDB' do
         summary "Host running PuppetDB. "
-        default_to { 'localhost' }
+
+        default_to { PuppetX::Puppetdb_query.setting[:host] }
       end
     end
 
     def self.add_puppetdb_port_option(action)
       action.option '--puppetdb_port PORT' do
         summary 'Port PuppetDB is running on'
-        default_to { 8080 }
+        default_to { PuppetX::Puppetdb_query.setting[:port] }
       end
     end
 
@@ -42,8 +62,8 @@ module PuppetX
     # set all of the common defaults to the options
     def self.set_common_defaults(options)
       {
-        :puppetdb_host => 'localhost',
-        :puppetdb_port => '8080',
+        :puppetdb_host => PuppetX::Puppetdb_query.setting[:host],
+        :puppetdb_port => PuppetX::Puppetdb_query.setting[:port],
         :query         => ''
       }.merge(options)
     end
