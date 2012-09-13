@@ -173,7 +173,7 @@ class PuppetDB
     statement = statement.to_a.flatten.last
 
     if statement =~ /^([\w:]+)\[(.+)\]$/
-      resource_type = $1.capitalize
+      resource_type = $1
       resource_name = $2
 
       if resource_name.start_with?('"') or resource_name.start_with?("'")
@@ -181,6 +181,7 @@ class PuppetDB
       end
 
       # in puppetdb class names are all capitalized but resource named arent
+      resource_type = resource_type.split("::").map{|c| c.capitalize}.join("::")
       resource_name = resource_name.split("::").map{|c| c.capitalize}.join("::") if resource_type == "Class"
 
       return {"resources" => ["and", ["=", "type", resource_type], ["=", "title", resource_name]]}
