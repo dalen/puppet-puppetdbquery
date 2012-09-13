@@ -11,8 +11,8 @@ Puppet::Parser::Functions.newfunction(:query_nodes, :type => :rvalue, :doc => <<
 
 EOT
 ) do |args|
-  require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppetdb'))
   query, filter = args
+  require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppetdb'))
   raise(Puppet::Error, 'Query is a required parameter') unless query
-  PuppetDB.new.query_nodes(:query => query, :filter => filter, :only_active => true)
+  PuppetDB.new.query_nodes(:query => query, :filter => filter)
 end

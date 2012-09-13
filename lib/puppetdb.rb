@@ -5,7 +5,6 @@ class PuppetDB
   require File.join(libdir, 'puppetdb/util')
   require File.join(libdir, 'puppetX/puppetdb_query')
   require File.join(libdir, 'puppetdb/matcher')
-  require 'json'
   require 'net/http'
   require 'net/https'
 
@@ -174,7 +173,7 @@ class PuppetDB
     statement = statement.to_a.flatten.last
 
     if statement =~ /^([\w:]+)\[(.+)\]$/
-      resource_type = $1.capitalize
+      resource_type = $1
       resource_name = $2
 
       if resource_name.start_with?('"') or resource_name.start_with?("'")
@@ -182,6 +181,7 @@ class PuppetDB
       end
 
       # in puppetdb class names are all capitalized but resource named arent
+      resource_type = resource_type.split("::").map{|c| c.capitalize}.join("::")
       resource_name = resource_name.split("::").map{|c| c.capitalize}.join("::") if resource_type == "Class"
 
       return {"resources" => ["and", ["=", "type", resource_type], ["=", "title", resource_name]]}
@@ -191,34 +191,32 @@ class PuppetDB
   end
 
   def query_puppetdb(host, port, query)
+    require 'puppet/network/http_pool'
     http = Net::HTTP.new(host, port)
     #http.use_ssl = true
     #http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
+    headers = { "Accept" => "application/json" }
+
     if query == :empty
-
-      resp, data = http.get("/nodes", {"accept" => "application/json"})
-      return JSON.parse(data)
-
+      resp, data = http.get("/nodes", headers)
+      return PSON.parse(data)
     else
+      type = query.keys.first
 
-      type   = query.keys.first
-      headers = {"accept" => "application/json"}
-
-      puts 'querying db'
       case type
         when "resources"
-          query = "/resources?query=%s" % URI.escape(query[type].to_json)
+          query = "/resources?query=%s" % URI.escape(query[type].to_pson)
           resp, data = http.get(query, headers)
-          return JSON.parse(data)
+          return PSON.parse(data)
         when "nodes"
-          query = "/nodes?query=%s" % URI.escape(query[type].to_json)
+          query = "/nodes?query=%s" % URI.escape(query[type].to_pson)
           resp, data = http.get(query, headers)
-          return JSON.parse(data)
+          return PSON.parse(data)
         when "facts"
           query = "/facts/#{query[type]}"
           resp, data = http.get(query, headers)
-          return JSON.parse(data)
+          return PSON.parse(data)
       end
     end
   end
