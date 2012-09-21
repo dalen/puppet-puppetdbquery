@@ -15,14 +15,15 @@ The first argument is the resource query.
 Second argument is optional but allows you to specify the item you want
 from the returned hash.
 
+It automatically excludes deactivated hosts.
+
 Returns an array of hashes or array of strings if second argument is provided.
 
 #### Examples
 
-    # Return an array of hashes describing all files that are owned by root.
+    # Return an array of hashes describing all files that are owned by root on active hosts.
     $ret = pdbresourcequery(
       ['and',
-        ['=',['node','active'],true],
         ['=','type','File'],
         ['=',['parameter','owner'],'root']])
 
@@ -33,32 +34,36 @@ Returns an array of hashes or array of strings if second argument is provided.
         ['=','type','File'],
         ['=',['parameter','owner'],'root']], 'certname')
 
+### pdbresourcequery_all
+
+Works exactly like pdbresourcequery but also returns deactivated hosts.
+
 ### pdbnodequery
 
 The first argument is the node query.
 Second argument is optional but allows you to specify a resource query
 that the nodes returned also have to match.
 
+It automatically excludes deactivated hosts.
+
 Returns a array of strings with the certname of the nodes (fqdn by default).
 
 #### Examples
 
     # Return an array of active nodes with an uptime more than 30 days
-    $ret = pdbnodequery(
-      ['and',
-        ['=',['node','active'],true],
-        ['>',['fact','uptime_days'],30]])
+    $ret = pdbnodequery(['>',['fact','uptime_days'],30])
 
     # Return an array of active nodes with an uptime more than 30 days and
     # having the class 'apache'
     $ret = pdbnodequery(
+      ['>',['fact','uptime_days'],30],
       ['and',
-        ['=',['node','active'],true],
-        ['>',['fact','uptime_days'],30]],
-      ['and',
-        ['=',['node','active'],true],
         ['=','type','Class'],
         ['=','title','Apache']])
+
+### pdbnodequery_all
+
+Works exactly like pdbnodequery but also returns deactivated hosts.
 
 ### pdbfactquery
 

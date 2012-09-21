@@ -2,28 +2,20 @@ module Puppet::Parser::Functions
   newfunction(:pdbnodequery, :type => :rvalue, :doc => "\
     Perform a PuppetDB node query
 
-    The first argument is the node query.
+    The first argument is the node query, it has to be an array.
     Second argument is optional but allows you to specify a resource query
     that the nodes returned also have to match.
+
+    This function excludes any deactivated hosts.
 
     Returns a array of strings with the certname of the nodes (fqdn by default).
 
     # Return an array of active nodes with an uptime more than 30 days
-    $ret = pdbnodequery(
-      ['and',
-        ['=',['node','active'],true],
-        ['>',['fact','uptime_days'],30]])
+    $ret = pdbnodequery(['>',['fact','uptime_days'],30])
 
     # Return an array of active nodes with an uptime more than 30 days and
     # having the class 'apache'
-    $ret = pdbnodequery(
-      ['and',
-        ['=',['node','active'],true],
-        ['>',['fact','uptime_days'],30]],
-      ['and',
-        ['=',['node','active'],true],
-        ['=','type','Class'],
-        ['=','title','Apache']])") do |args|
+    $ret = pdbnodequery(['>',['fact','uptime_days'],30], ['and',['=','type','Class'],['=','title','Apache']])") do |args|
 
     raise(Puppet::ParseError, "pdbquery(): Wrong number of arguments " +
                 "given (#{args.size} for 1 or 2)") if args.size < 1 or args.size > 2
@@ -33,7 +25,7 @@ module Puppet::Parser::Functions
 
     nodeq, resq = args
 
-    nodeqnodes = function_pdbquery(['nodes', nodeq])
+    nodeqnodes = function_pdbquery(['nodes', ['and',['=',['node','active'],true],nodeq] ])
 
     if resq then
       resqnodes = function_pdbresourcequery([resq, 'certname'])
