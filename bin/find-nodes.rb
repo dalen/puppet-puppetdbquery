@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 
+require 'puppet'
 require 'puppetdb'
 require 'optparse'
 require 'pp'
