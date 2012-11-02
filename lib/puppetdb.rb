@@ -192,9 +192,7 @@ class PuppetDB
 
   def query_puppetdb(host, port, query)
     require 'puppet/network/http_pool'
-    http = Net::HTTP.new(host, port)
-    #http.use_ssl = true
-    #http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http = Puppet::Network::HttpPool.http_instance(host, port)
 
     headers = { "Accept" => "application/json" }
 
