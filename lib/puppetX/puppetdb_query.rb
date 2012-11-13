@@ -9,8 +9,7 @@ module PuppetX
         require 'puppet'
         require 'puppet/util/puppetdb'
         host = Puppet::Util::Puppetdb.server || 'localhost'
-        port = 8080
-        #port = Puppet::Util::Puppetdb.port || 8080
+        port = Puppet::Util::Puppetdb.port || 8080
       rescue Exception => e
         Puppet.debug(e.message)
         host = 'localhost'
