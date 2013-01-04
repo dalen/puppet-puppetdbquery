@@ -62,6 +62,11 @@ Puppet::Face.define(:query, '0.0.1') do
       default_to { false }
     end
 
+    option '--deactivate' do
+      summary 'deactivate selected nodes'
+      default_to { false }
+    end
+
 #  not sure if this is supported
 #    option '--only-inactive' do
 #      summary 'only match inactive nodes'
@@ -69,6 +74,11 @@ Puppet::Face.define(:query, '0.0.1') do
 
     when_invoked do |options|
       p = PuppetDB.new.query_nodes(options)
+      if options[:deactivate]
+        Puppet.notice("Deactivating selected nodes: #{p.inspect}")
+        Puppet::Face[:node, :current].deactivate(*(p + [{}]))
+      end
+      p
     end
 
   end
