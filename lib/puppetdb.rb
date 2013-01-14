@@ -66,7 +66,10 @@ class PuppetDB
 
     truth_values = []
 
-    return query_puppetdb(host, port, :empty) if stack == []
+    if stack == []
+      empty_query = only_active ? get_active_query : :empty
+      return query_puppetdb(host, port, empty_query)
+    end
 
     stack.each do |exp|
       case exp.keys.first
