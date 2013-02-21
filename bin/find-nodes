@@ -4,21 +4,9 @@ require 'rubygems'
 require 'puppetdb/connection'
 require 'optparse'
 
-# Take a list of facts and return it as a hash of hashes
-def facthash(factlist)
-  facts = {}
-  factlist.each do |fact|
-    if facts.include? fact['certname'] then
-      facts[fact['certname']][fact['name']] = fact['value']
-    else
-      facts[fact['certname']] = {[fact['name']] => fact['value']}
-    end
-  end
-  facts
-end
-
 options = {:puppetdb_host => "puppetdb",
            :puppetdb_port => 443,
+           :fact => nil,
            :query => nil}
 
 opt = OptionParser.new
@@ -35,6 +23,10 @@ opt.on("--query [QUERY]", "-q", "Query String") do |v|
   options[:query] = v
 end
 
+opt.on("--facts [FACT]", "-f", "Comma separated list of facts") do |v|
+  options[:facts] = v.split ','
+end
+
 opt.parse!
 
 options[:query] ||= ARGV[0]
@@ -44,6 +36,12 @@ abort "Please specify a query" unless options[:query]
 puppetdb = PuppetDB::Connection.new(options[:puppetdb_host], options[:puppetdb_port])
 query = puppetdb.parse_query(options[:query])
 results = puppetdb.query(:nodes, query)
-results.each do |host|
-  print host['name'] + "\n"
+hosts = results.collect { |host| host['name'] }
+if options[:facts]
+  facts = puppetdb.facts(options[:facts], hosts)
+  facts.each_value do |host|
+    print options[:facts].collect { |f| host[f] if host.include? f }.join(',') + "\n"
+  end
+else
+  hosts.each { |host| print host + "\n" }
 end

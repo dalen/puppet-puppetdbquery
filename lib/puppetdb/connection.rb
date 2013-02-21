@@ -10,7 +10,9 @@ class PuppetDB::Connection
 
   def initialize(host='puppetdb', port=443, use_ssl=true)
     Puppet.initialize_settings
-    @http = Puppet::Network::HttpPool.http_instance(host, port, use_ssl=use_ssl)
+    @host = host
+    @port = port
+    @use_ssl = use_ssl
     @parser = PuppetDB::Parser.new
   end
 
@@ -19,18 +21,34 @@ class PuppetDB::Connection
     @parser.scan_str(query).optimize.evaluate
   end
 
+  # Get the listed facts for an array of certnames
+  # return it as a hash of hashes
+  def facts(facts, hosts)
+    q = ['and', ['or', *hosts.collect { |h| ['=', 'certname', h] }], ['or', *facts.collect { |f| ['=', 'name', f]}]]
+    facts = {}
+    query(:facts, q).each do |fact|
+      if facts.include? fact['certname'] then
+        facts[fact['certname']][fact['name']] = fact['value']
+      else
+        facts[fact['certname']] = {fact['name'] => fact['value']}
+      end
+    end
+    facts
+  end
+
   # Execute a PuppetDB query
-  def query(endpoint, query)
+  def query(endpoint, query=nil)
+    http = Puppet::Network::HttpPool.http_instance(@host, @port, @use_ssl)
     headers = { "Accept" => "application/json" }
 
     if query == [] or query == nil
-      resp, data = @http.get("/v2/#{endpoint.to_s}", headers)
-      raise Error, "PuppetDB query error: [#{resp.code}] #{resp.msg}" unless resp.kind_of?(Net::HTTPSuccess)
+      resp, data = http.get("/v2/#{endpoint.to_s}", headers)
+      raise Puppet::Error, "PuppetDB query error: [#{resp.code}] #{resp.msg}" unless resp.kind_of?(Net::HTTPSuccess)
       return PSON.parse(data)
     else
       params = URI.escape("?query=#{query.to_json}")
-      resp, data = @http.get("/v2/#{endpoint.to_s}#{params}", headers)
-      raise Error, "PuppetDB query error: [#{resp.code}] #{resp.msg}" unless resp.kind_of?(Net::HTTPSuccess)
+      resp, data = http.get("/v2/#{endpoint.to_s}#{params}", headers)
+      raise Puppet::Error, "PuppetDB query error: [#{resp.code}] #{resp.msg}, query: #{query.to_json}" unless resp.kind_of?(Net::HTTPSuccess)
       return PSON.parse(data)
     end
   end
