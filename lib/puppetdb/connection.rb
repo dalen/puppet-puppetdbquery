@@ -17,12 +17,20 @@ class PuppetDB::Connection
   end
 
   # Parse a query string into a PuppetDB query
+  #
+  # @param query [String] the query string to parse
+  # @param endpoint [Symbol] the endpoint for which the query should be evaluated
+  # @return [Array] the PuppetDB query
   def parse_query(query, endpoint=:hosts)
     @parser.scan_str(query).optimize.evaluate endpoint
   end
 
   # Get the listed facts for all hosts matching query
   # return it as a hash of hashes
+  #
+  # @param facts [Array] the list of facts to fetch
+  # @param hostquery [Array] the query to find the hosts to fetch facts for
+  # @return [Hash] a hash of hashes with facts for each host mathing query
   def facts(facts, hostquery)
     q = ['and', ['in', 'certname', ['extract', 'certname', ['select-facts', hostquery]]], ['or', *facts.collect { |f| ['=', 'name', f]}]]
     facts = {}
@@ -37,6 +45,10 @@ class PuppetDB::Connection
   end
 
   # Execute a PuppetDB query
+  #
+  # @param endpoint [Symbol] :resources, :facts or :hosts
+  # @param query [Array] query to execute
+  # @return [Array] the results of the query
   def query(endpoint, query=nil)
     http = Puppet::Network::HttpPool.http_instance(@host, @port, @use_ssl)
     headers = { "Accept" => "application/json" }
