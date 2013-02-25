@@ -21,10 +21,10 @@ class PuppetDB::Connection
     @parser.scan_str(query).optimize.evaluate endpoint
   end
 
-  # Get the listed facts for an array of certnames
+  # Get the listed facts for all hosts matching query
   # return it as a hash of hashes
-  def facts(facts, hosts)
-    q = ['and', ['or', *hosts.collect { |h| ['=', 'certname', h] }], ['or', *facts.collect { |f| ['=', 'name', f]}]]
+  def facts(facts, hostquery)
+    q = ['and', ['in', 'certname', ['extract', 'certname', ['select-facts', hostquery]]], ['or', *facts.collect { |f| ['=', 'name', f]}]]
     facts = {}
     query(:facts, q).each do |fact|
       if facts.include? fact['certname'] then
