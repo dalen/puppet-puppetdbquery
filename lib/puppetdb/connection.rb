@@ -17,8 +17,8 @@ class PuppetDB::Connection
   end
 
   # Parse a query string into a PuppetDB query
-  def parse_query(query)
-    @parser.scan_str(query).optimize.evaluate
+  def parse_query(query, endpoint=:hosts)
+    @parser.scan_str(query).optimize.evaluate endpoint
   end
 
   # Get the listed facts for an array of certnames
