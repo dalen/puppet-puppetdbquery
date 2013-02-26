@@ -9,7 +9,6 @@ class PuppetDB::Connection
   require 'json'
 
   def initialize(host='puppetdb', port=443, use_ssl=true)
-    Puppet.initialize_settings
     @host = host
     @port = port
     @use_ssl = use_ssl
