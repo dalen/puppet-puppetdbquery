@@ -1,8 +1,11 @@
 #!/usr/bin/ruby
 
+require 'puppet'
 require 'rubygems'
 require 'puppetdb/connection'
 require 'optparse'
+
+Puppet.initialize_settings
 
 options = {:puppetdb_host => "puppetdb",
            :puppetdb_port => 443,
