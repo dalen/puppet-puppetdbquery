@@ -50,10 +50,10 @@ class PuppetDB::ASTNode
       return subquery(mode, @value, *evaluate_children(@value))
     when :exp
       case @value
-      when :equals:      op = '='
-      when :greaterthan: op = '>'
-      when :lessthan:    op = '<'
-      when :match:       op = '~'
+      when :equals      then op = '='
+      when :greaterthan then op = '>'
+      when :lessthan    then op = '<'
+      when :match       then op = '~'
       end
 
       case mode
