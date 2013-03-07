@@ -30,10 +30,10 @@ class PuppetDB::Connection
   # @param facts [Array] the list of facts to fetch
   # @param nodequery [Array] the query to find the nodes to fetch facts for
   # @return [Hash] a hash of hashes with facts for each node mathing query
-  def facts(facts, nodequery)
+  def facts(facts, nodequery, http=nil)
     q = ['and', ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]], ['or', *facts.collect { |f| ['=', 'name', f]}]]
     facts = {}
-    query(:facts, q).each do |fact|
+    query(:facts, q, http).each do |fact|
       if facts.include? fact['certname'] then
         facts[fact['certname']][fact['name']] = fact['value']
       else
@@ -48,8 +48,8 @@ class PuppetDB::Connection
   # @param endpoint [Symbol] :resources, :facts or :nodes
   # @param query [Array] query to execute
   # @return [Array] the results of the query
-  def query(endpoint, query=nil)
-    http = Puppet::Network::HttpPool.http_instance(@host, @port, @use_ssl)
+  def query(endpoint, query=nil, http=nil)
+    http ||= Puppet::Network::HttpPool.http_instance(@host, @port, @use_ssl)
     headers = { "Accept" => "application/json" }
 
     uri = "/v2/#{endpoint.to_s}"
