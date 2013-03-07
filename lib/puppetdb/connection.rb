@@ -52,15 +52,11 @@ class PuppetDB::Connection
     http = Puppet::Network::HttpPool.http_instance(@host, @port, @use_ssl)
     headers = { "Accept" => "application/json" }
 
-    if query == [] or query == nil
-      resp, data = http.get("/v2/#{endpoint.to_s}", headers)
-      raise Puppet::Error, "PuppetDB query error: [#{resp.code}] #{resp.msg}" unless resp.kind_of?(Net::HTTPSuccess)
-      return PSON.parse(data)
-    else
-      params = URI.escape("?query=#{query.to_json}")
-      resp, data = http.get("/v2/#{endpoint.to_s}#{params}", headers)
-      raise Puppet::Error, "PuppetDB query error: [#{resp.code}] #{resp.msg}, query: #{query.to_json}" unless resp.kind_of?(Net::HTTPSuccess)
-      return PSON.parse(data)
-    end
+    uri = "/v2/#{endpoint.to_s}"
+    uri += URI.escape "?query=#{query.to_json}" unless query.nil? or query.empty?
+
+    resp, data = http.get(uri, headers)
+    raise Puppet::Error, "PuppetDB query error: [#{resp.code}] #{resp.msg}, query: #{query.to_json}" unless resp.kind_of?(Net::HTTPSuccess)
+    return PSON.parse(data)
   end
 end
