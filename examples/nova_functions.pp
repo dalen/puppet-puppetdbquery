@@ -10,7 +10,7 @@ notice("rabbit password: ${rabbit_connection_hash[password]}")
 
 notice(collect_nova_db_connection('fqdn', 'architecture=amd64'))
 
-$vnc_proxy_host   = unique(query_nodes('Class[Nova::vncproxy]', 'fqdn'))
+$vnc_proxy_host   = unique(query_nodes('Class[Nova::Vncproxy]', 'fqdn'))
 notice("vnc proxy host ${vnc_proxy_host}")
 
 # glance api servers
