@@ -1,7 +1,7 @@
-Puppet Usage
-============
+PuppetDB query tools
+====================
 
-This tool implements command line tools that can be used to query puppetdb.
+This module implements command line tools and Puppet functions that can be used to query puppetdb.
 
 
 Installation
@@ -10,6 +10,8 @@ Installation
 Ensure that the lib directory is in Ruby's LOADPATH.
 
      $ export RUBYLIB=puppet-puppetdbquery/lib:$RUBYLIB
+
+PuppetDB terminus is required for the Puppet functions, but not the face.
 
 Usage
 ======
@@ -33,12 +35,12 @@ Each of the faces uses the following query syntax to return all objects found on
 
 Each of the individual faces returns a different data format:
 
-node - a list of nodes identified by a name
+nodes - a list of nodes identified by a name
 
      $ puppet query nodes '(Package["mysql-server"] and architecture=amd64)'
        ["db_node_1", "db_node2"]
 
-fact - a hash of facts per node
+facts - a hash of facts per node
 
      $ puppet query facts '(Package["mysql-server"] and architecture=amd64)'
        db_node_1  {"facterversion":"1.6.9","hostname":"controller",...........}
@@ -50,12 +52,13 @@ Ruby
   faces can be called from the ruby in exactly they same way they are called from the command line:
 
     $ irb> require 'puppet/face'
-      irb> Puppet::Face[:query, :current].node(:query => '(Package["mysql-server"] and architecture=amd64)')
+      irb> Puppet::Face[:query, :current].nodes(:query => '(Package["mysql-server"] and architecture=amd64)')
 
 Deprecated PuppetDB query functions
 ===================================
 
-This module contains query functions for PuppetDB for use from Puppet.
+This module also contains some older deprecated functions that use the raw
+version 1 PuppetDB API.
 They require the json ruby gem and the puppetdb-terminus.
 
 Only queries over HTTPS are supported atm.
