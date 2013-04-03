@@ -21,7 +21,7 @@ EOT
     query = puppetdb.parse_query query, :facts if query.is_a? String
     puppetdb.facts([fact], query).each_value.to_a
   else
-    query = puppetdb.parse_query query if query.is_a? String
-    puppetdb.query :nodes, query
+    query = puppetdb.parse_query query, :nodes if query.is_a? String
+    puppetdb.query(:nodes, query).collect { |n| n['name'] }
   end
 end
