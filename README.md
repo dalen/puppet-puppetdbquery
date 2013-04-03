@@ -54,6 +54,48 @@ Ruby
     $ irb> require 'puppet/face'
       irb> Puppet::Face[:query, :current].nodes(:query => '(Package["mysql-server"] and architecture=amd64)')
 
+Puppet functions
+----------------
+
+There's corresponding functions to query PuppetDB directly from Puppet manifests.
+
+### query_nodes
+
+Accepts two arguments, a query used to discover nodes, and a optional
+fact that should be returned.
+
+Returns an array of certnames or fact values if a fact is specified.
+
+#### Examples
+
+$hosts = query_nodes('manufacturer~"Dell.*" and processorcount=24 and Class[Apache]')
+
+$hostips = query_nodes('manufacturer~"Dell.*" and processorcount=24 and Class[Apache]', ipaddress)
+
+### query_facts
+
+Similar to query_nodes but takes two arguments, the first is a query used to discover nodes, the second is a list of facts to return for those nodes.
+
+Returns a nested hash where the keys are the certnames of the nodes, each containing a hash with facts and fact values.
+
+#### Example
+
+query_facts('Class[Apache]{port=443}', ['osfamily', 'ipaddress'])
+
+Example return value in JSON format:
+
+{
+  "foo.example.com": {
+    "ipaddress": "192.168.0.2",
+    "osfamily": "Redhat"
+  },
+  "bar.example.com": {
+    "ipaddress": "192.168.0.3",
+    "osfamily": "Debian"
+  }
+}
+
+
 Deprecated PuppetDB query functions
 ===================================
 
