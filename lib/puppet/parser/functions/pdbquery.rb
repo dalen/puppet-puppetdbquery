@@ -31,7 +31,7 @@ module Puppet::Parser::Functions
     end
 
     conn = Puppet::Network::HttpPool.http_instance(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port, use_ssl = true)
-    response = conn.get("/#{t}#{params}", { "Accept" => "application/json",})
+    response = conn.get("/v1/#{t}#{params}", { "Accept" => "application/json",})
 
     unless response.kind_of?(Net::HTTPSuccess)
       raise Puppet::ParseError, "PuppetDB query error: [#{response.code}] #{response.msg}"
