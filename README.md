@@ -3,6 +3,21 @@ PuppetDB query tools
 
 This module implements command line tools and Puppet functions that can be used to query puppetdb.
 
+Query format
+============
+
+The query format accepts resource references in the form:
+
+    Type[Name]{attribute1=foo and attribute2=bar}
+
+Each of the three parts are optional.
+
+Facts can be matched using the operators =, !=, >, < and ~ (regexp match). > and < only work on numbers, ~ only works on strings.
+
+Any expression can be combined using "not", "and" or "or", in that precedence order. To change precedence you can use parenthesis.
+
+Alphanumeric strings don't need to be quoted, but can be quoted using double quotes with the same escaping rules as JSON.
+Numbers are interpreted as numbers and true/false as boolean values, to use them as strings instead simply quote them.
 
 Installation
 ------------
