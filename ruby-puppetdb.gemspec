@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name        = "ruby-puppetdbquery"
+  s.name        = "ruby-puppetdb"
   s.version     = %x{git describe --tags}.split('-')[0..1].join('.')
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Dan Bode", "Erik Dalén"]
