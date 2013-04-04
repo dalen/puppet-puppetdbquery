@@ -55,8 +55,8 @@ class PuppetDB::Connection
     uri = "/v2/#{endpoint.to_s}"
     uri += URI.escape "?query=#{query.to_json}" unless query.nil? or query.empty?
 
-    resp, data = http.get(uri, headers)
+    resp = http.get(uri, headers)
     raise Puppet::Error, "PuppetDB query error: [#{resp.code}] #{resp.msg}, query: #{query.to_json}" unless resp.kind_of?(Net::HTTPSuccess)
-    return PSON.parse(data)
+    return PSON.parse(resp.body)
   end
 end
