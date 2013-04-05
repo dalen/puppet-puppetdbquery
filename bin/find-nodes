@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
-require 'puppet'
 require 'rubygems'
+require 'puppet'
 require 'puppetdb/connection'
 require 'optparse'
 require 'net/http'
