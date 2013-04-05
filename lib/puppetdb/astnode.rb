@@ -56,10 +56,8 @@ class PuppetDB::ASTNode
       end
 
       case mode
-      when :nodes # we are trying to query for facts but are in node mode, do a subquery
+      when :nodes,:facts # Do a subquery to match nodes matching the facts
         return subquery(mode, :facts, ['and', ['=', 'name', @children[0].evaluate(mode)], [op, 'value', @children[1].evaluate(mode)]])
-      when :facts
-        return ['and', ['=', 'name', @children[0].evaluate(mode)], [op, 'value', @children[1].evaluate(mode)]]
       when :resources
         return [op, ['parameter', @children[0].evaluate(mode)], @children[1].evaluate(mode)]
       end
