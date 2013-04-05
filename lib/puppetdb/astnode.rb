@@ -14,7 +14,6 @@ class PuppetDB::ASTNode
   # @param query the query inside the subquery
   # @return [Array] the resulting subquery
   def subquery(from_mode, to_mode, query)
-    return query if from_mode == to_mode
     return ['in', (from_mode == :nodes) ? 'name' : 'certname',
       ['extract', (to_mode == :nodes) ? 'name' : 'certname',
         ["select-#{to_mode.to_s}", query]]]
