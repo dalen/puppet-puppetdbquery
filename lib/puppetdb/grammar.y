@@ -6,7 +6,7 @@ class PuppetDB::Parser
   token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
   token EQUALS NOTEQUALS MATCH LESSTHAN GREATERTHAN
   token NOT AND OR
-  token NUMBER STRING BOOLEAN
+  token NUMBER STRING BOOLEAN EXPORTED
 
   prechigh
     right NOT
@@ -33,14 +33,18 @@ rule
      | string NOTEQUALS string			{ result = ASTNode.new :booleanop, :not, [ASTNode.new(:exp, :equals, [val[0], val[2]])] }
      | ressubquery
 
-  ressubquery: restype				{ result = ASTNode.new :subquery, :resources, [val[0]] }
-             | restitle				{ result = ASTNode.new :subquery, :resources, [val[0]] }
-             | resparams			{ result = ASTNode.new :subquery, :resources, [val[0]] }
-             | restype restitle			{ result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [val[0], val[1]])] }
-             | restitle resparams		{ result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [val[0], val[1]])] }
-             | restype resparams		{ result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [val[0], val[1]])] }
-             | restype restitle resparams	{ result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [val[0], val[1], val[2]])] }
+  ressubquery: resexp				{ result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [ASTNode.new(:resexported, false), *val[0]])] }
+             | resexported resexp	        { result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [ASTNode.new(:resexported, true), *val[1]])] }
 
+  resexp: restype				{ result = [val[0]] }
+        | restitle				{ result = [val[0]] }
+        | resparams				{ result = [val[0]] }
+        | restype restitle			{ result = [val[0], val[1]] }
+        | restitle resparams			{ result = [val[0], val[1]] }
+        | restype resparams			{ result = [val[0], val[1]] }
+        | restype restitle resparams		{ result = [val[0], val[1], val[2]] }
+
+  resexported: EXPORTED
   restype: STRING				{ result = ASTNode.new :resourcetype, val[0] }
   restitle: LBRACK STRING RBRACK		{ result = ASTNode.new :resourcetitle, val[1] }
   resparams: LBRACE exp RBRACE			{ result = val[1] }

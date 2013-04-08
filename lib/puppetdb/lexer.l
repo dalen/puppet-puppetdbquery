@@ -25,4 +25,5 @@ rule
 	-?\d+\.?(\d+)?		{ [:NUMBER, text.to_f] }
 	\"(\\.|[^\\"])*\"	{ [:STRING, JSON.load(text)] }
 	[\w_:]+			{ [:STRING, text] }
+	@@			{ [:EXPORTED, text] }
 end

@@ -71,6 +71,8 @@ class PuppetDB::ASTNode
       return ['=', 'title', @value]
     when :resourcetype
       return ['=', 'type', @value]
+    when :resexported
+      return ['=', 'exported', @value]
     end
   end
 
