@@ -6,8 +6,6 @@ require 'optparse'
 require 'net/http'
 require 'net/https'
 
-Puppet.initialize_settings
-
 options = {:puppetdb_host => "puppetdb",
            :puppetdb_port => 443,
            :fact => nil,
