@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/dalen/puppet-puppetdbquery"
   s.summary     = %q{Query functions for PuppetDB}
   s.description = %q{A higher level query language for PuppetDB.}
+  s.license     = 'Apache v2'
 
 
   s.files         = `git ls-files`.split("\n")
