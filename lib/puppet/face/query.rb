@@ -51,9 +51,22 @@ Puppet::Face.define(:query, '1.0.0') do
 
     arguments "<query>"
 
+    option '--node_info BOOLEAN' do
+      summary 'return full info about each node or just name'
+      description <<-EOT
+        If true the full information about each host is returned including fact, report and catalog timestamps.
+      EOT
+      default_to { false }
+    end
+
     when_invoked do |query, options|
       puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port]
-      puppetdb.query(:nodes, puppetdb.parse_query(query, :nodes))
+      nodes = puppetdb.query(:nodes, puppetdb.parse_query(query, :nodes))
+      if options[:node_info]
+        nodes
+      else
+        nodes.collect { |node| node['name'] } unless options[:node_info]
+      end
     end
 
   end
