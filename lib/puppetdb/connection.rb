@@ -29,7 +29,11 @@ class PuppetDB::Connection
   # @param nodequery [Array] the query to find the nodes to fetch facts for
   # @return [Hash] a hash of hashes with facts for each node mathing query
   def facts(facts, nodequery, http=nil)
-    q = ['and', ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]], ['or', *facts.collect { |f| ['=', 'name', f]}]]
+    if facts.empty?
+      q = ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]]
+    else
+      q = ['and', ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]], ['or', *facts.collect { |f| ['=', 'name', f]}]]
+    end
     facts = {}
     query(:facts, q, http).each do |fact|
       if facts.include? fact['certname'] then
