@@ -2,9 +2,7 @@ require 'puppetdb'
 
 class PuppetDB::Connection
   require 'rubygems'
-  require 'puppet'
   require 'puppetdb/parser'
-  require 'puppet/network/http_pool'
   require 'uri'
   require 'json'
 
@@ -49,7 +47,10 @@ class PuppetDB::Connection
   # @param query [Array] query to execute
   # @return [Array] the results of the query
   def query(endpoint, query=nil, http=nil)
-    http ||= Puppet::Network::HttpPool.http_instance(@host, @port, @use_ssl)
+    unless http then
+      require 'puppet/network/http_pool'
+      http = Puppet::Network::HttpPool.http_instance(@host, @port, @use_ssl)
+    end
     headers = { "Accept" => "application/json" }
 
     uri = "/v2/#{endpoint.to_s}"
