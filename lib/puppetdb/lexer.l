@@ -21,8 +21,8 @@ rule
 	or			{ [:OR, text] }
 	true			{ [:BOOLEAN, true]}
 	false			{ [:BOOLEAN, false]}
+	-?\d+\.\d+		{ [:NUMBER, text.to_f] }
 	-?\d+			{ [:NUMBER, text.to_i] }
-	-?\d+\.?(\d+)?		{ [:NUMBER, text.to_f] }
 	\"(\\.|[^\\"])*\"	{ [:STRING, JSON.load(text)] }
 	[\w_:]+			{ [:STRING, text] }
 	@@			{ [:EXPORTED, text] }

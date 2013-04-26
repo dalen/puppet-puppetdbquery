@@ -108,11 +108,11 @@ class Lexer < Racc::Parser
         when (text = ss.scan(/false/))
            @rex_tokens.push action { [:BOOLEAN, false]}
 
+        when (text = ss.scan(/-?\d+\.\d+/))
+           @rex_tokens.push action { [:NUMBER, text.to_f] }
+
         when (text = ss.scan(/-?\d+/))
            @rex_tokens.push action { [:NUMBER, text.to_i] }
-
-        when (text = ss.scan(/-?\d+\.?(\d+)?/))
-           @rex_tokens.push action { [:NUMBER, text.to_f] }
 
         when (text = ss.scan(/\"(\\.|[^\\"])*\"/))
            @rex_tokens.push action { [:STRING, JSON.load(text)] }
