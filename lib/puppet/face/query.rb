@@ -3,7 +3,7 @@ require 'puppet/face'
 Puppet::Face.define(:query, '1.0.0') do
   require 'puppetdb/connection'
 
-  copyright "Puppet Labs & Erik Dalén", 2012..2013
+  copyright "Puppet Labs & Erik Dalen", 2012..2013
   license   "Apache 2 license; see COPYING"
 
 
