@@ -3,6 +3,8 @@
 require 'json'
 
 class PuppetDB::Lexer
+macro
+STR	[\w_:]
 rule
 	\s			# whitespace no action
 	\(			{ [:LPAREN, text] }
@@ -16,14 +18,14 @@ rule
 	~			{ [:MATCH, text] }
 	<			{ [:LESSTHAN, text] }
 	>			{ [:GREATERTHAN, text] }
-	not			{ [:NOT, text] }
-	and			{ [:AND, text] }
-	or			{ [:OR, text] }
-	true			{ [:BOOLEAN, true]}
-	false			{ [:BOOLEAN, false]}
+	not(?!{STR})		{ [:NOT, text] }
+	and(?!{STR})		{ [:AND, text] }
+	or(?!{STR})		{ [:OR, text] }
+	true(?!{STR})		{ [:BOOLEAN, true]}
+	false(?!{STR})		{ [:BOOLEAN, false]}
 	-?\d+\.\d+		{ [:NUMBER, text.to_f] }
 	-?\d+			{ [:NUMBER, text.to_i] }
 	\"(\\.|[^\\"])*\"	{ [:STRING, JSON.load(text)] }
-	[\w_:]+			{ [:STRING, text] }
+	{STR}+			{ [:STRING, text] }
 	@@			{ [:EXPORTED, text] }
 end

@@ -93,19 +93,19 @@ class Lexer < Racc::Parser
         when (text = ss.scan(/>/))
            @rex_tokens.push action { [:GREATERTHAN, text] }
 
-        when (text = ss.scan(/not/))
+        when (text = ss.scan(/not(?![\w_:])/))
            @rex_tokens.push action { [:NOT, text] }
 
-        when (text = ss.scan(/and/))
+        when (text = ss.scan(/and(?![\w_:])/))
            @rex_tokens.push action { [:AND, text] }
 
-        when (text = ss.scan(/or/))
+        when (text = ss.scan(/or(?![\w_:])/))
            @rex_tokens.push action { [:OR, text] }
 
-        when (text = ss.scan(/true/))
+        when (text = ss.scan(/true(?![\w_:])/))
            @rex_tokens.push action { [:BOOLEAN, true]}
 
-        when (text = ss.scan(/false/))
+        when (text = ss.scan(/false(?![\w_:])/))
            @rex_tokens.push action { [:BOOLEAN, false]}
 
         when (text = ss.scan(/-?\d+\.\d+/))
