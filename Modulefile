@@ -1,5 +1,5 @@
 name    'dalen-puppetdbquery'
-version '1.0.4'
+version '1.1.0'
 author 'Erik Dalen <erik.gustav.dalen@gmail.com>'
 license 'Apache License V2'
 summary 'Query functions for the PuppetDB API'
