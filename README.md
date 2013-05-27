@@ -4,6 +4,7 @@ PuppetDB query tools
 ====================
 
 This module implements command line tools and Puppet functions that can be used to query puppetdb.
+There's also a hiera backend that can be used to return query results from puppetdb.
 
 Query format
 ============
@@ -112,6 +113,32 @@ Example return value in JSON format:
   }
 }
 
+Hiera backend
+=============
+
+The hiera backend can be used to return an array with results from a puppetdb query. It requires another hiera backend to be active at the same time, and that will be used to define the actual puppetdb query to be used. It does not matter which backend that is, there can even be several of them. To enable add the backend `puppetdb`to the backends list in `hiera.yaml`.
+
+So instead of writing something like this in for example your `hiera-data/common.yaml`:
+
+    ntp::servers:
+      - 'ntp1.example.com'
+      - 'ntp2.example.com'
+
+You can now instead write:
+
+    ntp::servers::_nodequery: 'Class[Ntp::Server]'
+
+It will then find all nodes with the class ntp::server and return an array containing their certname. If you instead want to return the value of a fact, for example the `ipaddress`, the nodequery can be a tuple, like:
+
+    ntp::servers::_nodequery: ['Class[Ntp::Server]', 'ipaddress']
+
+or a hash:
+
+    ntp::servers::_nodequery:
+      query: 'Class[Ntp::Server]'
+      fact: 'ipaddress'
+
+When returning facts only nodes that actually have the fact are returned, even if more nodes would in fact match the query itself.
 
 Deprecated PuppetDB query functions
 ===================================
