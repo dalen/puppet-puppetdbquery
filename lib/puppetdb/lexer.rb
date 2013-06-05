@@ -7,7 +7,7 @@
 require 'racc/parser'
 # vim: syntax=ruby
 
-require 'json'
+require 'yaml'
 
 module PuppetDB
 class Lexer < Racc::Parser
@@ -115,7 +115,7 @@ class Lexer < Racc::Parser
            @rex_tokens.push action { [:NUMBER, text.to_i] }
 
         when (text = ss.scan(/\"(\\.|[^\\"])*\"/))
-           @rex_tokens.push action { [:STRING, JSON.load(text)] }
+           @rex_tokens.push action { [:STRING, YAML.load(text)] }
 
         when (text = ss.scan(/[\w_:]+/))
            @rex_tokens.push action { [:STRING, text] }

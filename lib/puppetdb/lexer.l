@@ -1,6 +1,6 @@
 # vim: syntax=ruby
 
-require 'json'
+require 'yaml'
 
 class PuppetDB::Lexer
 macro
@@ -25,7 +25,7 @@ rule
 	false(?!{STR})		{ [:BOOLEAN, false]}
 	-?\d+\.\d+		{ [:NUMBER, text.to_f] }
 	-?\d+			{ [:NUMBER, text.to_i] }
-	\"(\\.|[^\\"])*\"	{ [:STRING, JSON.load(text)] }
+	\"(\\.|[^\\"])*\"	{ [:STRING, YAML.load(text)] }
 	{STR}+			{ [:STRING, text] }
 	@@			{ [:EXPORTED, text] }
 end
