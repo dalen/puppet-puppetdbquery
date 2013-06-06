@@ -39,13 +39,13 @@ rule
   resexp: restype				{ result = [val[0]] }
         | restitle				{ result = [val[0]] }
         | resparams				{ result = [val[0]] }
-        | restype restitle			{ result = [val[0], val[1]] }
+        | restype restitle			{ result = val[0].value == "Class" ? [val[0], val[1].capitalize!] : [val[0], val[1]] }
         | restitle resparams			{ result = [val[0], val[1]] }
         | restype resparams			{ result = [val[0], val[1]] }
-        | restype restitle resparams		{ result = [val[0], val[1], val[2]] }
+        | restype restitle resparams		{ result = val[0].value == "Class" ? [val[0], val[1].capitalize!, val[2]] : [val[0], val[1], val[2]] }
 
   resexported: EXPORTED
-  restype: STRING				{ result = ASTNode.new :resourcetype, val[0] }
+  restype: STRING				{ result = ASTNode.new(:resourcetype, val[0]).capitalize! }
   restitle: LBRACK STRING RBRACK		{ result = ASTNode.new :resourcetitle, val[1] }
   resparams: LBRACE exp RBRACE			{ result = val[1] }
 

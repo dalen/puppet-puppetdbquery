@@ -319,7 +319,7 @@ module_eval(<<'.,.,', 'grammar.y', 40)
 
 module_eval(<<'.,.,', 'grammar.y', 41)
   def _reduce_21(val, _values, result)
-     result = [val[0], val[1]] 
+     result = val[0].value == "Class" ? [val[0], val[1].capitalize!] : [val[0], val[1]] 
     result
   end
 .,.,
@@ -340,7 +340,7 @@ module_eval(<<'.,.,', 'grammar.y', 43)
 
 module_eval(<<'.,.,', 'grammar.y', 44)
   def _reduce_24(val, _values, result)
-     result = [val[0], val[1], val[2]] 
+     result = val[0].value == "Class" ? [val[0], val[1].capitalize!, val[2]] : [val[0], val[1], val[2]] 
     result
   end
 .,.,
@@ -349,7 +349,7 @@ module_eval(<<'.,.,', 'grammar.y', 44)
 
 module_eval(<<'.,.,', 'grammar.y', 47)
   def _reduce_26(val, _values, result)
-     result = ASTNode.new :resourcetype, val[0] 
+     result = ASTNode.new(:resourcetype, val[0]).capitalize! 
     result
   end
 .,.,

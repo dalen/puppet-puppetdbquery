@@ -7,6 +7,11 @@ class PuppetDB::ASTNode
     @children = children
   end
 
+  def capitalize!
+    @value=@value.to_s.split("::").collect { |s| s.capitalize }.join("::")
+    return self
+  end
+
   # Generate the the query code for a subquery
   #
   # @param from_mode [Symbol] the mode you want to subquery from
