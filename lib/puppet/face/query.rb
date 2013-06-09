@@ -1,7 +1,11 @@
 require 'puppet/application/query'
 require 'puppet/face'
+require 'puppet/util/colors'
+
 Puppet::Face.define(:query, '1.0.0') do
   require 'puppetdb/connection'
+
+  extend Puppet::Util::Colors
 
   copyright "Puppet Labs & Erik Dalen", 2012..2013
   license   "Apache 2 license; see COPYING"
@@ -69,5 +73,76 @@ Puppet::Face.define(:query, '1.0.0') do
       end
     end
 
+  end
+
+  action :events do
+    summary 'Serves as an interface to puppetdb allowing a user to query for a list of events'
+
+    description <<-EOT
+      Get all avents for nodes matching the query specified.
+    EOT
+
+    arguments "<query>"
+
+    option '--since SINCE' do
+      summary 'Get events since this time'
+      description <<-EOT
+        Uses chronic to parse time, can be specified in many human readable formats.
+      EOT
+      default_to { '1 hour ago' }
+    end
+
+    option '--until UNTIL' do
+      summary 'Get events until this time'
+      description <<-EOT
+        Uses chronic to parse time, can be specified in many human readable formats.
+      EOT
+      default_to { 'now' }
+    end
+
+    option '--status STATUS' do
+      summary 'Only get events with specified status, skipped, success or failure'
+      description <<-EOT
+        Only get events of specified status, can be either all, skipped, success or failure.
+      EOT
+      default_to { 'all' }
+    end
+
+    when_invoked do |query, options|
+      require 'chronic'
+
+      puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port]
+      nodes = puppetdb.query(:nodes, puppetdb.parse_query(query, :nodes)).collect { |n| n['name']}
+      starttime = Chronic.parse(options[:since], :context => :past, :guess => false).first.getutc.strftime('%FT%T.%LZ')
+      endtime = Chronic.parse(options[:until], :context => :past, :guess => false).last.getutc.strftime('%FT%T.%LZ')
+
+      events = []
+      # Event API doesn't support subqueries at the moment and
+      # we can't do too big queries, so fetch events for some nodes at a time
+      nodes.each_slice(20) do |nodeslice|
+        eventquery = ['and', ['>', 'timestamp', starttime], ['<', 'timestamp', endtime], ['or', *nodeslice.collect { |n| ['=', 'certname', n]}]]
+        eventquery << ['=', 'status', options[:status]] if options[:status] != 'all'
+        events.concat puppetdb.query(:events, eventquery, nil, :experimental)
+      end
+
+      events.sort_by do |e|
+        "#{e['timestamp']}+#{e['resource-type']}+#{e['resource-title']}+#{e['property']}"
+      end.each do |e|
+        out="#{e['certname']}: #{e['timestamp']}: #{e['resource-type']}[#{e['resource-title']}]"
+        out+="/#{e['property']}" if e['property']
+        out+=" (#{e['old-value']} -> #{e['new-value']})" if e['old-value'] && e['new-value']
+        out+=": #{e['message']}" if e['message']
+        out.chomp!
+        case e['status']
+        when 'failure'
+          puts colorize(:hred, out)
+        when 'success'
+          puts colorize(:green, out)
+        when 'skipped'
+          puts colorize(:hyellow, out) unless e['resource-type'] == 'Schedule'
+        end
+      end
+      nil
+    end
   end
 end
