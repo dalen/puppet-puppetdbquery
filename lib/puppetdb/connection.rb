@@ -50,14 +50,14 @@ class PuppetDB::Connection
   # @param endpoint [Symbol] :resources, :facts or :nodes
   # @param query [Array] query to execute
   # @return [Array] the results of the query
-  def query(endpoint, query=nil, http=nil)
+  def query(endpoint, query=nil, http=nil, version=:v2)
     unless http then
       require 'puppet/network/http_pool'
       http = Puppet::Network::HttpPool.http_instance(@host, @port, @use_ssl)
     end
     headers = { "Accept" => "application/json" }
 
-    uri = "/v2/#{endpoint.to_s}"
+    uri = "/#{version.to_s}/#{endpoint.to_s}"
     uri += URI.escape "?query=#{query.to_json}" unless query.nil? or query.empty?
 
     resp = http.get(uri, headers)
