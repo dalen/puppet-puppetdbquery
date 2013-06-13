@@ -64,6 +64,11 @@ facts - a hash of facts per node
        db_node_1  {"facterversion":"1.6.9","hostname":"controller",...........}
        db_node_2  {"facterversion":"1.6.9","hostname":"controller",...........}
 
+events - a list of events on the matched nodes
+
+     $ puppet query events '(Package["mysql-server"] and architecture=amd64)' --since='1 hour ago' --until=now --status=success
+       host.example.com: 2013-06-10T10:58:37.000Z: File[/foo/bar]/content ({md5}5711edf5f5c50bd7845465471d8d39f0 -> {md5}e485e731570b8370f19a2a40489cc24b): content changed '{md5}5711edf5f5c50bd7845465471d8d39f0' to '{md5}e485e731570b8370f19a2a40489cc24b'
+
 Ruby
 ----
 
