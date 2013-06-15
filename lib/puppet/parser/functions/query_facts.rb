@@ -20,8 +20,6 @@ EOT
   require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppetdb/connection'))
 
   puppetdb = PuppetDB::Connection.new(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port)
-  if query.is_a? String then
-    query = puppetdb.parse_query query
-  end
+  query = puppetdb.parse_query query, :facts if query.is_a? String
   puppetdb.facts(facts, query)
 end
