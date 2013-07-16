@@ -113,8 +113,8 @@ Puppet::Face.define(:query, '1.0.0') do
 
       puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port]
       nodes = puppetdb.query(:nodes, puppetdb.parse_query(query, :nodes)).collect { |n| n['name']}
-      starttime = Chronic.parse(options[:since], :context => :past, :guess => false).first.getutc.strftime('%FT%T.%LZ')
-      endtime = Chronic.parse(options[:until], :context => :past, :guess => false).last.getutc.strftime('%FT%T.%LZ')
+      starttime = Chronic.parse(options[:since], :context => :past, :guess => false).first.getutc.strftime('%FT%T.000Z')
+      endtime = Chronic.parse(options[:until], :context => :past, :guess => false).last.getutc.strftime('%FT%T.000Z')
 
       events = []
       # Event API doesn't support subqueries at the moment and
@@ -140,6 +140,8 @@ Puppet::Face.define(:query, '1.0.0') do
           puts colorize(:green, out)
         when 'skipped'
           puts colorize(:hyellow, out) unless e['resource-type'] == 'Schedule'
+        when 'noop'
+          puts out
         end
       end
       nil
