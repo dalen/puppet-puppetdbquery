@@ -17,7 +17,9 @@ EOT
   query, facts = args
 
   require 'puppet/util/puppetdb'
-  require File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..', 'puppetdb/connection'))
+  # This is also needed if the puppetdb library isn't pluginsynced to the master
+  $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..'))
+  require 'puppetdb/connection'
 
   puppetdb = PuppetDB::Connection.new(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port)
   query = puppetdb.parse_query query, :facts if query.is_a? String
