@@ -1,8 +1,13 @@
 # -*- encoding: UTF-8
 
+lib = File.expand_path('../lib/', __FILE__)
+$:.unshift lib unless $:.include?(lib)
+
+require 'puppetdb'
+
 Gem::Specification.new do |s|
   s.name        = "ruby-puppetdb"
-  s.version     = %x{git describe --tags}.split('-')[0..1].join('.')
+  s.version     = PuppetDB::VERSION.join '.'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Dan Bode", "Erik Dalen"]
   s.email       = ["dan@puppetlabs.com", "erik.gustav.dalen@gmail.com"]
