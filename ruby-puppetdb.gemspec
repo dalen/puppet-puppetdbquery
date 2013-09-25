@@ -17,13 +17,13 @@ Gem::Specification.new do |s|
   s.license     = 'Apache v2'
 
 
-  s.files         = `git ls-files`.split("\n")
-  s.test_files    = `git ls-files -- {test,spec,features,examples}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.files         = Dir.glob("{bin,lib}/**/*")
+  s.test_files    = Dir.glob("{test,spec,features,examples}/**/*")
+  s.executables   = Dir.glob("bin/**/*").map { |f| File.basename f }
   s.require_paths = ["lib"]
+
   s.add_dependency('json')
   s.add_dependency('chronic')
-
   s.add_development_dependency 'rspec', '2.13'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'puppetlabs_spec_helper'
