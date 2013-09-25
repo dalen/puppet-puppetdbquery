@@ -14,65 +14,65 @@ module PuppetDB
 ##### State transition tables begin ###
 
 racc_action_table = [
-     4,     4,     5,     5,     8,     8,   -29,   -29,   -29,   -29,
-   -29,     3,     3,    36,    47,     9,     9,    12,    12,     4,
-     4,     5,     5,     8,     8,    16,    17,     5,    36,     8,
-     3,     3,    16,    17,     9,     9,    12,    12,     4,     4,
-     5,     5,     8,     8,     5,    32,     8,    41,     8,     3,
-     3,    49,    48,     9,     9,    12,    12,    28,    16,    17,
-    20,    21,    22,    18,    19,    36,    41,    42,    36,    41,
-    42,    25,     8,    51,    16 ]
+     3,     3,    14,    14,    15,    15,   -30,   -30,   -30,   -30,
+   -30,     4,     4,    33,    36,    13,    13,    12,    12,     3,
+     3,    14,    14,    15,    15,    17,    18,    41,    40,    42,
+     4,     4,    17,    18,    13,    13,    12,    12,     3,     3,
+    14,    14,    15,    15,    14,    14,    15,    15,    31,     4,
+     4,    51,    41,    13,    13,    12,    12,    27,    17,    18,
+    21,    25,    24,    23,    22,    41,    40,    42,    41,    40,
+    15,    15,    50,    16,    17 ]
 
 racc_action_check = [
-     0,    17,     0,    17,     0,    17,     9,     9,     9,     9,
-     9,     0,    17,    19,    24,     0,    17,     0,    17,     8,
-     3,     8,     3,     8,     3,    24,    24,    11,    18,    11,
-     8,     3,     1,     1,     8,     3,     8,     3,     4,    16,
-     4,    16,     4,    16,    10,    15,    10,    22,    13,     4,
-    16,    26,    25,     4,    16,     4,    16,    10,    26,    26,
-     2,     2,     2,     2,     2,    21,    21,    21,    20,    20,
-    20,     5,    29,    32,    34 ]
+     0,    17,     0,    17,     0,    17,    13,    13,    13,    13,
+    13,     0,    17,    16,    19,     0,    17,     0,    17,    15,
+     3,    15,     3,    15,     3,    19,    19,    21,    21,    21,
+    15,     3,     2,     2,    15,     3,    15,     3,     4,    18,
+     4,    18,     4,    18,     8,     9,     8,     9,    14,     4,
+    18,    32,    22,     4,    18,     4,    18,     8,    32,    32,
+     5,     5,     5,     5,     5,    25,    25,    25,    23,    24,
+    10,    28,    31,     1,    35 ]
 
 racc_action_pointer = [
-    -2,    18,    52,    18,    36,    54,   nil,   nil,    17,    -2,
-    40,    23,   nil,    42,   nil,    45,    37,    -1,    12,    -3,
-    52,    49,    30,   nil,    11,    47,    44,   nil,   nil,    66,
-   nil,   nil,    73,   nil,    60,   nil,   nil,   nil,   nil,   nil,
+    -2,    73,    18,    18,    36,    52,   nil,   nil,    40,    41,
+    64,   nil,   nil,    -2,    31,    17,    13,    -1,    37,    11,
+   nil,    11,    36,    52,    52,    49,   nil,   nil,    65,   nil,
+   nil,    67,    44,   nil,   nil,    60,   nil,   nil,   nil,   nil,
    nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,   nil,
    nil,   nil ]
 
 racc_action_default = [
-   -32,    -1,   -32,   -32,   -32,   -32,   -15,   -16,   -32,   -26,
-   -32,   -18,   -25,   -19,   -20,   -32,   -32,   -32,   -32,   -32,
-   -32,   -32,   -32,    -3,   -32,   -32,   -32,   -17,   -26,   -21,
-   -23,   -22,   -32,    -4,    -5,   -10,   -30,    -9,    -6,    -7,
-    -8,   -29,   -31,   -14,   -13,   -12,   -11,    -2,   -27,   -28,
-   -24,    52 ]
+    -1,   -33,    -2,   -33,   -33,   -33,   -16,   -17,   -33,   -19,
+   -20,   -21,   -26,   -27,   -33,   -33,   -33,   -33,   -33,   -33,
+    -4,   -33,   -33,   -33,   -33,   -33,   -18,   -27,   -22,   -24,
+   -23,   -33,   -33,    52,    -5,    -6,    -3,    -7,    -8,    -9,
+   -30,   -31,   -32,   -10,   -11,   -12,   -13,   -14,   -15,   -25,
+   -28,   -29 ]
 
 racc_goto_table = [
-    30,    27,    31,     1,    39,    44,    23,    24,    38,    43,
-    46,    26,    35,    37,    40,    45,    29,    15,    50,    33,
-    34 ]
+    29,    30,    26,     2,    28,    37,    19,    20,    45,    48,
+    38,    39,    43,    44,    47,    46,     1,   nil,    32,    49,
+    34,    35 ]
 
 racc_goto_check = [
-    11,     7,    11,     2,     4,     4,     2,     2,     3,     3,
-     3,     2,     5,     5,     5,     5,    10,     1,    11,     2,
-     2 ]
+    11,    11,     7,     2,    10,     3,     2,     2,     3,     3,
+     4,     5,     5,     5,     4,     5,     1,   nil,     2,    11,
+     2,     2 ]
 
 racc_goto_pointer = [
-   nil,    17,     3,   -12,   -16,    -6,   nil,    -9,   nil,   nil,
-     5,   -11 ]
+   nil,    16,     3,   -16,   -11,   -10,   nil,    -6,   nil,   nil,
+    -5,    -9 ]
 
 racc_goto_default = [
-   nil,   nil,   nil,     2,   nil,   nil,     6,     7,    10,    11,
-    13,    14 ]
+   nil,   nil,   nil,     5,   nil,   nil,     6,     7,     8,     9,
+    10,    11 ]
 
 racc_reduce_table = [
   0, 0, :racc_error,
+  0, 21, :_reduce_none,
   1, 21, :_reduce_none,
-  3, 22, :_reduce_2,
-  2, 22, :_reduce_3,
-  3, 22, :_reduce_4,
+  3, 22, :_reduce_3,
+  2, 22, :_reduce_4,
   3, 22, :_reduce_5,
   3, 22, :_reduce_6,
   3, 22, :_reduce_7,
@@ -83,25 +83,26 @@ racc_reduce_table = [
   3, 22, :_reduce_12,
   3, 22, :_reduce_13,
   3, 22, :_reduce_14,
+  3, 22, :_reduce_15,
   1, 22, :_reduce_none,
-  1, 26, :_reduce_16,
-  2, 26, :_reduce_17,
-  1, 27, :_reduce_18,
+  1, 26, :_reduce_17,
+  2, 26, :_reduce_18,
   1, 27, :_reduce_19,
   1, 27, :_reduce_20,
-  2, 27, :_reduce_21,
+  1, 27, :_reduce_21,
   2, 27, :_reduce_22,
   2, 27, :_reduce_23,
-  3, 27, :_reduce_24,
+  2, 27, :_reduce_24,
+  3, 27, :_reduce_25,
   1, 28, :_reduce_none,
-  1, 29, :_reduce_26,
-  3, 30, :_reduce_27,
-  3, 31, :_reduce_28,
-  1, 23, :_reduce_29,
-  1, 25, :_reduce_30,
-  1, 24, :_reduce_31 ]
+  1, 29, :_reduce_27,
+  3, 30, :_reduce_28,
+  3, 31, :_reduce_29,
+  1, 23, :_reduce_30,
+  1, 25, :_reduce_31,
+  1, 24, :_reduce_32 ]
 
-racc_reduce_n = 32
+racc_reduce_n = 33
 
 racc_shift_n = 52
 
@@ -189,37 +190,32 @@ Racc_debug_parser = false
 
 # reduce 1 omitted
 
-module_eval(<<'.,.,', 'grammar.y', 20)
-  def _reduce_2(val, _values, result)
-     result = val[1] 
-    result
-  end
-.,.,
+# reduce 2 omitted
 
 module_eval(<<'.,.,', 'grammar.y', 21)
   def _reduce_3(val, _values, result)
-     result = ASTNode.new :booleanop, :not, [val[1]] 
+     result = val[1] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 22)
   def _reduce_4(val, _values, result)
-     result = ASTNode.new :booleanop, :and, [val[0], val[2]] 
+     result = ASTNode.new :booleanop, :not, [val[1]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 23)
   def _reduce_5(val, _values, result)
-     result = ASTNode.new :booleanop, :or, [val[0], val[2]] 
+     result = ASTNode.new :booleanop, :and, [val[0], val[2]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 24)
   def _reduce_6(val, _values, result)
-     result = ASTNode.new :exp, :equals, [val[0], val[2]] 
+     result = ASTNode.new :booleanop, :or, [val[0], val[2]] 
     result
   end
 .,.,
@@ -240,28 +236,28 @@ module_eval(<<'.,.,', 'grammar.y', 26)
 
 module_eval(<<'.,.,', 'grammar.y', 27)
   def _reduce_9(val, _values, result)
-     result = ASTNode.new :exp, :greaterthan, [val[0], val[2]] 
+     result = ASTNode.new :exp, :equals, [val[0], val[2]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 28)
   def _reduce_10(val, _values, result)
-     result = ASTNode.new :exp, :lessthan, [val[0], val[2]] 
+     result = ASTNode.new :exp, :greaterthan, [val[0], val[2]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 29)
   def _reduce_11(val, _values, result)
-     result = ASTNode.new :exp, :match, [val[0], val[2]] 
+     result = ASTNode.new :exp, :lessthan, [val[0], val[2]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 30)
   def _reduce_12(val, _values, result)
-     result = ASTNode.new :booleanop, :not, [ASTNode.new(:exp, :equals, [val[0], val[2]])] 
+     result = ASTNode.new :exp, :match, [val[0], val[2]] 
     result
   end
 .,.,
@@ -280,25 +276,25 @@ module_eval(<<'.,.,', 'grammar.y', 32)
   end
 .,.,
 
-# reduce 15 omitted
+module_eval(<<'.,.,', 'grammar.y', 33)
+  def _reduce_15(val, _values, result)
+     result = ASTNode.new :booleanop, :not, [ASTNode.new(:exp, :equals, [val[0], val[2]])] 
+    result
+  end
+.,.,
 
-module_eval(<<'.,.,', 'grammar.y', 35)
-  def _reduce_16(val, _values, result)
+# reduce 16 omitted
+
+module_eval(<<'.,.,', 'grammar.y', 36)
+  def _reduce_17(val, _values, result)
      result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [ASTNode.new(:resexported, false), *val[0]])] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 36)
-  def _reduce_17(val, _values, result)
-     result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [ASTNode.new(:resexported, true), *val[1]])] 
-    result
-  end
-.,.,
-
-module_eval(<<'.,.,', 'grammar.y', 38)
+module_eval(<<'.,.,', 'grammar.y', 37)
   def _reduce_18(val, _values, result)
-     result = [val[0]] 
+     result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [ASTNode.new(:resexported, true), *val[1]])] 
     result
   end
 .,.,
@@ -319,14 +315,14 @@ module_eval(<<'.,.,', 'grammar.y', 40)
 
 module_eval(<<'.,.,', 'grammar.y', 41)
   def _reduce_21(val, _values, result)
-     result = val[0].value == "Class" ? [val[0], val[1].capitalize!] : [val[0], val[1]] 
+     result = [val[0]] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 42)
   def _reduce_22(val, _values, result)
-     result = [val[0], val[1]] 
+     result = val[0].value == "Class" ? [val[0], val[1].capitalize!] : [val[0], val[1]] 
     result
   end
 .,.,
@@ -340,50 +336,57 @@ module_eval(<<'.,.,', 'grammar.y', 43)
 
 module_eval(<<'.,.,', 'grammar.y', 44)
   def _reduce_24(val, _values, result)
+     result = [val[0], val[1]] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'grammar.y', 45)
+  def _reduce_25(val, _values, result)
      result = val[0].value == "Class" ? [val[0], val[1].capitalize!, val[2]] : [val[0], val[1], val[2]] 
     result
   end
 .,.,
 
-# reduce 25 omitted
-
-module_eval(<<'.,.,', 'grammar.y', 47)
-  def _reduce_26(val, _values, result)
-     result = ASTNode.new(:resourcetype, val[0]).capitalize! 
-    result
-  end
-.,.,
+# reduce 26 omitted
 
 module_eval(<<'.,.,', 'grammar.y', 48)
   def _reduce_27(val, _values, result)
-     result = ASTNode.new :resourcetitle, val[1] 
+     result = ASTNode.new(:resourcetype, val[0]).capitalize! 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 49)
   def _reduce_28(val, _values, result)
-     result = val[1] 
+     result = ASTNode.new :resourcetitle, val[1] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 51)
+module_eval(<<'.,.,', 'grammar.y', 50)
   def _reduce_29(val, _values, result)
-     result = ASTNode.new :string, val[0] 
+     result = val[1] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 52)
   def _reduce_30(val, _values, result)
-     result = ASTNode.new :number, val[0] 
+     result = ASTNode.new :string, val[0] 
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'grammar.y', 53)
   def _reduce_31(val, _values, result)
+     result = ASTNode.new :number, val[0] 
+    result
+  end
+.,.,
+
+module_eval(<<'.,.,', 'grammar.y', 54)
+  def _reduce_32(val, _values, result)
      result = ASTNode.new :boolean, val[0] 
     result
   end

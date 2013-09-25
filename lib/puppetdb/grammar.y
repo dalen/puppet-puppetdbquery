@@ -16,7 +16,8 @@ class PuppetDB::Parser
   preclow
 
 rule
-  query: exp
+  query:
+     |exp
 
   exp: LPAREN exp RPAREN			{ result = val[1] }
      | NOT exp					{ result = ASTNode.new :booleanop, :not, [val[1]] }
@@ -58,4 +59,3 @@ end
 require 'puppetdb'
 require 'puppetdb/lexer'
 require 'puppetdb/astnode'
-

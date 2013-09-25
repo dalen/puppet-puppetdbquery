@@ -19,7 +19,9 @@ class PuppetDB::Connection
   # @param endpoint [Symbol] the endpoint for which the query should be evaluated
   # @return [Array] the PuppetDB query
   def parse_query(query, endpoint=:nodes)
-    @parser.scan_str(query).optimize.evaluate endpoint
+    if query = @parser.scan_str(query)
+      query.optimize.evaluate endpoint
+    end
   end
 
   # Get the listed facts for all nodes matching query
