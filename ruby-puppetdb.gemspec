@@ -1,3 +1,5 @@
+# -*- encoding: UTF-8
+
 Gem::Specification.new do |s|
   s.name        = "ruby-puppetdb"
   s.version     = %x{git describe --tags}.split('-')[0..1].join('.')
