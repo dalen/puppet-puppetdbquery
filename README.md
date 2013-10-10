@@ -247,7 +247,7 @@ Returns an array of hashes or a array of strings if second argument is supplied.
 ### pdbquery
 
 This is the generic query function that the others make use of, you probably
-don't have to use it and can use one of the specific functions below instead.
+don't have to use it and can use one of the specific functions listed above instead.
 
 The first argument is the URL path that should be queried, for
 example 'nodes' or 'status/nodes/<nodename>'.
