@@ -49,7 +49,7 @@ CLI
 Each of the faces uses the following query syntax to return all objects found on a subset of nodes:
 
     # get all nodes that contain the apache package and are in france, or all nodes in the us
-    $ puppet query nodes (Package[httpd] and country=fr) or country=us)'
+    $ puppet query nodes '(Package[httpd] and country=fr) or country=us'
 
 Each of the individual faces returns a different data format:
 
