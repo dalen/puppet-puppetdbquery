@@ -66,10 +66,11 @@ Puppet::Face.define(:query, '1.0.0') do
     when_invoked do |query, options|
       puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port]
       nodes = puppetdb.query(:nodes, puppetdb.parse_query(query, :nodes))
+
       if options[:node_info]
-        nodes
+        Hash[nodes.collect { |node| [node['name'], node.reject{|k,v| k == "name"}] }]
       else
-        nodes.collect { |node| node['name'] } unless options[:node_info]
+        nodes.collect { |node| node['name'] }
       end
     end
 
