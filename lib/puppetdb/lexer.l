@@ -26,6 +26,7 @@ rule
 	-?\d+\.\d+		{ [:NUMBER, text.to_f] }
 	-?\d+			{ [:NUMBER, text.to_i] }
 	\"(\\.|[^\\"])*\"	{ [:STRING, YAML.load(text)] }
+	\'(\\.|[^\\'])*\'	{ [:STRING, YAML.load(text)] }
 	{STR}+			{ [:STRING, text] }
 	@@			{ [:EXPORTED, text] }
 end

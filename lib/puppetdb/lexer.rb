@@ -117,6 +117,9 @@ class Lexer < Racc::Parser
         when (text = ss.scan(/\"(\\.|[^\\"])*\"/))
            @rex_tokens.push action { [:STRING, YAML.load(text)] }
 
+        when (text = ss.scan(/\'(\\.|[^\\'])*\'/))
+           @rex_tokens.push action { [:STRING, YAML.load(text)] }
+
         when (text = ss.scan(/[\w_:]+/))
            @rex_tokens.push action { [:STRING, text] }
 
