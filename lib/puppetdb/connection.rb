@@ -4,7 +4,6 @@ class PuppetDB::Connection
   require 'rubygems'
   require 'puppetdb/parser'
   require 'uri'
-  require 'json'
 
   def initialize(host='puppetdb', port=443, use_ssl=true)
     @host = host
@@ -53,6 +52,8 @@ class PuppetDB::Connection
   # @param query [Array] query to execute
   # @return [Array] the results of the query
   def query(endpoint, query=nil, http=nil, version=:v2)
+    require 'json'
+
     unless http then
       require 'puppet/network/http_pool'
       http = Puppet::Network::HttpPool.http_instance(@host, @port, @use_ssl)
