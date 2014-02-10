@@ -9,6 +9,7 @@ class PuppetDB::ASTNode
 
   def capitalize!
     @value=@value.to_s.split("::").collect { |s| s.capitalize }.join("::")
+    @children.each { |c| c.capitalize! }
     return self
   end
 
@@ -73,7 +74,7 @@ class PuppetDB::ASTNode
     when :boolean
       return @value
     when :resourcetitle
-      return ['=', 'title', @value]
+      return [@value, 'title', @children[0].evaluate(mode)]
     when :resourcetype
       return ['=', 'type', @value]
     when :resexported

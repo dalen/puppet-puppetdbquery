@@ -52,6 +52,10 @@ describe PuppetDB::Connection do
       connection.parse_query('class[foo::bar]').should eq ["in", "name", ["extract", "certname", ["select-resources", ["and", ["=", "exported", false], ["=", "type", "Class"], ["=", "title", "Foo::Bar"]]]]]
     end
 
+    it "should parse resource queries with regeexp title matching" do
+      connection.parse_query('[~foo]').should eq ["in", "name", ["extract", "certname", ["select-resources", ["and", ["=", "exported", false], ["~", "title", "foo"]]]]]
+    end
+
     it "should be able to negate expressions" do
       connection.parse_query('not foo=bar').should eq ["not", ["in", "name", ["extract", "certname", ["select-facts", ["and", ["=", "name", "foo"], ["=", "value", "bar"]]]]]]
     end

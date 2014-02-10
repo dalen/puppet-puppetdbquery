@@ -47,7 +47,8 @@ rule
 
   resexported: EXPORTED
   restype: STRING				{ result = ASTNode.new(:resourcetype, val[0]).capitalize! }
-  restitle: LBRACK STRING RBRACK		{ result = ASTNode.new :resourcetitle, val[1] }
+  restitle: LBRACK STRING RBRACK		{ result = ASTNode.new :resourcetitle, '=', [ASTNode.new(:string, val[1])] }
+  restitle: LBRACK MATCH STRING RBRACK		{ result = ASTNode.new :resourcetitle, '~', [ASTNode.new(:string, val[2])] }
   resparams: LBRACE exp RBRACE			{ result = val[1] }
 
   string: STRING				{ result = ASTNode.new :string, val[0] }
