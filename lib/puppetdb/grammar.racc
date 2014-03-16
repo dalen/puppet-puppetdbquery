@@ -1,62 +1,85 @@
 # vim: syntax=ruby
 
-
 class PuppetDB::Parser
 
-  token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
-  token EQUALS NOTEQUALS MATCH LESSTHAN GREATERTHAN
-  token NOT AND OR
-  token NUMBER STRING BOOLEAN EXPORTED
+token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE
+token ISEQUAL NOTEQUAL MATCH NOMATCH LESSTHAN GREATERTHAN
+token NOT AND OR
+token NUMBER STRING BOOLEAN ATAT
 
-  prechigh
-    right NOT
-    left  EQUALS MATCH LESSTHAN GREATERTHAN
-    left  AND
-    left  OR
-  preclow
+prechigh
+  right NOT
+  left  EQUALS MATCH LESSTHAN GREATERTHAN
+  left  AND
+  left  OR
+preclow
 
 rule
-  query:
-     |exp
+query
+  : expression
+  | nil
 
-  exp: LPAREN exp RPAREN			{ result = val[1] }
-     | NOT exp					{ result = ASTNode.new :booleanop, :not, [val[1]] }
-     | exp AND exp				{ result = ASTNode.new :booleanop, :and, [val[0], val[2]] }
-     | exp OR exp				{ result = ASTNode.new :booleanop, :or, [val[0], val[2]] }
-     | string EQUALS string			{ result = ASTNode.new :exp, :equals, [val[0], val[2]] }
-     | string EQUALS boolean			{ result = ASTNode.new :exp, :equals, [val[0], val[2]] }
-     | string EQUALS number			{ result = ASTNode.new :exp, :equals, [val[0], val[2]] }
-     | string GREATERTHAN number		{ result = ASTNode.new :exp, :greaterthan, [val[0], val[2]] }
-     | string LESSTHAN number			{ result = ASTNode.new :exp, :lessthan, [val[0], val[2]] }
-     | string MATCH string			{ result = ASTNode.new :exp, :match, [val[0], val[2]] }
-     | string NOTEQUALS number			{ result = ASTNode.new :booleanop, :not, [ASTNode.new(:exp, :equals, [val[0], val[2]])] }
-     | string NOTEQUALS boolean			{ result = ASTNode.new :booleanop, :not, [ASTNode.new(:exp, :equals, [val[0], val[2]])] }
-     | string NOTEQUALS string			{ result = ASTNode.new :booleanop, :not, [ASTNode.new(:exp, :equals, [val[0], val[2]])] }
-     | ressubquery
+expression
+  : primary_expression
+  | expression MATCH        expression        { result = val[0] =~  val[2] }
+  | expression NOMATCH      expression        { result = val[0].mne val[2] }
+  | expression NOTEQUAL     expression        { result = val[0].ne  val[2] }
+  | expression ISEQUAL      expression        { result = val[0] ==  val[2] }
+  | expression GREATERTHAN  expression        { result = val[0] >   val[2] }
+  | expression GREATEREQUAL expression        { result = val[0] >=  val[2] }
+  | expression LESSTHAN     expression        { result = val[0] <   val[2] }
+  | expression LESSEQUAL    expression        { result = val[0] <=  val[2] }
+  |            NOT          expression        { result = val[1].not }
+  | expression AND          expression        { result = val[0].and val[2] }
+  | expression OR           expression        { result = val[0].or  val[2] }
+  |            LPAREN       expression RPAREN { result = val[1].paren() }
 
-  ressubquery: resexp				{ result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [ASTNode.new(:resexported, false), *val[0]])] }
-             | resexported resexp	        { result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [ASTNode.new(:resexported, true), *val[1]])] }
+primary_expression
+  : literal_expression
+  | resource_expression
 
-  resexp: restype				{ result = [val[0]] }
-        | restitle				{ result = [val[0]] }
-        | resparams				{ result = [val[0]] }
-        | restype restitle			{ result = val[0].value == "Class" ? [val[0], val[1].capitalize!] : [val[0], val[1]] }
-        | restitle resparams			{ result = [val[0], val[1]] }
-        | restype resparams			{ result = [val[0], val[1]] }
-        | restype restitle resparams		{ result = val[0].value == "Class" ? [val[0], val[1].capitalize!, val[2]] : [val[0], val[1], val[2]] }
+literal_expression
+  : boolean
+  | string
+  | number
+  | undef
 
-  resexported: EXPORTED
-  restype: STRING				{ result = ASTNode.new(:resourcetype, val[0]).capitalize! }
-  restitle: LBRACK STRING RBRACK		{ result = ASTNode.new :resourcetitle, '=', [ASTNode.new(:string, val[1])] }
-  restitle: LBRACK MATCH STRING RBRACK		{ result = ASTNode.new :resourcetitle, '~', [ASTNode.new(:string, val[2])] }
-  resparams: LBRACE exp RBRACE			{ result = val[1] }
+boolean  : BOOLEAN  { result = Factory.literal(val[0][:value]) }
+number   : NUMBER   { result = Factory.NUMBER(val[0][:value]) }
+string   : STRING   { result = Factory.literal(val[0][:value]) }
+undef    : UNDEF    { result = Factory.literal(:undef) }
 
-  string: STRING				{ result = ASTNode.new :string, val[0] }
-  number: NUMBER				{ result = ASTNode.new :number, val[0] }
-  boolean: BOOLEAN				{ result = ASTNode.new :boolean, val[0] }
+resource_expression
+  : resource_type resource_parameters {
+      result = Factory.COLLECT(val[0], Factory.VIRTUAL_QUERY(val[1]), []) }
+    }
+  | resource_type resource_name resource_parameters {
+      result = Factory.COLLECT(val[0], Factory.VIRTUAL_QUERY(val[1].and val[2]), []) }
+    }
+  : resource_exported resource_type resource_parameters {
+      result = Factory.COLLECT(val[1], Factory.EXPORTED_QUERY(val[2]), []) }
+    }
+  | resource_exported resource_type resource_name resource_parameters {
+      result = Factory.COLLECT(val[1], Factory.EXPORTED_QUERY(val[2].and val[3]), []) }
+    }
+
+resource_exported
+  : ATAT
+
+resource_type
+  : string
+  |                             { result = Factory.literal(:undef) }
+
+resource_title
+  : LBRACK string RBRACK        { result = Factory.literal('title') == val[1] }
+  | LBRACK MATCH string RBRACK  { result = Factory.literal('title') =~ val[2] }
+
+resource_parameters
+  : LBRACE expression RBRACE    { result = val[1] }
 
 end
 ---- header ----
+require 'puppet'
+require 'puppet/pops'
 require 'puppetdb'
 require 'puppetdb/lexer'
-require 'puppetdb/astnode'
