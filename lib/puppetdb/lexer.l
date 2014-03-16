@@ -1,6 +1,7 @@
 # vim: syntax=ruby
 
 require 'yaml'
+require 'puppetdb'
 
 class PuppetDB::Lexer
 macro

@@ -30,5 +30,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'puppetlabs_spec_helper'
   s.add_development_dependency 'puppet'
   s.add_development_dependency 'racc'
-  s.add_development_dependency 'rex'
+  s.add_development_dependency 'rexical'
 end
