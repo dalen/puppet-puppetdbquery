@@ -13,7 +13,7 @@ The query format accepts resource references in the form:
 
     Type[Name]{attribute1=foo and attribute2=bar}
 
-Each of the three parts are optional. It will only match non exported resources by default, to match exported resources ad @@ in front.
+Each of the three parts are optional. It will only match non exported resources by default, to match exported resources add @@ in front.
 
 Facts can be matched using the operators =, !=, >, < and ~ (regexp match). > and < only work on numbers, ~ only works on strings.
 
