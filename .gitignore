@@ -2,3 +2,7 @@
 /pkg
 *.gem
 .Gemfile.lock
+/.buildpath
+/.project
+/Gemfile.lock
+/build.properties
