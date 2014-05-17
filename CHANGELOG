@@ -1,3 +1,9 @@
+1.5.0:
+- Update default API version to v3
+- Add resource query function from rlpowell
+- README fixes
+- Update rexical dependency to 1.0.5 and regenerated lexer
+
 1.4.0:
 - Support for regexp matching resource titles, like:
    File[~titleregexp]
