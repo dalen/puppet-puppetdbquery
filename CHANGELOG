@@ -1,3 +1,7 @@
+1.5.1:
+- Style fixes
+- Update to metadata.json for module metadata
+
 1.5.0:
 - Update default API version to v3
 - Add resource query function from rlpowell
