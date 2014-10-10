@@ -1,3 +1,6 @@
+1.5.3:
+- Fixed memory leak with ruby LOAD_PATH
+
 1.5.2:
 - Module update to avoid forge checksum error
 
