@@ -4,3 +4,12 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1.3
+deploy:
+  - provider: rubygems
+    gem: ruby-puppetdb
+    gemspec: ruby-puppetdb.gemspec
+    api_key:
+      secure: "IgMVf0Fa8Tqkz7ow402fR4lcxyv2vmMleYunZaJni3jKpDp/vzkaBsd7XMK7UMGsI70UVNP+CdSvFODlh/Ceqkoy8wqc01+c7+NWvKHczzW+/Q2knReboQ+58+Wsd0v4lNb8sWgqgco9pY7hUUGNJgw3rQqCcNuc4fCJfj0pzuk="
+    on:
+      all_branches: true
+      tags: true
