@@ -40,7 +40,7 @@ class Hiera
 
           if fact then
             query = @puppetdb.parse_query query, :facts if query.is_a? String
-            @puppetdb.facts([fact], query).each_value.collect { |facts| facts[fact] }
+            @puppetdb.facts([fact], query).each_value.collect { |facts| facts[fact] }.sort
           else
             query = @puppetdb.parse_query query, :nodes if query.is_a? String
             @puppetdb.query(:nodes, query).collect { |n| n['name'] }
