@@ -43,6 +43,10 @@ describe PuppetDB::Connection do
       connection.parse_query('file[foo]{bar=baz}').should eq ["in", "name", ["extract", "certname", ["select-resources", ["and", ["=", "exported", false], ["=", "type", "File"], ["=", "title", "foo"], ["=", ["parameter", "bar"], "baz"]]]]]
     end
 
+    it "should parse resource queries with tags" do
+      connection.parse_query('file[foo]{tag=baz}').should eq ["in", "name", ["extract", "certname", ["select-resources", ["and", ["=", "exported", false], ["=", "type", "File"], ["=", "title", "foo"], ["=", "tag", "baz"]]]]]
+    end
+
     it "should handle precedence within resource parameter queries" do
       connection.parse_query('{foo=1 or bar=2 and baz=3}').should eq ["in", "name", ["extract", "certname", ["select-resources", ["and", ["=", "exported", false], ["or", ["=", ["parameter", "foo"], 1], ["and", ["=", ["parameter", "bar"], 2], ["=", ["parameter", "baz"], 3]]]]]]]
       connection.parse_query('{(foo=1 or bar=2) and baz=3}').should eq ["in", "name", ["extract", "certname", ["select-resources", ["and", ["=", "exported", false], ["or", ["=", ["parameter", "foo"], 1], ["=", ["parameter", "bar"], 2]], ["=", ["parameter", "baz"], 3]]]]]

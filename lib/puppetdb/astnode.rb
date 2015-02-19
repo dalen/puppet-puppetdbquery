@@ -72,7 +72,13 @@ class PuppetDB::ASTNode
       when :nodes,:facts # Do a subquery to match nodes matching the facts
         return subquery(mode, :facts, ['and', ['=', 'name', @children[0].evaluate(mode)], [op, 'value', @children[1].evaluate(mode)]])
       when :resources
-        return [op, ['parameter', @children[0].evaluate(mode)], @children[1].evaluate(mode)]
+        paramname = @children[0].evaluate(mode)
+        case paramname
+        when "tag"
+          return [op, paramname, @children[1].evaluate(mode)]
+        else
+          return [op, ['parameter', paramname], @children[1].evaluate(mode)]
+        end
       end
     when :string
       return @value.to_s
