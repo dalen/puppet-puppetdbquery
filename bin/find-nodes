@@ -29,6 +29,10 @@ opt.on("--facts [FACT]", "-f", "Comma separated list of facts") do |v|
   options[:facts] = v.split ','
 end
 
+opt.on("--timeout [SECONDS]", "-t", "PuppetDB read timeout") do |v|
+  options[:timeout] = v.to_i
+end
+
 opt.parse!
 
 options[:query] ||= ARGV[0]
@@ -39,6 +43,8 @@ puppetdb = PuppetDB::Connection.new(options[:puppetdb_host], options[:puppetdb_p
 http = Net::HTTP.new(options[:puppetdb_host], options[:puppetdb_port])
 http.use_ssl = true
 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+http.read_timeout = options[:timeout] if options[:timeout]
+
 if options[:facts]
   query = puppetdb.parse_query(options[:query], :facts)
   facts = puppetdb.facts(options[:facts], query, http)
