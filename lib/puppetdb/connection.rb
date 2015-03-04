@@ -54,8 +54,9 @@ class PuppetDB::Connection
   #
   # @param resquery [Array] a resources query for what resources to fetch
   # @param nodequery [Array] the query to find the nodes to fetch resources for, optionally empty
-  # @return [Hash] a hash of hashes with resources for each node mathing query
-  def resources(nodequery, resquery, http=nil)
+  # @param grouphosts [Boolean] whether or not to group the results by the host they belong to
+  # @return [Hash|Array] a hash of hashes with resources for each node mathing query or array if grouphosts was false
+  def resources(nodequery, resquery, http=nil, grouphosts=true)
     if resquery and ! resquery.empty?
       if nodequery and ! nodequery.empty?
         q = ['and', resquery, nodequery]
@@ -66,12 +67,19 @@ class PuppetDB::Connection
       raise RuntimeError, "PuppetDB resources query error: at least one argument must be non empty; arguments were: nodequery: #{nodequery.inspect} and requery: #{resquery.inspect}"
     end
     resources = {}
-    query(:resources, q, http).each do |resource|
-      unless resources.has_key? resource['certname']
-        resources[resource['certname']] = []
+    results = query(:resources, q, http)
+
+    if grouphosts
+      results.each do |resource|
+        unless resources.has_key? resource['certname']
+          resources[resource['certname']] = []
+        end
+        resources[resource['certname']] << resource
       end
-      resources[resource['certname']] << resource
+    else
+      resources = results
     end
+
     return resources
   end
 
