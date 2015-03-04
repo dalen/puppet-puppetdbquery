@@ -4,6 +4,9 @@ class PuppetDB::Connection
   require 'rubygems'
   require 'puppetdb/parser'
   require 'uri'
+  require 'puppet/util/logging'
+
+  include Puppet::Util::Logging
 
   def initialize(host='puppetdb', port=443, use_ssl=true)
     @host = host
@@ -88,6 +91,8 @@ class PuppetDB::Connection
 
     uri = "/#{version}/#{endpoint}"
     uri += URI.escape "?query=#{query.to_json}" unless query.nil? || query.empty?
+
+    debug("PuppetDB query: #{query.to_json}")
 
     resp = http.get(uri, headers)
     raise "PuppetDB query error: [#{resp.code}] #{resp.msg}, query: #{query.to_json}" unless resp.kind_of?(Net::HTTPSuccess)
