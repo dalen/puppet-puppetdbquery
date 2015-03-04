@@ -4,6 +4,8 @@ require 'puppet/util/colors'
 
 Puppet::Face.define(:query, '1.0.0') do
   require 'puppetdb/connection'
+  require 'puppet'
+  Puppet.initialize_settings unless Puppet[:confdir]
 
   extend Puppet::Util::Colors
 
