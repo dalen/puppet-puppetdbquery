@@ -123,7 +123,7 @@ Puppet::Face.define(:query, '1.0.0') do
       nodes.each_slice(20) do |nodeslice|
         eventquery = ['and', ['>', 'timestamp', starttime], ['<', 'timestamp', endtime], ['or', *nodeslice.collect { |n| ['=', 'certname', n]}]]
         eventquery << ['=', 'status', options[:status]] if options[:status] != 'all'
-        events.concat puppetdb.query(:events, eventquery, nil, :experimental)
+        events.concat puppetdb.query(:events, eventquery, nil, :v3)
       end
 
       events.sort_by do |e|
