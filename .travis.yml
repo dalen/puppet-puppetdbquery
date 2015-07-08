@@ -12,3 +12,10 @@ deploy:
     on:
       all_branches: true
       tags: true
+  - provider: puppetforge
+    user: dalen
+    password:
+      secure: "cITJDXn+Vg5l5lMr9st75sy59xfAU6DuZrgedO68SGN12QAqWkj98RAczbcWCeVdJNAp9XDa5M8Zw29X0iv8pgcmFB+p8RugfT7+WHi8Yz0BXmnin1GoQfy1VQGmPL/lxf4xTSHRxYAQrL3Qzd3BbPh/w+QRIET4ZYSbEjklRXY="
+    on:
+      all_branches: true
+      tags: true
