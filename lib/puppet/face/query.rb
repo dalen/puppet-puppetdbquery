@@ -110,7 +110,12 @@ Puppet::Face.define(:query, '1.0.0') do
     end
 
     when_invoked do |query, options|
-      require 'chronic'
+      begin
+        require 'chronic'
+      rescue LoadError
+        Puppet.err "Failed to load 'chronic' dependency. Install using `gem install chronic`"
+        raise $!
+      end
 
       puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port]
       nodes = puppetdb.query(:nodes, puppetdb.parse_query(query, :nodes)).collect { |n| n['name']}
