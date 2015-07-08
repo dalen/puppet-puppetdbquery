@@ -1,3 +1,7 @@
+1.6.0:
+- Update events face to use v3 API instead of experimental
+- Print error if chronic dependency can't be loaded
+
 1.5.3:
 - Fixed memory leak with ruby LOAD_PATH
 
