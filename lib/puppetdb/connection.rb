@@ -4,6 +4,7 @@ class PuppetDB::Connection
   require 'rubygems'
   require 'puppetdb/parser'
   require 'uri'
+  require 'puppet'
   require 'puppet/util/logging'
 
   include Puppet::Util::Logging
