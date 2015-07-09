@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.name        = "ruby-puppetdb"
   s.version     = PuppetDB::VERSION.join '.'
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Dan Bode", "Erik Dalen"]
-  s.email       = ["dan@puppetlabs.com", "erik.gustav.dalen@gmail.com"]
+  s.authors     = ["Erik Dalen"]
+  s.email       = ["erik.gustav.dalen@gmail.com"]
   s.homepage    = "https://github.com/dalen/puppet-puppetdbquery"
   s.summary     = %q{Query functions for PuppetDB}
   s.description = %q{A higher level query language for PuppetDB.}

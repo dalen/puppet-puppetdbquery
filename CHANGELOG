@@ -1,3 +1,6 @@
+1.6.1:
+- add require statements needed in some puppet versions to avoid loaderror
+
 1.6.0:
 - Update events face to use v3 API instead of experimental
 - Print error if chronic dependency can't be loaded
