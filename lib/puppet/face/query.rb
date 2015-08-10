@@ -21,6 +21,11 @@ Puppet::Face.define(:query, '1.0.0') do
     default_to { Puppet::Application::Query.setting[:port] }
   end
 
+  option '--no_ssl' do
+    summary 'Talk plain HTTP instead of HTTPS'
+    default_to { ! Puppet::Application::Query.setting[:use_ssl] }
+  end
+
   action :facts do
     summary 'Serves as an interface to puppetdb allowing a user to query for a list of nodes'
 
@@ -40,7 +45,7 @@ Puppet::Face.define(:query, '1.0.0') do
     end
 
     when_invoked do |query, options|
-      puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port]
+      puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port], !options[:no_ssl]
       puppetdb.facts(options[:facts].split(','), puppetdb.parse_query(query, :facts))
     end
 
@@ -64,7 +69,7 @@ Puppet::Face.define(:query, '1.0.0') do
     end
 
     when_invoked do |query, options|
-      puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port]
+      puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port], !options[:no_ssl]
       nodes = puppetdb.query(:nodes, puppetdb.parse_query(query, :nodes))
 
       if options[:node_info]
@@ -117,7 +122,7 @@ Puppet::Face.define(:query, '1.0.0') do
         raise $!
       end
 
-      puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port]
+      puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port], !options[:no_ssl]
       nodes = puppetdb.query(:nodes, puppetdb.parse_query(query, :nodes)).collect { |n| n['name']}
       starttime = Chronic.parse(options[:since], :context => :past, :guess => false).first.getutc.strftime('%FT%T.000Z')
       endtime = Chronic.parse(options[:until], :context => :past, :guess => false).last.getutc.strftime('%FT%T.000Z')
