@@ -37,7 +37,14 @@ class PuppetDB::Connection
     if facts.empty?
       q = ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]]
     else
-      q = ['and', ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]], ['or', *facts.collect { |f| ['=', 'name', f]}]]
+      q = ['and', ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]], ['or', *facts.collect { |f|
+         if (f =~ /^\/(.+)\/$/)
+            ['~', 'name', f.scan(/^\/(.+)\/$/).last.first]
+         else
+            ['=', 'name', f]
+         end
+         }
+      ]]
     end
     facts = {}
     query(:facts, q, http).each do |fact|
