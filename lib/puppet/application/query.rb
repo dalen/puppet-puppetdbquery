@@ -2,6 +2,7 @@ require 'puppet/application/face_base'
 
 class Puppet::Application::Query < Puppet::Application::FaceBase
   def self.setting
+    use_ssl = true
     begin
       require 'puppet'
       require 'puppet/util/puppetdb'
@@ -15,8 +16,11 @@ class Puppet::Application::Query < Puppet::Application::FaceBase
 
     Puppet.debug(host)
     Puppet.debug(port)
+    Puppet.debug("use_ssl=#{use_ssl.to_s}")
 
     { :host => host,
-      :port => port }
+      :port => port,
+      :use_ssl => use_ssl
+    }
   end
 end
