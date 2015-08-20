@@ -1,16 +1,16 @@
 class PuppetDB::ASTNode
   attr_accessor :type, :value, :children
 
-  def initialize(type, value, children=[])
+  def initialize(type, value, children = [])
     @type = type
     @value = value
     @children = children
   end
 
   def capitalize!
-    @value=@value.to_s.split("::").collect { |s| s.capitalize }.join("::")
-    @children.each { |c| c.capitalize! }
-    return self
+    @value = @value.to_s.split('::').collect(&:capitalize).join('::')
+    @children.each(&:capitalize!)
+    self
   end
 
   # Generate the the query code for a subquery
@@ -27,8 +27,8 @@ class PuppetDB::ASTNode
       return query
     else
       return ['in', (from_mode == :nodes) ? 'name' : 'certname',
-        ['extract', (to_mode == :nodes) ? 'name' : 'certname',
-          ["select-#{to_mode.to_s}", query]]]
+              ['extract', (to_mode == :nodes) ? 'name' : 'certname',
+               ["select-#{to_mode}", query]]]
     end
   end
 
@@ -40,14 +40,14 @@ class PuppetDB::ASTNode
     case @type
     when :booleanop
       @children.each do |c|
-        if c.type == :booleanop and c.value == @value
+        if c.type == :booleanop && c.value == @value
           c.children.each { |cc| @children << cc }
           @children.delete c
         end
       end
     end
-    @children.each { |c| c.optimize }
-    return self
+    @children.each(&:optimize)
+    self
   end
 
   # Evalutate the node and all children
@@ -69,12 +69,12 @@ class PuppetDB::ASTNode
       end
 
       case mode
-      when :nodes,:facts # Do a subquery to match nodes matching the facts
+      when :nodes, :facts # Do a subquery to match nodes matching the facts
         return subquery(mode, :facts, ['and', ['=', 'name', @children[0].evaluate(mode)], [op, 'value', @children[1].evaluate(mode)]])
       when :resources
         paramname = @children[0].evaluate(mode)
         case paramname
-        when "tag"
+        when 'tag'
           return [op, paramname, @children[1].evaluate(mode)]
         else
           return [op, ['parameter', paramname], @children[1].evaluate(mode)]
@@ -99,6 +99,6 @@ class PuppetDB::ASTNode
   #
   # @return [Array] The evaluate results of the children nodes
   def evaluate_children(mode)
-    return children.collect { |c| c.evaluate mode }
+    children.collect { |c| c.evaluate mode }
   end
 end
