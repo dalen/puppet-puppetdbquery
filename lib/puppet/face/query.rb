@@ -7,7 +7,7 @@ Puppet::Face.define(:query, '1.0.0') do
 
   extend Puppet::Util::Colors
 
-  copyright "Puppet Labs & Erik Dalen", 2012..2013
+  copyright "Erik Dalen & Puppet Labs", 2012..2015
   license   "Apache 2 license; see COPYING"
 
 
