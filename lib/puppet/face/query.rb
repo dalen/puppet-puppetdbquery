@@ -11,12 +11,12 @@ Puppet::Face.define(:query, '1.0.0') do
   license   "Apache 2 license; see COPYING"
 
 
-  option '--puppetdb_host PUPPETDB' do
+  option '--host PUPPETDB' do
     summary "Host running PuppetDB. "
     default_to { Puppet::Application::Query.setting[:host] }
   end
 
-  option '--puppetdb_port PORT' do
+  option '--port PORT' do
     summary 'Port PuppetDB is running on'
     default_to { Puppet::Application::Query.setting[:port] }
   end
