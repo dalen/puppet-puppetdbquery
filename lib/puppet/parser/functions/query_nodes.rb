@@ -1,4 +1,4 @@
-Puppet::Parser::Functions.newfunction(:query_nodes, :type => :rvalue, :arity => -2, :doc => <<-EOT
+Puppet::Parser::Functions.newfunction(:query_nodes, type: :rvalue, arity: -2, doc: <<-EOT
 
   accepts two arguments, a query used to discover nodes, and a optional
   fact that should be returned.
@@ -10,7 +10,7 @@ Puppet::Parser::Functions.newfunction(:query_nodes, :type => :rvalue, :arity => 
   The second argument should be single fact (this argument is optional)
 
 EOT
-) do |args|
+                                     ) do |args|
   query, fact = args
 
   require 'puppet/util/puppetdb'
@@ -24,7 +24,7 @@ EOT
 
   puppetdb = PuppetDB::Connection.new(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port)
   parser = PuppetDB::Parser.new
-  if fact then
+  if fact
     query = parser.parse query, :facts if query.is_a? String
     puppetdb.facts([fact], query).each_value.collect { |facts| facts[fact] }
   else

@@ -15,18 +15,18 @@ class Hiera
           port = 443
         end
 
-        Hiera.debug("Hiera PuppetDB backend starting")
+        Hiera.debug('Hiera PuppetDB backend starting')
 
         @puppetdb = PuppetDB::Connection.new(server, port)
         @parser = PuppetDB::Parser.new
       end
 
-      def lookup(key, scope, order_override, resolution_type)
-        return nil if key.end_with? "::_nodequery"
+      def lookup(key, scope, order_override, _resolution_type)
+        return nil if key.end_with? '::_nodequery'
 
         Hiera.debug("Looking up #{key} in PuppetDB backend")
 
-        if nodequery = Backend.lookup(key + "::_nodequery", nil, scope, order_override, :priority)
+        if nodequery = Backend.lookup(key + '::_nodequery', nil, scope, order_override, :priority)
           Hiera.debug("Found nodequery #{nodequery.inspect}")
 
           # Support specifying the query in a few different ways
@@ -39,7 +39,7 @@ class Hiera
             query = nodequery.to_s
           end
 
-          if fact then
+          if fact
             query = @parser.parse query, :facts if query.is_a? String
             @puppetdb.facts([fact], query).each_value.collect { |facts| facts[fact] }.sort
           else
