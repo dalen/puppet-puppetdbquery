@@ -13,18 +13,6 @@ class PuppetDB::Connection
     @host = host
     @port = port
     @use_ssl = use_ssl
-    @parser = PuppetDB::Parser.new
-  end
-
-  # Parse a query string into a PuppetDB query
-  #
-  # @param query [String] the query string to parse
-  # @param endpoint [Symbol] the endpoint for which the query should be evaluated
-  # @return [Array] the PuppetDB query
-  def parse_query(query, endpoint = :nodes)
-    if query = @parser.scan_str(query)
-      query.optimize.evaluate endpoint
-    end
   end
 
   # Get the listed facts for all nodes matching query

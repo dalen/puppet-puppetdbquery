@@ -9,8 +9,14 @@ require 'racc/parser.rb'
 require 'puppetdb'
 require 'puppetdb/lexer'
 require 'puppetdb/astnode'
+require 'puppetdb/parser_helper'
 module PuppetDB
   class Parser < PuppetDB::Lexer
+
+module_eval(<<'...end grammar.racc/module_eval...', 'grammar.racc', 60)
+  include PuppetDB::ParserHelper
+
+...end grammar.racc/module_eval...
 ##### State transition tables begin ###
 
 racc_action_table = [
@@ -193,91 +199,91 @@ Racc_debug_parser = false
 
 # reduce 2 omitted
 
-module_eval(<<'.,.,', 'grammar.y', 21)
+module_eval(<<'.,.,', 'grammar.racc', 21)
   def _reduce_3(val, _values, result)
      result = val[1] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 22)
+module_eval(<<'.,.,', 'grammar.racc', 22)
   def _reduce_4(val, _values, result)
      result = ASTNode.new :booleanop, :not, [val[1]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 23)
+module_eval(<<'.,.,', 'grammar.racc', 23)
   def _reduce_5(val, _values, result)
      result = ASTNode.new :booleanop, :and, [val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 24)
+module_eval(<<'.,.,', 'grammar.racc', 24)
   def _reduce_6(val, _values, result)
      result = ASTNode.new :booleanop, :or, [val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 25)
+module_eval(<<'.,.,', 'grammar.racc', 25)
   def _reduce_7(val, _values, result)
      result = ASTNode.new :exp, :equals, [val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 26)
+module_eval(<<'.,.,', 'grammar.racc', 26)
   def _reduce_8(val, _values, result)
      result = ASTNode.new :exp, :equals, [val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 27)
+module_eval(<<'.,.,', 'grammar.racc', 27)
   def _reduce_9(val, _values, result)
      result = ASTNode.new :exp, :equals, [val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 28)
+module_eval(<<'.,.,', 'grammar.racc', 28)
   def _reduce_10(val, _values, result)
      result = ASTNode.new :exp, :greaterthan, [val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 29)
+module_eval(<<'.,.,', 'grammar.racc', 29)
   def _reduce_11(val, _values, result)
      result = ASTNode.new :exp, :lessthan, [val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 30)
+module_eval(<<'.,.,', 'grammar.racc', 30)
   def _reduce_12(val, _values, result)
      result = ASTNode.new :exp, :match, [val[0], val[2]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 31)
+module_eval(<<'.,.,', 'grammar.racc', 31)
   def _reduce_13(val, _values, result)
      result = ASTNode.new :booleanop, :not, [ASTNode.new(:exp, :equals, [val[0], val[2]])] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 32)
+module_eval(<<'.,.,', 'grammar.racc', 32)
   def _reduce_14(val, _values, result)
      result = ASTNode.new :booleanop, :not, [ASTNode.new(:exp, :equals, [val[0], val[2]])] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 33)
+module_eval(<<'.,.,', 'grammar.racc', 33)
   def _reduce_15(val, _values, result)
      result = ASTNode.new :booleanop, :not, [ASTNode.new(:exp, :equals, [val[0], val[2]])] 
     result
@@ -286,63 +292,63 @@ module_eval(<<'.,.,', 'grammar.y', 33)
 
 # reduce 16 omitted
 
-module_eval(<<'.,.,', 'grammar.y', 36)
+module_eval(<<'.,.,', 'grammar.racc', 36)
   def _reduce_17(val, _values, result)
      result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [ASTNode.new(:resexported, false), *val[0]])] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 37)
+module_eval(<<'.,.,', 'grammar.racc', 37)
   def _reduce_18(val, _values, result)
      result = ASTNode.new :subquery, :resources, [ASTNode.new(:booleanop, :and, [ASTNode.new(:resexported, true), *val[1]])] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 39)
+module_eval(<<'.,.,', 'grammar.racc', 39)
   def _reduce_19(val, _values, result)
      result = [val[0]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 40)
+module_eval(<<'.,.,', 'grammar.racc', 40)
   def _reduce_20(val, _values, result)
      result = [val[0]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 41)
+module_eval(<<'.,.,', 'grammar.racc', 41)
   def _reduce_21(val, _values, result)
      result = [val[0]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 42)
+module_eval(<<'.,.,', 'grammar.racc', 42)
   def _reduce_22(val, _values, result)
      result = val[0].value == "Class" ? [val[0], val[1].capitalize!] : [val[0], val[1]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 43)
+module_eval(<<'.,.,', 'grammar.racc', 43)
   def _reduce_23(val, _values, result)
      result = [val[0], val[1]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 44)
+module_eval(<<'.,.,', 'grammar.racc', 44)
   def _reduce_24(val, _values, result)
      result = [val[0], val[1]] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 45)
+module_eval(<<'.,.,', 'grammar.racc', 45)
   def _reduce_25(val, _values, result)
      result = val[0].value == "Class" ? [val[0], val[1].capitalize!, val[2]] : [val[0], val[1], val[2]] 
     result
@@ -351,49 +357,49 @@ module_eval(<<'.,.,', 'grammar.y', 45)
 
 # reduce 26 omitted
 
-module_eval(<<'.,.,', 'grammar.y', 48)
+module_eval(<<'.,.,', 'grammar.racc', 48)
   def _reduce_27(val, _values, result)
      result = ASTNode.new(:resourcetype, val[0]).capitalize! 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 49)
+module_eval(<<'.,.,', 'grammar.racc', 49)
   def _reduce_28(val, _values, result)
      result = ASTNode.new :resourcetitle, '=', [ASTNode.new(:string, val[1])] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 50)
+module_eval(<<'.,.,', 'grammar.racc', 50)
   def _reduce_29(val, _values, result)
      result = ASTNode.new :resourcetitle, '~', [ASTNode.new(:string, val[2])] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 51)
+module_eval(<<'.,.,', 'grammar.racc', 51)
   def _reduce_30(val, _values, result)
      result = val[1] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 53)
+module_eval(<<'.,.,', 'grammar.racc', 53)
   def _reduce_31(val, _values, result)
      result = ASTNode.new :string, val[0] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 54)
+module_eval(<<'.,.,', 'grammar.racc', 54)
   def _reduce_32(val, _values, result)
      result = ASTNode.new :number, val[0] 
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'grammar.y', 55)
+module_eval(<<'.,.,', 'grammar.racc', 55)
   def _reduce_33(val, _values, result)
      result = ASTNode.new :boolean, val[0] 
     result
