@@ -45,7 +45,7 @@ Puppet::Face.define(:query, '1.0.0') do
     end
 
     when_invoked do |query, options|
-      puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port], !options[:no_ssl]
+      puppetdb = PuppetDB::Connection.new options[:host], options[:port], !options[:no_ssl]
       puppetdb.facts(options[:facts].split(','), puppetdb.parse_query(query, :facts))
     end
 
@@ -122,7 +122,7 @@ Puppet::Face.define(:query, '1.0.0') do
         raise $!
       end
 
-      puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port], !options[:no_ssl]
+      puppetdb = PuppetDB::Connection.new options[:host], options[:port], !options[:no_ssl]
       nodes = puppetdb.query(:nodes, puppetdb.parse_query(query, :nodes)).collect { |n| n['name']}
       starttime = Chronic.parse(options[:since], :context => :past, :guess => false).first.getutc.strftime('%FT%T.000Z')
       endtime = Chronic.parse(options[:until], :context => :past, :guess => false).last.getutc.strftime('%FT%T.000Z')
