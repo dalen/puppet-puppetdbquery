@@ -121,7 +121,7 @@ Puppet::Face.define(:query, '1.0.0') do
         require 'chronic'
       rescue LoadError
         Puppet.err "Failed to load 'chronic' dependency. Install using `gem install chronic`"
-        raise $!
+        raise
       end
 
       puppetdb = PuppetDB::Connection.new options[:host], options[:port], !options[:no_ssl]
