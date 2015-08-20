@@ -9,7 +9,7 @@ class PuppetDB::Connection
 
   include Puppet::Util::Logging
 
-  def initialize(host='puppetdb', port=443, use_ssl=true)
+  def initialize(host = 'puppetdb', port = 443, use_ssl = true)
     @host = host
     @port = port
     @use_ssl = use_ssl
@@ -25,14 +25,7 @@ class PuppetDB::Connection
     if facts.empty?
       q = ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]]
     else
-      q = ['and', ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]], ['or', *facts.collect { |f|
-         if (f =~ /^\/(.+)\/$/)
-            ['~', 'name', f.scan(/^\/(.+)\/$/).last.first]
-         else
-            ['=', 'name', f]
-         end
-         }
-      ]]
+      q = ['and', ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]], ['or', *facts.collect { |f| ['=', 'name', f] }]]
     end
     facts = {}
     query(:facts, q, http).each do |fact|
@@ -52,22 +45,22 @@ class PuppetDB::Connection
   # @param nodequery [Array] the query to find the nodes to fetch resources for, optionally empty
   # @param grouphosts [Boolean] whether or not to group the results by the host they belong to
   # @return [Hash|Array] a hash of hashes with resources for each node mathing query or array if grouphosts was false
-  def resources(nodequery, resquery, http=nil, grouphosts=true)
-    if resquery and ! resquery.empty?
-      if nodequery and ! nodequery.empty?
+  def resources(nodequery, resquery, http = nil, grouphosts = true)
+    if resquery && !resquery.empty?
+      if nodequery && !nodequery.empty?
         q = ['and', resquery, nodequery]
       else
         q = resquery
       end
     else
-      raise RuntimeError, "PuppetDB resources query error: at least one argument must be non empty; arguments were: nodequery: #{nodequery.inspect} and requery: #{resquery.inspect}"
+      fail "PuppetDB resources query error: at least one argument must be non empty; arguments were: nodequery: #{nodequery.inspect} and requery: #{resquery.inspect}"
     end
     resources = {}
     results = query(:resources, q, http)
 
     if grouphosts
       results.each do |resource|
-        unless resources.has_key? resource['certname']
+        unless resources.key? resource['certname']
           resources[resource['certname']] = []
         end
         resources[resource['certname']] << resource
@@ -76,7 +69,7 @@ class PuppetDB::Connection
       resources = results
     end
 
-    return resources
+    resources
   end
 
   # Execute a PuppetDB query
@@ -99,7 +92,7 @@ class PuppetDB::Connection
     debug("PuppetDB query: #{query.to_json}")
 
     resp = http.get(uri, headers)
-    raise "PuppetDB query error: [#{resp.code}] #{resp.msg}, query: #{query.to_json}" unless resp.kind_of?(Net::HTTPSuccess)
+    fail "PuppetDB query error: [#{resp.code}] #{resp.msg}, query: #{query.to_json}" unless resp.is_a?(Net::HTTPSuccess)
     JSON.parse(resp.body)
   end
 end

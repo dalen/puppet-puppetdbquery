@@ -16,11 +16,11 @@ class Puppet::Application::Query < Puppet::Application::FaceBase
 
     Puppet.debug(host)
     Puppet.debug(port)
-    Puppet.debug("use_ssl=#{use_ssl.to_s}")
+    Puppet.debug("use_ssl=#{use_ssl}")
 
-    { :host => host,
-      :port => port,
-      :use_ssl => use_ssl
+    { host: host,
+      port: port,
+      use_ssl: use_ssl
     }
   end
 end

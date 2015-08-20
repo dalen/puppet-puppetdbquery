@@ -1,4 +1,4 @@
-Puppet::Parser::Functions.newfunction(:query_resources, :type => :rvalue, :arity => -3, :doc => <<-EOT
+Puppet::Parser::Functions.newfunction(:query_resources, type: :rvalue, arity: -3, doc: <<-EOT
 
   Accepts two or three arguments: a query used to discover nodes, a
   resource query for the resources that should be returned from
@@ -29,7 +29,7 @@ Puppet::Parser::Functions.newfunction(:query_resources, :type => :rvalue, :arity
       query_resources(false, 'Class["apache"]', false)
 
 EOT
-) do |args|
+                                     ) do |args|
   nodequery, resquery, grouphosts = args
 
   require 'puppet/util/puppetdb'
@@ -43,7 +43,7 @@ EOT
 
   puppetdb = PuppetDB::Connection.new(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port)
   parser = PuppetDB::Parser.new
-  nodequery = parser.parse nodequery, :facts if nodequery and nodequery.is_a? String and ! nodequery.empty?
-  resquery = parser.parse resquery, :none if resquery and resquery.is_a? String and ! resquery.empty?
+  nodequery = parser.parse nodequery, :facts if nodequery and nodequery.is_a? String and !nodequery.empty?
+  resquery = parser.parse resquery, :none if resquery and resquery.is_a? String and !resquery.empty?
   return puppetdb.resources(nodequery, resquery, nil, grouphosts)
 end

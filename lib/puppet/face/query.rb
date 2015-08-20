@@ -7,12 +7,11 @@ Puppet::Face.define(:query, '1.0.0') do
 
   extend Puppet::Util::Colors
 
-  copyright "Erik Dalen & Puppet Labs", 2012..2015
-  license   "Apache 2 license; see COPYING"
-
+  copyright 'Erik Dalen & Puppet Labs', 2012..2015
+  license 'Apache 2 license; see COPYING'
 
   option '--host PUPPETDB' do
-    summary "Host running PuppetDB. "
+    summary 'Host running PuppetDB. '
     default_to { Puppet::Application::Query.setting[:host] }
   end
 
@@ -23,7 +22,7 @@ Puppet::Face.define(:query, '1.0.0') do
 
   option '--no_ssl' do
     summary 'Talk plain HTTP instead of HTTPS'
-    default_to { ! Puppet::Application::Query.setting[:use_ssl] }
+    default_to { !Puppet::Application::Query.setting[:use_ssl] }
   end
 
   action :facts do
@@ -33,7 +32,7 @@ Puppet::Face.define(:query, '1.0.0') do
       Here is a ton of more useful information :)
     EOT
 
-    arguments "<query>"
+    arguments '<query>'
 
     option '--facts FACTS' do
       summary 'facts to return that represent each host'
@@ -49,17 +48,15 @@ Puppet::Face.define(:query, '1.0.0') do
       parser = PuppetDB::Parser.new
       puppetdb.facts(options[:facts].split(','), parser.parse(query, :facts))
     end
-
   end
 
   action :nodes do
-
     summary 'Perform complex queries for nodes from PuppetDB'
     description <<-EOT
       Here is a ton of more useful information :)
     EOT
 
-    arguments "<query>"
+    arguments '<query>'
 
     option '--node_info BOOLEAN' do
       summary 'return full info about each node or just name'
@@ -75,12 +72,11 @@ Puppet::Face.define(:query, '1.0.0') do
       nodes = puppetdb.query(:nodes, parser.parse(query, :nodes))
 
       if options[:node_info]
-        Hash[nodes.collect { |node| [node['name'], node.reject{|k,v| k == "name"}] }]
+        Hash[nodes.collect { |node| [node['name'], node.reject { |k, _v| k == 'name' }] }]
       else
         nodes.collect { |node| node['name'] }
       end
     end
-
   end
 
   action :events do
@@ -90,7 +86,7 @@ Puppet::Face.define(:query, '1.0.0') do
       Get all avents for nodes matching the query specified.
     EOT
 
-    arguments "<query>"
+    arguments '<query>'
 
     option '--since SINCE' do
       summary 'Get events since this time'
@@ -126,15 +122,15 @@ Puppet::Face.define(:query, '1.0.0') do
 
       puppetdb = PuppetDB::Connection.new options[:host], options[:port], !options[:no_ssl]
       parser = PuppetDB::Parser.new
-      nodes = puppetdb.query(:nodes, parser.parse(query, :nodes)).collect { |n| n['name']}
-      starttime = Chronic.parse(options[:since], :context => :past, :guess => false).first.getutc.strftime('%FT%T.000Z')
-      endtime = Chronic.parse(options[:until], :context => :past, :guess => false).last.getutc.strftime('%FT%T.000Z')
+      nodes = puppetdb.query(:nodes, parser.parse(query, :nodes)).collect { |n| n['name'] }
+      starttime = Chronic.parse(options[:since], context: :past, guess: false).first.getutc.strftime('%FT%T.000Z')
+      endtime = Chronic.parse(options[:until], context: :past, guess: false).last.getutc.strftime('%FT%T.000Z')
 
       events = []
       # Event API doesn't support subqueries at the moment and
       # we can't do too big queries, so fetch events for some nodes at a time
       nodes.each_slice(20) do |nodeslice|
-        eventquery = ['and', ['>', 'timestamp', starttime], ['<', 'timestamp', endtime], ['or', *nodeslice.collect { |n| ['=', 'certname', n]}]]
+        eventquery = ['and', ['>', 'timestamp', starttime], ['<', 'timestamp', endtime], ['or', *nodeslice.collect { |n| ['=', 'certname', n] }]]
         eventquery << ['=', 'status', options[:status]] if options[:status] != 'all'
         events.concat puppetdb.query(:events, eventquery, nil, :v3)
       end
@@ -142,10 +138,10 @@ Puppet::Face.define(:query, '1.0.0') do
       events.sort_by do |e|
         "#{e['timestamp']}+#{e['resource-type']}+#{e['resource-title']}+#{e['property']}"
       end.each do |e|
-        out="#{e['certname']}: #{e['timestamp']}: #{e['resource-type']}[#{e['resource-title']}]"
-        out+="/#{e['property']}" if e['property']
-        out+=" (#{e['old-value']} -> #{e['new-value']})" if e['old-value'] && e['new-value']
-        out+=": #{e['message']}" if e['message']
+        out = "#{e['certname']}: #{e['timestamp']}: #{e['resource-type']}[#{e['resource-title']}]"
+        out += "/#{e['property']}" if e['property']
+        out += " (#{e['old-value']} -> #{e['new-value']})" if e['old-value'] && e['new-value']
+        out += ": #{e['message']}" if e['message']
         out.chomp!
         case e['status']
         when 'failure'
