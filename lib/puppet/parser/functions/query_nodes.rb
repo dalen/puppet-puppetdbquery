@@ -23,11 +23,12 @@ EOT
   end
 
   puppetdb = PuppetDB::Connection.new(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port)
+  parser = PuppetDB::Parser.new
   if fact then
-    query = puppetdb.parse_query query, :facts if query.is_a? String
+    query = parser.parse query, :facts if query.is_a? String
     puppetdb.facts([fact], query).each_value.collect { |facts| facts[fact] }
   else
-    query = puppetdb.parse_query query, :nodes if query.is_a? String
+    query = parser.parse query, :nodes if query.is_a? String
     puppetdb.query(:nodes, query).collect { |n| n['name'] }
   end
 end

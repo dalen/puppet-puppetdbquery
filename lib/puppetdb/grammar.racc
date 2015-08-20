@@ -56,7 +56,11 @@ rule
   boolean: BOOLEAN				{ result = ASTNode.new :boolean, val[0] }
 
 end
----- header ----
+---- inner
+  include PuppetDB::ParserHelper
+
+---- header
 require 'puppetdb'
 require 'puppetdb/lexer'
 require 'puppetdb/astnode'
+require 'puppetdb/parser_helper'

@@ -18,6 +18,7 @@ class Hiera
         Hiera.debug("Hiera PuppetDB backend starting")
 
         @puppetdb = PuppetDB::Connection.new(server, port)
+        @parser = PuppetDB::Parser.new
       end
 
       def lookup(key, scope, order_override, resolution_type)
@@ -39,10 +40,10 @@ class Hiera
           end
 
           if fact then
-            query = @puppetdb.parse_query query, :facts if query.is_a? String
+            query = @parser.parse query, :facts if query.is_a? String
             @puppetdb.facts([fact], query).each_value.collect { |facts| facts[fact] }.sort
           else
-            query = @puppetdb.parse_query query, :nodes if query.is_a? String
+            query = @parser.parse query, :nodes if query.is_a? String
             @puppetdb.query(:nodes, query).collect { |n| n['name'] }
           end
         end

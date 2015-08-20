@@ -42,7 +42,8 @@ EOT
   end
 
   puppetdb = PuppetDB::Connection.new(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port)
-  nodequery = puppetdb.parse_query nodequery, :facts if nodequery and nodequery.is_a? String and ! nodequery.empty?
-  resquery = puppetdb.parse_query resquery, :none if resquery and resquery.is_a? String and ! resquery.empty?
+  parser = PuppetDB::Parser.new
+  nodequery = parser.parse nodequery, :facts if nodequery and nodequery.is_a? String and ! nodequery.empty?
+  resquery = parser.parse resquery, :none if resquery and resquery.is_a? String and ! resquery.empty?
   return puppetdb.resources(nodequery, resquery, nil, grouphosts)
 end
