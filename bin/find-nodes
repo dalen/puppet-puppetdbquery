@@ -10,7 +10,8 @@ options = { host: 'puppetdb',
             port: 443,
             fact: nil,
             query: nil,
-            ssl: true }
+            ssl: true,
+            print: false }
 
 opt = OptionParser.new
 
@@ -38,6 +39,10 @@ opt.on('--nossl', 'Disable SSL') do |v|
   options[:ssl] = false
 end
 
+opt.on('--print', 'Only print query') do |v|
+  options[:print] = true
+end
+
 opt.parse!
 
 options[:query] ||= ARGV[0]
@@ -51,7 +56,10 @@ http.use_ssl = options[:ssl]
 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 http.read_timeout = options[:timeout] if options[:timeout]
 
-if options[:facts]
+if options[:print]
+  query = parser.parse(options[:query])
+  puts query.to_json
+elsif options[:facts]
   query = parser.parse(options[:query], :facts)
   facts = puppetdb.facts(options[:facts], query, http)
   facts.each_value do |host|
