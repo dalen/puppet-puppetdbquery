@@ -15,6 +15,20 @@ class PuppetDB::Connection
     @use_ssl = use_ssl
   end
 
+  def self.check_version
+    begin
+      require 'puppet/util/puppetdb'
+      unless Puppet::Util::Puppetdb.config.respond_to?('server_urls')
+        Puppet.warning <<-EOT
+It looks like you are using a PuppetDB version < 3.0.
+This version of puppetdbquery requires at least PuppetDB 3.0 to work.
+Downgrade to puppetdbquery 1.x to use it with PuppetDB 2.x.
+EOT
+      end
+    rescue LoadError
+    end
+  end
+
   # Get the listed facts for all nodes matching query
   # return it as a hash of hashes
   #

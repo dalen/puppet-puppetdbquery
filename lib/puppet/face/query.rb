@@ -4,6 +4,7 @@ require 'puppet/util/colors'
 
 Puppet::Face.define(:query, '1.0.0') do
   require 'puppetdb/connection'
+  PuppetDB::Connection.check_version
 
   extend Puppet::Util::Colors
 
