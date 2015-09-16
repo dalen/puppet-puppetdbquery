@@ -13,12 +13,12 @@ options = {:host => "puppetdb",
 
 opt = OptionParser.new
 
-opt.on("--host [PUPPETDB]", "-H", "Host running PuppetDB (#{options[:host]})") do |v|
-  options[:puppetdb_host] = v
+opt.on('--host [PUPPETDB]', '-H', "Host running PuppetDB (#{options[:host]})") do |v|
+  options[:host] = v
 end
 
-opt.on("--port [PORT]", "-p", Integer, "Port PuppetDB is running on (#{options[:port]})") do |v|
-  options[:puppetdb_port] = v
+opt.on('--port [PORT]', '-p', Integer, "Port PuppetDB is running on (#{options[:port]})") do |v|
+  options[:port] = v
 end
 
 opt.on("--query [QUERY]", "-q", "Query String") do |v|
