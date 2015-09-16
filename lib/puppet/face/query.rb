@@ -67,7 +67,7 @@ Puppet::Face.define(:query, '1.0.0') do
     end
 
     when_invoked do |query, options|
-      puppetdb = PuppetDB::Connection.new options[:puppetdb_host], options[:puppetdb_port], !options[:no_ssl]
+      puppetdb = PuppetDB::Connection.new options[:host], options[:port], !options[:no_ssl]
       parser = PuppetDB::Parser.new
       nodes = puppetdb.query(:nodes, parser.parse(query, :nodes))
 
