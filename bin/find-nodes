@@ -21,15 +21,15 @@ opt.on('--port [PORT]', '-p', Integer, "Port PuppetDB is running on (#{options[:
   options[:port] = v
 end
 
-opt.on("--query [QUERY]", "-q", "Query String") do |v|
+opt.on('--query [QUERY]', '-q', 'Query String') do |v|
   options[:query] = v
 end
 
-opt.on("--facts [FACT]", "-f", "Comma separated list of facts") do |v|
+opt.on('--facts [FACT]', '-f', 'Comma separated list of facts') do |v|
   options[:facts] = v.split ','
 end
 
-opt.on("--timeout [SECONDS]", "-t", "PuppetDB read timeout") do |v|
+opt.on('--timeout [SECONDS]', '-t', 'PuppetDB read timeout') do |v|
   options[:timeout] = v.to_i
 end
 
@@ -37,7 +37,7 @@ opt.parse!
 
 options[:query] ||= ARGV[0]
 
-abort "Please specify a query" unless options[:query]
+abort 'Please specify a query' unless options[:query]
 
 puppetdb = PuppetDB::Connection.new(options[:host], options[:port])
 parser = PuppetDB::Parser.new
