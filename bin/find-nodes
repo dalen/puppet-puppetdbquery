@@ -6,10 +6,11 @@ require 'optparse'
 require 'net/http'
 require 'net/https'
 
-options = {:host => "puppetdb",
-           :port => 443,
-           :fact => nil,
-           :query => nil}
+options = { host: 'puppetdb',
+            port: 443,
+            fact: nil,
+            query: nil,
+            ssl: true }
 
 opt = OptionParser.new
 
@@ -33,6 +34,10 @@ opt.on('--timeout [SECONDS]', '-t', 'PuppetDB read timeout') do |v|
   options[:timeout] = v.to_i
 end
 
+opt.on('--nossl', 'Disable SSL') do |v|
+  options[:ssl] = false
+end
+
 opt.parse!
 
 options[:query] ||= ARGV[0]
@@ -42,7 +47,7 @@ abort 'Please specify a query' unless options[:query]
 puppetdb = PuppetDB::Connection.new(options[:host], options[:port])
 parser = PuppetDB::Parser.new
 http = Net::HTTP.new(options[:host], options[:port])
-http.use_ssl = true
+http.use_ssl = options[:ssl]
 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 http.read_timeout = options[:timeout] if options[:timeout]
 
