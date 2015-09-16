@@ -41,6 +41,8 @@ EOT
     $LOAD_PATH.shift
   end
 
+  PuppetDB::Connection.check_version
+
   puppetdb = PuppetDB::Connection.new(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port)
   parser = PuppetDB::Parser.new
   nodequery = parser.parse nodequery, :facts if nodequery and nodequery.is_a? String and !nodequery.empty?

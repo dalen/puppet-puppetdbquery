@@ -17,6 +17,7 @@ EOT
   query, facts = args
 
   require 'puppet/util/puppetdb'
+
   # This is needed if the puppetdb library isn't pluginsynced to the master
   $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..'))
   begin
@@ -24,6 +25,8 @@ EOT
   ensure
     $LOAD_PATH.shift
   end
+
+  PuppetDB::Connection.check_version
 
   puppetdb = PuppetDB::Connection.new(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port)
   parser = PuppetDB::Parser.new
