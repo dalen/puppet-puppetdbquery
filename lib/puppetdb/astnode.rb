@@ -26,9 +26,9 @@ class PuppetDB::ASTNode
     if from_mode == :none
       return query
     else
-      return ['in', (from_mode == :nodes) ? 'name' : 'certname',
-              ['extract', (to_mode == :nodes) ? 'name' : 'certname',
-               ["select-#{to_mode}", query]]]
+      return ['in', 'certname',
+              ['extract', 'certname',
+               ["select_#{to_mode}", query]]]
     end
   end
 
