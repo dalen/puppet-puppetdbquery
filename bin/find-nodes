@@ -60,6 +60,6 @@ if options[:facts]
 else
   query = parser.parse(options[:query])
   results = puppetdb.query(:nodes, query, http)
-  hosts = results.collect { |host| host['name'] }
+  hosts = results.collect { |host| host['certname'] }
   hosts.each { |host| print host + "\n" }
 end

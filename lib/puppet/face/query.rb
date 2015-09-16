@@ -72,9 +72,9 @@ Puppet::Face.define(:query, '1.0.0') do
       nodes = puppetdb.query(:nodes, parser.parse(query, :nodes))
 
       if options[:node_info]
-        Hash[nodes.collect { |node| [node['name'], node.reject { |k, _v| k == 'name' }] }]
+        Hash[nodes.collect { |node| [node['certname'], node.reject { |k, _v| k == 'certname' }] }]
       else
-        nodes.collect { |node| node['name'] }
+        nodes.collect { |node| node['certname'] }
       end
     end
   end
@@ -122,7 +122,7 @@ Puppet::Face.define(:query, '1.0.0') do
 
       puppetdb = PuppetDB::Connection.new options[:host], options[:port], !options[:no_ssl]
       parser = PuppetDB::Parser.new
-      nodes = puppetdb.query(:nodes, parser.parse(query, :nodes)).collect { |n| n['name'] }
+      nodes = puppetdb.query(:nodes, parser.parse(query, :nodes)).collect { |n| n['certname'] }
       starttime = Chronic.parse(options[:since], context: :past, guess: false).first.getutc.strftime('%FT%T.000Z')
       endtime = Chronic.parse(options[:until], context: :past, guess: false).last.getutc.strftime('%FT%T.000Z')
 
@@ -132,15 +132,15 @@ Puppet::Face.define(:query, '1.0.0') do
       nodes.each_slice(20) do |nodeslice|
         eventquery = ['and', ['>', 'timestamp', starttime], ['<', 'timestamp', endtime], ['or', *nodeslice.collect { |n| ['=', 'certname', n] }]]
         eventquery << ['=', 'status', options[:status]] if options[:status] != 'all'
-        events.concat puppetdb.query(:events, eventquery, nil, :v3)
+        events.concat puppetdb.query(:events, eventquery)
       end
 
       events.sort_by do |e|
-        "#{e['timestamp']}+#{e['resource-type']}+#{e['resource-title']}+#{e['property']}"
+        "#{e['timestamp']}+#{e['resource_type']}+#{e['resource_title']}+#{e['property']}"
       end.each do |e|
-        out = "#{e['certname']}: #{e['timestamp']}: #{e['resource-type']}[#{e['resource-title']}]"
+        out = "#{e['certname']}: #{e['timestamp']}: #{e['resource_type']}[#{e['resource_title']}]"
         out += "/#{e['property']}" if e['property']
-        out += " (#{e['old-value']} -> #{e['new-value']})" if e['old-value'] && e['new-value']
+        out += " (#{e['old_value']} -> #{e['new_value']})" if e['old_value'] && e['new_value']
         out += ": #{e['message']}" if e['message']
         out.chomp!
         case e['status']
@@ -149,7 +149,7 @@ Puppet::Face.define(:query, '1.0.0') do
         when 'success'
           puts colorize(:green, out)
         when 'skipped'
-          puts colorize(:hyellow, out) unless e['resource-type'] == 'Schedule'
+          puts colorize(:hyellow, out) unless e['resource_type'] == 'Schedule'
         when 'noop'
           puts out
         end

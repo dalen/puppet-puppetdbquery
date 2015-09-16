@@ -23,9 +23,9 @@ class PuppetDB::Connection
   # @return [Hash] a hash of hashes with facts for each node mathing query
   def facts(facts, nodequery, http = nil)
     if facts.empty?
-      q = ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]]
+      q = ['in', 'certname', ['extract', 'certname', ['select_facts', nodequery]]]
     else
-      q = ['and', ['in', 'certname', ['extract', 'certname', ['select-facts', nodequery]]], ['or', *facts.collect { |f| ['=', 'name', f] }]]
+      q = ['and', ['in', 'certname', ['extract', 'certname', ['select_facts', nodequery]]], ['or', *facts.collect { |f| ['=', 'name', f] }]]
     end
     facts = {}
     query(:facts, q, http).each do |fact|
@@ -77,7 +77,7 @@ class PuppetDB::Connection
   # @param endpoint [Symbol] :resources, :facts or :nodes
   # @param query [Array] query to execute
   # @return [Array] the results of the query
-  def query(endpoint, query = nil, http = nil, version = :v3)
+  def query(endpoint, query = nil, http = nil, version = :v4)
     require 'json'
 
     unless http
@@ -86,7 +86,7 @@ class PuppetDB::Connection
     end
     headers = { 'Accept' => 'application/json' }
 
-    uri = "/#{version}/#{endpoint}"
+    uri = "/pdb/query/#{version}/#{endpoint}"
     uri += URI.escape "?query=#{query.to_json}" unless query.nil? || query.empty?
 
     debug("PuppetDB query: #{query.to_json}")
