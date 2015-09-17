@@ -6,8 +6,10 @@ class Puppet::Application::Query < Puppet::Application::FaceBase
     begin
       require 'puppet'
       require 'puppet/util/puppetdb'
-      host = Puppet::Util::Puppetdb.server || 'puppetdb'
-      port = Puppet::Util::Puppetdb.port || 8081
+      PuppetDB::Connection.check_version
+      uri = URI(Puppet::Util::Puppetdb.config.server_urls.first)
+      host = uri.host
+      port = uri.port
     rescue Exception => e
       Puppet.debug(e.message)
       host = 'puppetdb'
