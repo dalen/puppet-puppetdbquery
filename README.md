@@ -91,9 +91,29 @@ Returns an array of certnames or fact values if a fact is specified.
 
 #### Examples
 
-$hosts = query_nodes('manufacturer~"Dell.*" and processorcount=24 and Class[Apache]')
+    $hosts = query_nodes('manufacturer~"Dell.*" and processorcount=24 and Class[Apache]')
 
-$hostips = query_nodes('manufacturer~"Dell.*" and processorcount=24 and Class[Apache]', ipaddress)
+    $hostips = query_nodes('manufacturer~"Dell.*" and processorcount=24 and Class[Apache]', ipaddress)
+
+### query_resources
+
+Accepts two arguments or three argument, a query used to discover nodes, and a resource query
+, and an optional a boolean to whether or not to group the result per host.
+
+
+Return either a hash (by default) that maps the name of the nodes to a list of
+resource entries.  This is a list because there's no single
+reliable key for resource operations that's of any use to the end user.
+
+#### Examples
+
+Returns the parameters and such for the ntp class for all CentOS nodes:
+
+    $resources = query_resources('Class["apache"]{ port = 443 }', 'User["apache"]')
+
+Returns the parameters for the apache class for all nodes in a flat array:
+
+    query_resources(false, 'Class["apache"]', false)
 
 ### query_facts
 
@@ -103,20 +123,20 @@ Returns a nested hash where the keys are the certnames of the nodes, each contai
 
 #### Example
 
-query_facts('Class[Apache]{port=443}', ['osfamily', 'ipaddress'])
+    query_facts('Class[Apache]{port=443}', ['osfamily', 'ipaddress'])
 
 Example return value in JSON format:
 
-{
-  "foo.example.com": {
-    "ipaddress": "192.168.0.2",
-    "osfamily": "Redhat"
-  },
-  "bar.example.com": {
-    "ipaddress": "192.168.0.3",
-    "osfamily": "Debian"
-  }
-}
+    {
+      "foo.example.com": {
+        "ipaddress": "192.168.0.2",
+        "osfamily": "Redhat"
+      },
+      "bar.example.com": {
+        "ipaddress": "192.168.0.3",
+        "osfamily": "Debian"
+      }
+    }
 
 Hiera backend
 =============
