@@ -25,7 +25,8 @@ EOT
 
   PuppetDB::Connection.check_version
 
-  puppetdb = PuppetDB::Connection.new(Puppet::Util::Puppetdb.server, Puppet::Util::Puppetdb.port)
+  uri = URI(Puppet::Util::Puppetdb.config.server_urls.first)
+  puppetdb = PuppetDB::Connection.new(uri.host, uri.port)
   parser = PuppetDB::Parser.new
   if fact
     query = parser.parse query, :facts if query.is_a? String
