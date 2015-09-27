@@ -8,16 +8,18 @@ class Hiera
           # This is needed when we run from hiera cli
           Puppet.initialize_settings unless Puppet[:confdir]
           require 'puppet/util/puppetdb'
-          server = Puppet::Util::Puppetdb.server
-          port = Puppet::Util::Puppetdb.port
+          PuppetDB::Connection.check_version
+          uri = URI(Puppet::Util::Puppetdb.config.server_urls.first)
+          host = uri.host
+          port = uri.port
         rescue
-          server = 'puppetdb'
+          host = 'puppetdb'
           port = 443
         end
 
         Hiera.debug('Hiera PuppetDB backend starting')
 
-        @puppetdb = PuppetDB::Connection.new(server, port)
+        @puppetdb = PuppetDB::Connection.new(host, port)
         @parser = PuppetDB::Parser.new
       end
 
