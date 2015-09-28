@@ -61,7 +61,40 @@ describe PuppetDB::Parser do
     end
 
     it "should be able to negate expressions" do
-      connection.parse('not foo=bar').should eq ["not", ["in", "certname", ["extract", "certname", ["select_facts", ["and", ["=", "name", "foo"], ["=", "value", "bar"]]]]]]
+      parser.parse('not foo=bar').should eq ["not", ["in", "certname", ["extract", "certname", ["select_facts", ["and", ["=", "name", "foo"], ["=", "value", "bar"]]]]]]
+    end
+  end
+
+  context "facts_query" do
+    let(:parser) { PuppetDB::Parser.new }
+    it 'should return a query for all if no facts are specified' do
+      parser.facts_query('kernel=Linux').should eq ["in", "certname", ["extract", "certname", ["select_facts", ["and", ["=", "name", "kernel"], ["=", "value", "Linux"]]]]]
+    end
+
+    it 'should return a query for specific facts if they are specified' do
+      parser.facts_query('kernel=Linux', ['ipaddress']). should eq ["and", ["in", "certname", ["extract", "certname", ["select_facts", ["and", ["=", "name", "kernel"], ["=", "value", "Linux"]]]]], ["or", ["=", "name", "ipaddress"]]]
+    end
+
+    it 'should return a query for matching facts on all nodes if query is missing' do
+      parser.facts_query('', ['ipaddress']).should eq ["or", ["=", "name", "ipaddress"]]
+    end
+  end
+
+  context 'facts_hash' do
+    let(:parser) { PuppetDB::Parser.new }
+    it 'should merge facts into a nested hash' do
+      parser.facts_hash([
+        {"certname"=>"ip-172-31-45-32.eu-west-1.compute.internal", "environment"=>"production", "name"=>"kernel", "value"=>"Linux"},
+        {"certname"=>"ip-172-31-33-234.eu-west-1.compute.internal", "environment"=>"production", "name"=>"kernel", "value"=>"Linux"},
+        {"certname"=>"ip-172-31-5-147.eu-west-1.compute.internal", "environment"=>"production", "name"=>"kernel", "value"=>"Linux"},
+        {"certname"=>"ip-172-31-45-32.eu-west-1.compute.internal", "environment"=>"production", "name"=>"fqdn", "value"=>"ip-172-31-45-32.eu-west-1.compute.internal"},
+        {"certname"=>"ip-172-31-33-234.eu-west-1.compute.internal", "environment"=>"production", "name"=>"fqdn", "value"=>"ip-172-31-33-234.eu-west-1.compute.internal"},
+        {"certname"=>"ip-172-31-5-147.eu-west-1.compute.internal", "environment"=>"production", "name"=>"fqdn", "value"=>"ip-172-31-5-147.eu-west-1.compute.internal"}
+      ]).should eq(
+        "ip-172-31-45-32.eu-west-1.compute.internal"=>{"kernel"=>"Linux", "fqdn"=>"ip-172-31-45-32.eu-west-1.compute.internal"},
+        "ip-172-31-33-234.eu-west-1.compute.internal"=>{"kernel"=>"Linux", "fqdn"=>"ip-172-31-33-234.eu-west-1.compute.internal"},
+        "ip-172-31-5-147.eu-west-1.compute.internal"=>{"kernel"=>"Linux", "fqdn"=>"ip-172-31-5-147.eu-west-1.compute.internal"}
+      )
     end
   end
 end
