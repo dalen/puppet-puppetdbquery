@@ -29,8 +29,8 @@ EOT
   puppetdb = PuppetDB::Connection.new(uri.host, uri.port)
   parser = PuppetDB::Parser.new
   if fact
-    query = parser.parse query, :facts if query.is_a? String
-    puppetdb.facts([fact], query).each_value.collect { |facts| facts[fact] }
+    query = parser.facts_query query, [fact]
+    puppetdb.query(:facts, query).collect { |f| f['value'] }
   else
     query = parser.parse query, :nodes if query.is_a? String
     puppetdb.query(:nodes, query).collect { |n| n['certname'] }
