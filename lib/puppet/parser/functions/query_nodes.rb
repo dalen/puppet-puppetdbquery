@@ -33,6 +33,6 @@ EOT
     puppetdb.facts([fact], query).each_value.collect { |facts| facts[fact] }
   else
     query = parser.parse query, :nodes if query.is_a? String
-    puppetdb.query(:nodes, query).collect { |n| n['name'] }
+    puppetdb.query(:nodes, query).collect { |n| n['certname'] }
   end
 end
