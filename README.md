@@ -88,6 +88,7 @@ Puppet functions
 ----------------
 
 There's corresponding functions to query PuppetDB directly from Puppet manifests.
+All the functions accept either the simplified query language or raw PuppetDB API queries.
 
 ### query_nodes
 
