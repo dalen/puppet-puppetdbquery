@@ -81,6 +81,7 @@ Ruby
   faces can be called from the ruby in exactly they same way they are called from the command line:
 
     $ irb> require 'puppet/face'
+      irb> Puppet.initialize_settings
       irb> Puppet::Face[:query, :current].nodes('(Package["mysql-server"] and architecture=amd64)')
 
 Puppet functions
