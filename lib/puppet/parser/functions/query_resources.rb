@@ -46,7 +46,32 @@ EOT
   uri = URI(Puppet::Util::Puppetdb.config.server_urls.first)
   puppetdb = PuppetDB::Connection.new(uri.host, uri.port)
   parser = PuppetDB::Parser.new
-  nodequery = parser.parse nodequery, :facts if nodequery and nodequery.is_a? String and !nodequery.empty?
-  resquery = parser.parse resquery, :none if resquery and resquery.is_a? String and !resquery.empty?
-  return puppetdb.resources(nodequery, resquery, nil, grouphosts)
+  nodequery = parser.parse nodequery, :facts if nodequery and nodequery.is_a? String
+  resquery = parser.parse resquery, :none if resquery and resquery.is_a? String
+
+  # Construct query
+  if resquery && !resquery.empty?
+    if nodequery && !nodequery.empty?
+      q = ['and', resquery, nodequery]
+    else
+      q = resquery
+    end
+  else
+    fail "PuppetDB resources query error: at least one argument must be non empty; arguments were: nodequery: #{nodequery.inspect} and requery: #{resquery.inspect}"
+  end
+
+  # Fetch the results
+  results = puppetdb.query(:resources, q)
+
+  # If grouphosts is true create a nested hash with nodes and resources
+  if grouphosts
+    results.reduce({}) do |ret, resource|
+      unless ret.key? resource['certname']
+        ret[resource['certname']] = []
+      end
+      ret[resource['certname']] << resource
+    end
+  else
+    results
+  end
 end
