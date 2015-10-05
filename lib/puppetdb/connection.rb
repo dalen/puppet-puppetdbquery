@@ -29,40 +29,6 @@ EOT
     end
   end
 
-  # Get the listed resources for all nodes matching query
-  # return it as a hash of hashes
-  #
-  # @param resquery [Array] a resources query for what resources to fetch
-  # @param nodequery [Array] the query to find the nodes to fetch resources for, optionally empty
-  # @param grouphosts [Boolean] whether or not to group the results by the host they belong to
-  # @return [Hash|Array] a hash of hashes with resources for each node mathing query or array if grouphosts was false
-  def resources(nodequery, resquery, http = nil, grouphosts = true)
-    if resquery && !resquery.empty?
-      if nodequery && !nodequery.empty?
-        q = ['and', resquery, nodequery]
-      else
-        q = resquery
-      end
-    else
-      fail "PuppetDB resources query error: at least one argument must be non empty; arguments were: nodequery: #{nodequery.inspect} and requery: #{resquery.inspect}"
-    end
-    resources = {}
-    results = query(:resources, q, http)
-
-    if grouphosts
-      results.each do |resource|
-        unless resources.key? resource['certname']
-          resources[resource['certname']] = []
-        end
-        resources[resource['certname']] << resource
-      end
-    else
-      resources = results
-    end
-
-    resources
-  end
-
   # Execute a PuppetDB query
   #
   # @param endpoint [Symbol] :resources, :facts or :nodes
