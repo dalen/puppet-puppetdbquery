@@ -1,3 +1,9 @@
+2.0.0:
+- switch to use v4 API
+- add support for structured facts
+- add syntactic sugar for date queries (@ sign in front of string)
+- add arbitrary subquery support (# sign)
+
 1.6.1:
 - add require statements needed in some puppet versions to avoid loaderror
 
