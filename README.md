@@ -6,10 +6,11 @@ PuppetDB query tools
 This module implements command line tools and Puppet functions that can be used to query puppetdb.
 There's also a hiera backend that can be used to return query results from puppetdb.
 
-Installation
+Requirements
 ============
 
-PuppetDB terminus is required for the Puppet functions, but not the face.
+PuppetDB terminus is required for the Puppet functions, but not for the face.
+
 To parse date queries the Ruby gem "chronic" is required.
 
 Required PuppetDB version
