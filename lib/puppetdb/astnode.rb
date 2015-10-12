@@ -78,8 +78,10 @@ class PuppetDB::ASTNode
     when :number
       value
     when :date
-      # TODO: parse dates
-      value
+      require 'chronic'
+      ret = Chronic.parse(value, :guess => false).first.iso8601
+      fail "Failed to parse datetime: #{value}" if ret.nil?
+      ret
     when :booleanop
       [value.to_s, *evaluate_children(mode)]
     when :subquery

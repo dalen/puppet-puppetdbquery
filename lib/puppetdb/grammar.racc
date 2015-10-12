@@ -39,7 +39,7 @@ rule
     | string                      { ASTNode.new :string, val[0] }
     | integer                     { ASTNode.new :number, val[0] }
     | float                       { ASTNode.new :number, val[0] }
-    | '@' string                  { ASTNode.new :date, val[1] }
+    | AT string                   { ASTNode.new :date, val[1] }
 
   comparison_op
     : MATCH
