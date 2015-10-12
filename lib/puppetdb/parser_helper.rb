@@ -8,7 +8,7 @@ module PuppetDB::ParserHelper
   # @return [Array] the PuppetDB query
   def parse(query, endpoint = :nodes)
     if query = scan_str(query)
-      query.optimize.evaluate endpoint
+      query.optimize.evaluate [endpoint]
     end
   end
 
