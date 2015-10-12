@@ -87,6 +87,11 @@ describe PuppetDB::Parser do
     it "should escape non match parts on structured facts with match operator" do
       parser.parse('"foo.bar".~".*"=baz').should eq ["in", "certname", ["extract", "certname", ["select_fact_contents", ["and", ["~>", "path", ["foo\\.bar", ".*"]], ["=", "value", "baz"]]]]]
     end
+
+    it "should parse dates in queries" do
+      date = Time.new(2014,9,9).iso8601
+      parser.parse('#node.report_timestamp<@"Sep 9, 2014"').should eq ["in", "certname", ["extract", "certname", ["select_nodes", ["<", "report_timestamp", date]]]]
+    end
   end
 
   context "facts_query" do
