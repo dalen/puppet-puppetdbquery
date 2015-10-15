@@ -18,10 +18,10 @@ rule
   \!=               { [:NOTEQUALS, text] }
   ~                 { [:MATCH, text] }
   \!~               { [:NOTMATCH, text] }
-  <                 { [:LESSTHAN, text] }
   <=                { [:LESSTHANEQ, text] }
-  >                 { [:GREATERTHAN, text] }
+  <                 { [:LESSTHAN, text] }
   >=                { [:GREATERTHANEQ, text] }
+  >                 { [:GREATERTHAN, text] }
   \*                { [:ASTERISK, text] }
   \#                { [:HASH, text] }
   \.                { [:DOT, text] }
