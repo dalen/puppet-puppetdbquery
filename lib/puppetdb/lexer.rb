@@ -95,17 +95,17 @@ class PuppetDB::Lexer < Racc::Parser
       when (text = @ss.scan(/\!~/))
          action { [:NOTMATCH, text] }
 
-      when (text = @ss.scan(/</))
-         action { [:LESSTHAN, text] }
-
       when (text = @ss.scan(/<=/))
          action { [:LESSTHANEQ, text] }
 
-      when (text = @ss.scan(/>/))
-         action { [:GREATERTHAN, text] }
+      when (text = @ss.scan(/</))
+         action { [:LESSTHAN, text] }
 
       when (text = @ss.scan(/>=/))
          action { [:GREATERTHANEQ, text] }
+
+      when (text = @ss.scan(/>/))
+         action { [:GREATERTHAN, text] }
 
       when (text = @ss.scan(/\*/))
          action { [:ASTERISK, text] }
