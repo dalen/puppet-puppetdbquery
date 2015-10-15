@@ -1,3 +1,6 @@
+2.0.1:
+- Fix >= and <= operators
+
 2.0.0:
 - switch to use v4 API
 - add support for structured facts
