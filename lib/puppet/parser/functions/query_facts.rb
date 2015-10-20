@@ -32,5 +32,5 @@ EOT
   puppetdb = PuppetDB::Connection.new(uri.host, uri.port)
   parser = PuppetDB::Parser.new
   query = parser.parse query, :facts if query.is_a? String
-  puppetdb.facts(facts, query)
+  puppetdb.query(facts, query)
 end
