@@ -32,5 +32,18 @@ EOT
   puppetdb = PuppetDB::Connection.new(uri.host, uri.port)
   parser = PuppetDB::Parser.new
   query = parser.facts_query query, facts if query.is_a? String
-  puppetdb.query(:facts, query)
+  results = puppetdb.query(:facts, query)
+
+  # Result needs to be minimized into an actual hash, Puppet takes the above as
+  # a Tuple of Structs, which is utterly useless
+  output = {}
+  results.each { |x|
+    # Have a hash with certname, environment, name (fact), and value (fact)
+    if output.include? x['certname']
+      output[x['certname']][x['name']] = x['value']
+    else
+      output[x['certname']] = {x['name'] => x['value']}
+    end
+  }
+  output
 end
