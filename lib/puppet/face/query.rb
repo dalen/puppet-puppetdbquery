@@ -64,7 +64,7 @@ Puppet::Face.define(:query, '1.0.0') do
 
     arguments '<query>'
 
-    option '--node_info BOOLEAN' do
+    option '--node_info' do
       summary 'return full info about each node or just name'
       description <<-EOT
         If true the full information about each host is returned including fact, report and catalog timestamps.
