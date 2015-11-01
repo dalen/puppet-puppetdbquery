@@ -32,5 +32,5 @@ EOT
   puppetdb = PuppetDB::Connection.new(uri.host, uri.port, uri.scheme == 'https')
   parser = PuppetDB::Parser.new
   query = parser.facts_query query, facts if query.is_a? String
-  puppetdb.query(:facts, query)
+  parser.facts_hash(puppetdb.query(:facts, query))
 end
