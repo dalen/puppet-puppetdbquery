@@ -30,9 +30,9 @@ EOT
   parser = PuppetDB::Parser.new
   if fact
     query = parser.facts_query(query, [fact])
-    puppetdb.query(:facts, query).collect { |f| f['value'] }
+    puppetdb.query(:facts, query, :extract => :value).collect { |f| f['value'] }
   else
     query = parser.parse(query, :nodes) if query.is_a? String
-    puppetdb.query(:nodes, query).collect { |n| n['certname'] }
+    puppetdb.query(:nodes, query, :extract => :certname).collect { |n| n['certname'] }
   end
 end
