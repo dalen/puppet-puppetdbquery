@@ -1,3 +1,9 @@
+2.0.3:
+- Fixed return format in query_facts function (#71)
+- Added unit tests for functions
+- Handle HTTP URLs
+- Don't subquery the resource specification in query_resources (#73)
+
 2.0.2:
 - Fixed invalid method call in query_facts (thanks ayohrling)
 - Allow empty facts list in fact query face (thanks ayohrling)
