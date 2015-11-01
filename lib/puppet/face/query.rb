@@ -129,8 +129,8 @@ Puppet::Face.define(:query, '1.0.0') do
       puppetdb = PuppetDB::Connection.new options[:host], options[:port], !options[:no_ssl]
       parser = PuppetDB::Parser.new
       nodes = puppetdb.query(:nodes, parser.parse(query, :nodes)).collect { |n| n['certname'] }
-      starttime = Chronic.parse(options[:since], context: :past, guess: false).first.getutc.strftime('%FT%T.000Z')
-      endtime = Chronic.parse(options[:until], context: :past, guess: false).last.getutc.strftime('%FT%T.000Z')
+      starttime = Chronic.parse(options[:since], :context => :past, :guess => false).first.getutc.strftime('%FT%T.000Z')
+      endtime = Chronic.parse(options[:until], :context => :past, :guess => false).last.getutc.strftime('%FT%T.000Z')
 
       events = []
       # Event API doesn't support subqueries at the moment and

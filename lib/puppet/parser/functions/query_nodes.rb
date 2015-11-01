@@ -1,4 +1,4 @@
-Puppet::Parser::Functions.newfunction(:query_nodes, type: :rvalue, arity: -2, doc: <<-EOT
+Puppet::Parser::Functions.newfunction(:query_nodes, :type => :rvalue, :arity => -2, :doc => <<-EOT
 
   accepts two arguments, a query used to discover nodes, and a optional
   fact that should be returned.
@@ -29,10 +29,10 @@ EOT
   puppetdb = PuppetDB::Connection.new(uri.host, uri.port, uri.scheme == 'https')
   parser = PuppetDB::Parser.new
   if fact
-    query = parser.facts_query query, [fact]
+    query = parser.facts_query(query, [fact])
     puppetdb.query(:facts, query).collect { |f| f['value'] }
   else
-    query = parser.parse query, :nodes if query.is_a? String
+    query = parser.parse(query, :nodes) if query.is_a? String
     puppetdb.query(:nodes, query).collect { |n| n['certname'] }
   end
 end

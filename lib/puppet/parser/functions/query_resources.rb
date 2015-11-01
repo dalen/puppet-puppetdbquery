@@ -1,4 +1,4 @@
-Puppet::Parser::Functions.newfunction(:query_resources, type: :rvalue, arity: -3, doc: <<-EOT
+Puppet::Parser::Functions.newfunction(:query_resources, :type => :rvalue, :arity => -3, :doc => <<-EOT
 
   Accepts two or three arguments: a query used to discover nodes, a
   resource query for the resources that should be returned from
@@ -66,9 +66,7 @@ EOT
   # If grouphosts is true create a nested hash with nodes and resources
   if grouphosts
     results.reduce({}) do |ret, resource|
-      unless ret.key? resource['certname']
-        ret[resource['certname']] = []
-      end
+      ret[resource['certname']] = [] unless ret.key? resource['certname']
       ret[resource['certname']] << resource
     end
   else
