@@ -1,4 +1,4 @@
 module PuppetDB
   # Current version of this module
-  VERSION = [2, 0, 3]
+  VERSION = [2, 1, 0]
 end
