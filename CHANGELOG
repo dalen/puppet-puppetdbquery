@@ -1,3 +1,5 @@
+- Add extract operations to only fetch necessary fields
+
 2.0.3:
 - Fixed return format in query_facts function (#71)
 - Added unit tests for functions

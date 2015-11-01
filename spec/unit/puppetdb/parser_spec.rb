@@ -222,4 +222,12 @@ describe PuppetDB::Parser do
       )
     end
   end
+
+  context 'extract' do
+    it 'should create an extract query' do
+      PuppetDB::ParserHelper.extract(:certname, :name, ['=', 'certname', 'foo.example.com']).should eq(
+        ['extract', ['certname', 'name'], ['=', 'certname', 'foo.example.com']]
+      )
+    end
+  end
 end
