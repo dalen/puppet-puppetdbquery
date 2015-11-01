@@ -86,7 +86,7 @@ class PuppetDB::ASTNode
       [value.to_s, *evaluate_children(mode)]
     when :subquery
       mode.push :subquery
-      ret = subquery(mode.last, value + 's', children[0].evaluate(mode))
+      ret = subquery(mode[-2], value + 's', children[0].evaluate(mode))
       mode.pop
       ret
     when :regexp_node_match
@@ -123,7 +123,7 @@ class PuppetDB::ASTNode
       else
         title = value[:title].evaluate
       end
-      ret = subquery(mode.last, :resources,
+      ret = subquery(mode[-2], :resources,
                      ['and',
                       ['=', 'type', capitalize_class(value[:type])],
                       [regexp ? '~' : '=', 'title', title],

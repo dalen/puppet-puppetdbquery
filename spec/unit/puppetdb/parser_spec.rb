@@ -184,6 +184,10 @@ describe PuppetDB::Parser do
       date = Time.new(2014, 9, 9).iso8601
       parser.parse('#node.report_timestamp<@"Sep 9, 2014"').should eq ['in', 'certname', ['extract', 'certname', ['select_nodes', ['<', 'report_timestamp', date]]]]
     end
+
+    it 'should not wrap it in a subquery if mode is :none' do
+      parser.parse('class[apache]', :none).should eq ["and", ["=", "type", "Class"], ["=", "title", "Apache"], ["=", "exported", false]]
+    end
   end
 
   context 'facts_query' do
