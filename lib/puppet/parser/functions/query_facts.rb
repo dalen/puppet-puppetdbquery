@@ -1,4 +1,4 @@
-Puppet::Parser::Functions.newfunction(:query_facts, type: :rvalue, arity: 2, doc: <<-EOT
+Puppet::Parser::Functions.newfunction(:query_facts, :type => :rvalue, :arity => 2, :doc => <<-EOT
 
   accepts two arguments, a query used to discover nodes, and a list of facts
   that should be returned from those hosts.
