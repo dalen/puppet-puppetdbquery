@@ -60,12 +60,12 @@ if options[:print]
   query = parser.parse(options[:query])
   puts query.to_json
 elsif options[:facts]
-  query = parser.facts_query(options[:query], options[:facts])
+  query = parser.extract(:name, :value, :certname, parser.facts_query(options[:query], options[:facts]))
   parser.facts_hash(puppetdb.query(:facts, query, http)).each_value do |host|
     print options[:facts].collect { |f| host[f] if host.include? f }.join(',') + "\n"
   end
 else
-  query = parser.parse(options[:query])
+  query = parser.extract(:certname, parser.parse(options[:query]))
   results = puppetdb.query(:nodes, query, http)
   hosts = results.collect { |host| host['certname'] }
   hosts.each { |host| print host + "\n" }

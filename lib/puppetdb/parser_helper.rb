@@ -45,4 +45,9 @@ module PuppetDB::ParserHelper
       ret
     end
   end
+
+  # Turn a query into one for only certain fields
+  def extract(*field, query)
+    ['extract', field.collect(&:to_s), query]
+  end
 end
