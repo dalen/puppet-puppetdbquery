@@ -24,12 +24,12 @@ Gem::Specification.new do |s|
 
   s.add_dependency('json')
   s.add_dependency('chronic')
+  s.add_dependency 'puppet'
   s.add_development_dependency 'rspec', '2.13'
   s.add_development_dependency 'rspec-expectations'
   s.add_development_dependency 'rspec-puppet'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'puppetlabs_spec_helper'
-  s.add_development_dependency 'puppet'
   s.add_development_dependency 'racc', '~>1.4', '<1.4.12'
   s.add_development_dependency 'rexical'
   s.add_development_dependency 'puppet-blacksmith', '~>3.0'
