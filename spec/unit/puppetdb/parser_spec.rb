@@ -181,7 +181,7 @@ describe PuppetDB::Parser do
     end
 
     it 'should parse dates in queries' do
-      date = Time.new(2014, 9, 9).iso8601
+      date = Time.new(2014, 9, 9).utc.strftime('%FT%TZ')
       parser.parse('#node.report_timestamp<@"Sep 9, 2014"').should eq ['in', 'certname', ['extract', 'certname', ['select_nodes', ['<', 'report_timestamp', date]]]]
     end
 
