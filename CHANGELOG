@@ -1,4 +1,7 @@
-2.1.0
+2.1.1:
+- Send datetimes in ISO8601 variant that PuppetDB can handle. (#81)
+
+2.1.0:
 - Add extract operations to only fetch necessary fields
 
 2.0.3:
