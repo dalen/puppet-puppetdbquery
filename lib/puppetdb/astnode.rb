@@ -79,7 +79,7 @@ class PuppetDB::ASTNode
       value
     when :date
       require 'chronic'
-      ret = Chronic.parse(value, :guess => false).first.iso8601
+      ret = Chronic.parse(value, :guess => false).first.utc.iso8601
       fail "Failed to parse datetime: #{value}" if ret.nil?
       ret
     when :booleanop
