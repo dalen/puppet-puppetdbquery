@@ -157,7 +157,7 @@ Returns an array of certnames or fact values if a fact is specified.
 
     $hosts = query_nodes('manufacturer~"Dell.*" and processorcount=24 and Class[Apache]')
 
-    $hostips = query_nodes('manufacturer~"Dell.*" and processorcount=24 and Class[Apache]', ipaddress)
+    $hostips = query_nodes('manufacturer~"Dell.*" and processorcount=24 and Class[Apache]', 'ipaddress')
 
 ### query_resources
 
@@ -201,6 +201,17 @@ Example return value in JSON format:
         "osfamily": "Debian"
       }
     }
+
+### Querying nested facts
+
+Facter 3 introduced many nested facts, so puppetdbquery provides an easy way to query for a value nested within a fact that's a hash.
+To query for a nested value, simply pass an array of keys as a fact value, rather than just a string.
+
+#### Example
+
+    $host_eth0_networks = query_nodes('manufacturer~"Dell.*" and Class[Apache]', ['networking', 'interfaces', 'eth0', 'network'])
+
+    $host_kernels_and_ips = query_facts('manufacturer~"Dell.*" and Class[Apache]', ['kernel', ['networking', 'interfaces', 'eth1', 'ip']])
 
 Hiera backend
 -------------

@@ -215,10 +215,22 @@ describe PuppetDB::Parser do
         { 'certname' => 'ip-172-31-45-32.eu-west-1.compute.internal', 'environment' => 'production', 'name' => 'fqdn', 'value' => 'ip-172-31-45-32.eu-west-1.compute.internal' },
         { 'certname' => 'ip-172-31-33-234.eu-west-1.compute.internal', 'environment' => 'production', 'name' => 'fqdn', 'value' => 'ip-172-31-33-234.eu-west-1.compute.internal' },
         { 'certname' => 'ip-172-31-5-147.eu-west-1.compute.internal', 'environment' => 'production', 'name' => 'fqdn', 'value' => 'ip-172-31-5-147.eu-west-1.compute.internal' }
-      ]).should eq(
+      ], ['kernel', 'fqdn']).should eq(
         'ip-172-31-45-32.eu-west-1.compute.internal' => { 'kernel' => 'Linux', 'fqdn' => 'ip-172-31-45-32.eu-west-1.compute.internal' },
         'ip-172-31-33-234.eu-west-1.compute.internal' => { 'kernel' => 'Linux', 'fqdn' => 'ip-172-31-33-234.eu-west-1.compute.internal' },
         'ip-172-31-5-147.eu-west-1.compute.internal' => { 'kernel' => 'Linux', 'fqdn' => 'ip-172-31-5-147.eu-west-1.compute.internal' }
+      )
+    end
+
+    it 'should handle nested facts' do
+      parser.facts_hash([
+        { 'certname' => 'ip-172-31-45-32.eu-west-1.compute.internal', 'environment' => 'production', 'name' => 'kernel', 'value' => 'Linux' },
+        { 'certname' => 'ip-172-31-33-234.eu-west-1.compute.internal', 'environment' => 'production', 'name' => 'kernel', 'value' => 'Linux' },
+        { 'certname' => 'ip-172-31-45-32.eu-west-1.compute.internal', 'environment' => 'production', 'name' => 'networking', 'value' => { 'interfaces' => { 'eth0' => { 'ip' => '172.31.45.32' } } } },
+        { 'certname' => 'ip-172-31-33-234.eu-west-1.compute.internal', 'environment' => 'production', 'name' => 'networking', 'value' => { 'interfaces' => { 'eth0' => { 'ip' => '172.31.33.234' } } } },
+      ], ['kernel', ['networking', 'interfaces', 'eth0', 'ip']]).should eq(
+        'ip-172-31-45-32.eu-west-1.compute.internal' => { 'kernel' => 'Linux', 'networking_interfaces_eth0_ip' => '172.31.45.32' },
+        'ip-172-31-33-234.eu-west-1.compute.internal' => { 'kernel' => 'Linux', 'networking_interfaces_eth0_ip' => '172.31.33.234' },
       )
     end
   end

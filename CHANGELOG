@@ -1,3 +1,6 @@
+Unreleased:
+- Support querying for nested keys inside of facts
+
 2.1.1:
 - Send datetimes in ISO8601 variant that PuppetDB can handle. (#81)
 

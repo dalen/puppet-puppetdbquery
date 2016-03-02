@@ -7,11 +7,13 @@ Puppet::Parser::Functions.newfunction(:query_nodes, :type => :rvalue, :arity => 
     (Type[title] and fact_name<operator>fact_value) or ...
     Package["mysql-server"] and cluster_id=my_first_cluster
 
-  The second argument should be single fact (this argument is optional)
+  The second argument should be single fact or array of nested facts
+  (this argument is optional)
 
 EOT
                                      ) do |args|
   query, fact = args
+  fact_for_query = fact.is_a?(Array) ? fact.shift : fact
 
   require 'puppet/util/puppetdb'
 
@@ -28,9 +30,15 @@ EOT
   uri = URI(Puppet::Util::Puppetdb.config.server_urls.first)
   puppetdb = PuppetDB::Connection.new(uri.host, uri.port, uri.scheme == 'https')
   parser = PuppetDB::Parser.new
-  if fact
-    query = parser.facts_query(query, [fact])
-    puppetdb.query(:facts, query, :extract => :value).collect { |f| f['value'] }
+  if fact_for_query
+    query = parser.facts_query(query, [fact_for_query])
+    response = puppetdb.query(:facts, query, :extract => :value)
+
+    if fact.is_a?(Array)
+      parser.extract_nested_fact(response, fact)
+    else
+      response.collect { |f| f['value'] }
+    end
   else
     query = parser.parse(query, :nodes) if query.is_a? String
     puppetdb.query(:nodes, query, :extract => :certname).collect { |n| n['certname'] }
