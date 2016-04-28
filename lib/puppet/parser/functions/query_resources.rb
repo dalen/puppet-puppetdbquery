@@ -68,6 +68,7 @@ EOT
     results.reduce({}) do |ret, resource|
       ret[resource['certname']] = [] unless ret.key? resource['certname']
       ret[resource['certname']] << resource
+      ret
     end
   else
     results
