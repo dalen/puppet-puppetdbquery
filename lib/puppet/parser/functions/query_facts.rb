@@ -15,6 +15,7 @@ Puppet::Parser::Functions.newfunction(:query_facts, :type => :rvalue, :arity => 
 EOT
                                      ) do |args|
   query, facts = args
+  facts = facts.map { |fact| fact.match(/\./) ? fact.split('.') : fact }
   facts_for_query = facts.map { |fact| fact.is_a?(Array) ? fact.first : fact }
 
   require 'puppet/util/puppetdb'

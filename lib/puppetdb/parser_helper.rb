@@ -41,21 +41,21 @@ module PuppetDB::ParserHelper
       # Array#include? only matches on values of the same type, so if we find
       # a matching string, it's not a nested query.
       name, value = if facts.include?(fact['name'])
-                [fact['name'], fact['value']]
-              else
-                # Find the set of keys where the first value is the fact name
-                nested_keys = facts.select do |x|
-                  x.is_a?(Array) && x.first == fact['name']
-                end.flatten
+                      [fact['name'], fact['value']]
+                    else
+                      # Find the set of keys where the first value is the fact name
+                      nested_keys = facts.select do |x|
+                        x.is_a?(Array) && x.first == fact['name']
+                      end.flatten
 
-                # Join all the key names together with an underscore to give
-                # us a unique name, and then send all the keys but the fact
-                # name (which was already queried out) to extract_nested_fact
-                [
-                  nested_keys.join("_"),
-                  extract_nested_fact([fact], nested_keys[1..-1]).first
-                ]
-              end
+                      # Join all the key names together with an underscore to give
+                      # us a unique name, and then send all the keys but the fact
+                      # name (which was already queried out) to extract_nested_fact
+                      [
+                        nested_keys.join("_"),
+                        extract_nested_fact([fact], nested_keys[1..-1]).first
+                      ]
+                    end
 
       if ret.include? fact['certname']
         ret[fact['certname']][name] = value

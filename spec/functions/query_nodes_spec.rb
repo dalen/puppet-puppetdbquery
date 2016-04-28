@@ -22,7 +22,7 @@ describe 'query_nodes' do
     end
   end
 
-  context 'with a nested facter paramter' do
+  context 'with a nested fact parameter' do
     it do
       PuppetDB::Connection.any_instance.expects(:query)
         .with(:facts, ['and', ['in', 'certname', ['extract', 'certname', ['select_fact_contents', ['and', ['=', 'path', ['hostname']], ['=', 'value', 'apache4']]]]], ['or', ['=', 'name', 'networking']]], :extract => :value)
@@ -43,7 +43,7 @@ describe 'query_nodes' do
             }
           }
         ]
-      should run.with_params('hostname="apache4"', ['networking', 'interfaces', 'eth1', 'ip']).and_return(['172.32.6.80'])
+      should run.with_params('hostname="apache4"', 'networking.interfaces.eth1.ip').and_return(['172.32.6.80'])
     end
   end
 end

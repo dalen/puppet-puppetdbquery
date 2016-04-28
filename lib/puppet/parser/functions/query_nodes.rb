@@ -1,19 +1,23 @@
 Puppet::Parser::Functions.newfunction(:query_nodes, :type => :rvalue, :arity => -2, :doc => <<-EOT
 
-  accepts two arguments, a query used to discover nodes, and a optional
+  accepts two arguments, a query used to discover nodes, and an optional
   fact that should be returned.
 
   The query specified should conform to the following format:
     (Type[title] and fact_name<operator>fact_value) or ...
     Package["mysql-server"] and cluster_id=my_first_cluster
 
-  The second argument should be single fact or array of nested facts
+  The second argument should be single fact or series of keys joined on periods
   (this argument is optional)
 
 EOT
                                      ) do |args|
   query, fact = args
-  fact_for_query = fact.is_a?(Array) ? fact.shift : fact
+  fact_for_query = if fact && fact.match(/\./)
+                     fact.split('.').first
+                   else
+                     fact
+                   end
 
   require 'puppet/util/puppetdb'
 
@@ -34,8 +38,8 @@ EOT
     query = parser.facts_query(query, [fact_for_query])
     response = puppetdb.query(:facts, query, :extract => :value)
 
-    if fact.is_a?(Array)
-      parser.extract_nested_fact(response, fact)
+    if fact.split('.').size > 1
+      parser.extract_nested_fact(response, fact.split('.')[1..-1])
     else
       response.collect { |f| f['value'] }
     end
