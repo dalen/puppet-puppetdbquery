@@ -22,7 +22,13 @@ module PuppetDB::ParserHelper
     if facts.nil?
       nodequery
     else
-      factquery = ['or', *facts.collect { |f| ['=', 'name', f] }]
+      factquery = ['or', *facts.collect { |f|
+         if (f =~ /^\/(.+)\/$/)
+            ['~', 'name', f.scan(/^\/(.+)\/$/).last.first]
+         else
+            ['=', 'name', f]
+         end
+      }]
       if nodequery
         ['and', nodequery, factquery]
       else
