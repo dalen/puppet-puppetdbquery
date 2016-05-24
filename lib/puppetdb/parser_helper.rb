@@ -40,7 +40,7 @@ module PuppetDB::ParserHelper
     fact_hash.reduce({}) do |ret, fact|
       # Array#include? only matches on values of the same type, so if we find
       # a matching string, it's not a nested query.
-      name, value = if facts.include?(fact['name'])
+      name, value = if facts.include?(fact['name']) || facts == [:all]
                       [fact['name'], fact['value']]
                     else
                       # Find the set of keys where the first value is the fact name

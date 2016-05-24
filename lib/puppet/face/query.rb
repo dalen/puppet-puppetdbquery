@@ -48,11 +48,13 @@ Puppet::Face.define(:query, '1.0.0') do
       puppetdb = PuppetDB::Connection.new options[:host], options[:port], !options[:no_ssl]
       parser = PuppetDB::Parser.new
       if options[:facts] != ''
-        factquery = parser.facts_query(query, options[:facts].split(','))
+        facts = options[:facts].split(',')
+        factquery = parser.facts_query(query, facts)
       else
+        facts = [:all]
         factquery = parser.parse(query, :facts)
       end
-      parser.facts_hash(puppetdb.query(:facts, factquery, :extract => [:certname, :name, :value]))
+      parser.facts_hash(puppetdb.query(:facts, factquery, :extract => [:certname, :name, :value]), facts)
     end
   end
 
