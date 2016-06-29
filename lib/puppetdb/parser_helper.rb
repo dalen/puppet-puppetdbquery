@@ -77,11 +77,13 @@ module PuppetDB::ParserHelper
       hash = fact_hash['value']
 
       # Traverse the hash, setting `hash` equal to the next level deep each step
-      keys.each do |key|
-        hash = hash[key]
+      keys[0..-2].each do |key|
+        hash = hash.fetch(key, {})
       end
 
-      hash
+      # Lookup the final key. This will convert to nil if we've been defaulting
+      # to empty hash beforehand.
+      hash[keys.last]
     end
   end
 
