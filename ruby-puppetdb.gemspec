@@ -33,6 +33,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'racc', '~> 1.4'
   s.add_development_dependency 'rexical'
   s.add_development_dependency 'puppet-blacksmith', '~> 3.0'
-  s.add_development_dependency 'mime-types'
-  s.add_development_dependency 'rest-client'
 end
