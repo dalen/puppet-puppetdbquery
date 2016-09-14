@@ -1,5 +1,8 @@
-Unreleased:
-- Support querying for nested keys inside of facts
+2.2.0:
+- Avoid reinitialization of constant (@davidmogar)
+- Fix query_resources bug when grouphosts is true (@andvgal)
+- Allow allow matching facts by regular expression (@unki)
+- Support querying for nested keys inside of facts (@mcasper)
 
 2.1.1:
 - Send datetimes in ISO8601 variant that PuppetDB can handle. (#81)
