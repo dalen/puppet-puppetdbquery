@@ -1,10 +1,10 @@
 sudo: required
 dist: trusty
 rvm:
-  - 1.9.3-p551
-  - 2.0.0-p647
-  - 2.1.7
-  - 2.2.3
+  - 1.9
+  - 2.0
+  - 2.1
+  - 2.2
 deploy:
   - provider: rubygems
     gem: ruby-puppetdb
@@ -14,7 +14,7 @@ deploy:
     on:
       all_branches: true
       tags: true
-      rvm: 2.1.7
+      rvm: 2.1
   - provider: puppetforge
     user: dalen
     password:
@@ -22,4 +22,4 @@ deploy:
     on:
       all_branches: true
       tags: true
-      rvm: 2.1.7
+      rvm: 2.1
