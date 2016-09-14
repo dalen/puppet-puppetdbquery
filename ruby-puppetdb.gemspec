@@ -22,17 +22,17 @@ Gem::Specification.new do |s|
   s.executables   = Dir.glob("bin/**/*").map { |f| File.basename f }
   s.require_paths = ["lib"]
 
-  s.add_dependency('json')
-  s.add_dependency('chronic')
+  s.add_dependency 'json'
+  s.add_dependency 'chronic'
   s.add_dependency 'puppet'
-  s.add_development_dependency 'rspec', '2.13'
+  s.add_development_dependency 'rspec', '~> 2.13'
   s.add_development_dependency 'rspec-expectations'
   s.add_development_dependency 'rspec-puppet'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'puppetlabs_spec_helper'
-  s.add_development_dependency 'racc', '~>1.4', '<1.4.12'
+  s.add_development_dependency 'racc', '~> 1.4'
   s.add_development_dependency 'rexical'
-  s.add_development_dependency 'puppet-blacksmith', '~>3.0'
-  s.add_development_dependency 'mime-types', '< 2.0.0' if RUBY_VERSION < "1.9.0"
-  s.add_development_dependency 'rest-client', '< 1.7.0' if RUBY_VERSION < "1.9.0"
+  s.add_development_dependency 'puppet-blacksmith', '~> 3.0'
+  s.add_development_dependency 'mime-types'
+  s.add_development_dependency 'rest-client'
 end
