@@ -239,3 +239,9 @@ or a hash:
       fact: 'ipaddress'
 
 When returning facts only nodes that actually have the fact are returned, even if more nodes would in fact match the query itself.
+
+Related projects
+================
+
+* JavaScript version: https://github.com/dalen/node-puppetdbquery
+* Python version: https://github.com/voxpupuli/pypuppetdb
