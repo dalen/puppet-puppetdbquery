@@ -244,4 +244,4 @@ Related projects
 ================
 
 * JavaScript version: https://github.com/dalen/node-puppetdbquery
-* Python version: https://github.com/voxpupuli/pypuppetdb
+* Python version: https://github.com/bootc/pypuppetdbquery
