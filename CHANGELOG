@@ -1,3 +1,6 @@
+2.3.0:
+- query_nodes and query_facts now have versions using the v4 function API.
+
 2.2.0:
 - Avoid reinitialization of constant (@davidmogar)
 - Fix query_resources bug when grouphosts is true (@andvgal)
