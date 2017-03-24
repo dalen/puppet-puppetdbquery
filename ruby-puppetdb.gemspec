@@ -1,26 +1,25 @@
 # -*- encoding: UTF-8
 
 lib = File.expand_path('../lib/', __FILE__)
-$:.unshift lib unless $:.include?(lib)
+$LOAD_PATH.unshift lib unless $LOAD_PATH.include?(lib)
 
 require 'puppetdb'
 
 Gem::Specification.new do |s|
-  s.name        = "ruby-puppetdb"
+  s.name        = 'ruby-puppetdb'
   s.version     = PuppetDB::VERSION.join '.'
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Erik Dalen"]
-  s.email       = ["erik.gustav.dalen@gmail.com"]
-  s.homepage    = "https://github.com/dalen/puppet-puppetdbquery"
-  s.summary     = %q{Query functions for PuppetDB}
-  s.description = %q{A higher level query language for PuppetDB.}
+  s.authors     = ['Erik Dalen']
+  s.email       = ['erik.gustav.dalen@gmail.com']
+  s.homepage    = 'https://github.com/dalen/puppet-puppetdbquery'
+  s.summary     = 'Query functions for PuppetDB'
+  s.description = 'A higher level query language for PuppetDB.'
   s.license     = 'Apache v2'
 
-
-  s.files         = Dir.glob("{bin,lib}/**/*")
-  s.test_files    = Dir.glob("{test,spec,features,examples}/**/*")
-  s.executables   = Dir.glob("bin/**/*").map { |f| File.basename f }
-  s.require_paths = ["lib"]
+  s.files         = Dir.glob('{bin,lib}/**/*')
+  s.test_files    = Dir.glob('{test,spec,features,examples}/**/*')
+  s.executables   = Dir.glob('bin/**/*').map { |f| File.basename f }
+  s.require_paths = ['lib']
 
   s.add_dependency 'json'
   s.add_dependency 'chronic'
