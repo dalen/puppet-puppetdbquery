@@ -1,7 +1,7 @@
 #! /usr/bin/env ruby -S rspec
 
 require 'spec_helper'
-require 'puppetdb/connection'
+require 'puppetdb-2.3/connection'
 
 describe 'query_facts' do
   it do

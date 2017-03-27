@@ -1,8 +1,8 @@
-require 'puppetdb'
+require 'puppetdb-2.3'
 
 class PuppetDB::Connection
   require 'rubygems'
-  require 'puppetdb/parser'
+  require 'puppetdb-2.3/parser'
   require 'uri'
   require 'puppet'
   require 'puppet/util/logging'

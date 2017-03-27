@@ -23,7 +23,7 @@ EOT
   # This is needed if the puppetdb library isn't pluginsynced to the master
   $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..'))
   begin
-    require 'puppetdb/connection'
+    require 'puppetdb-2.3/connection'
   ensure
     $LOAD_PATH.shift
   end
