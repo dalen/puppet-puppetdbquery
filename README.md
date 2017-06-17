@@ -238,6 +238,13 @@ hierarchy:
     lookup_key: puppetdb_lookup_key
 ```
 
+### Note: hiera 5 is not backward compatible
+
+You can not use the hiera 3 backed at all in hiera 5. Backwards compatibility is broken.
+You must switch to hiera 5 config to use this in hiera 5.
+
+### Examples
+
 So instead of writing something like this in for example your `hiera-data/common.yaml`:
 
     ntp::servers:
