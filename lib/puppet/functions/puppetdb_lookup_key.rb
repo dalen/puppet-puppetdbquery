@@ -35,24 +35,22 @@ Puppet::Functions.create_function(:puppetdb_lookup_key) do
   end
 
   def puppetdb_lookup_key(key, options, context)
-    if !key.end_with?('::_nodequery') && nodequery = call_function('lookup', ["#{key}::_nodequery", 'Data', 'first', nil])
+    return context.cached_value(key) if context.cache_has_key(key)
+
+    if !key.end_with?('::_nodequery') && nodequery = call_function('lookup', "#{key}::_nodequery", 'merge' => 'first', 'default_value' => nil)
       # Support specifying the query in a few different ways
-      if nodequery.is_a? Hash
-        query = nodequery['query']
-        fact = nodequery['fact']
-      elsif nodequery.is_a? Array
-        query, fact = *nodequery
-      else
-        query = nodequery.to_s
-      end
+      query, fact = case nodequery
+                    when Hash then [nodequery['query'], nodequery['fact']]
+                    when Array then nodequery
+                    else [nodequery.to_s, nil]
+                    end
 
       if fact
-        query = @parser.facts_query query, [fact]
-        @puppetdb.query(:facts, query).collect { |f| f['value'] }.sort
+        result = call_function('query_nodes', query, fact)
       else
-        query = @parser.parse query, :nodes if query.is_a? String
-        @puppetdb.query(:nodes, query).collect { |n| n['name'] }
+        result = call_function('query_nodes', query)
       end
+      context.cache(key, result)
     else
       context.not_found
     end

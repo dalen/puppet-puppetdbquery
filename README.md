@@ -218,6 +218,26 @@ Hiera backend
 
 The hiera backend can be used to return an array with results from a puppetdb query. It requires another hiera backend to be active at the same time, and that will be used to define the actual puppetdb query to be used. It does not matter which backend that is, there can even be several of them. To enable add the backend `puppetdb`to the backends list in `hiera.yaml`.
 
+### hiera 3
+
+```yaml
+---
+:backends:
+  - yaml
+  - puppetdb
+```
+
+### hiera 5
+
+```yaml
+---
+version: 5
+
+hierarchy:
+  - name: Puppetdb
+    lookup_key: puppetdb_lookup_key
+```
+
 So instead of writing something like this in for example your `hiera-data/common.yaml`:
 
     ntp::servers:
