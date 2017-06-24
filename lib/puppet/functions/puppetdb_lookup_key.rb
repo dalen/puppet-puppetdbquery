@@ -5,33 +5,11 @@
 # See README.md#hiera-backend for usage.
 #
 Puppet::Functions.create_function(:puppetdb_lookup_key) do
-  require 'puppet/util/puppetdb'
-
-  # This is needed if the puppetdb library isn't pluginsynced to the master
-  $LOAD_PATH.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
-  begin
-    require 'puppetdb/connection'
-  ensure
-    $LOAD_PATH.shift
-  end
 
   dispatch :puppetdb_lookup_key do
     param 'String[1]', :key
     param 'Hash[String[1],Any]', :options
     param 'Puppet::LookupContext', :context
-  end
-
-  def parser
-    @parser ||= PuppetDB::Parser.new
-  end
-
-  def puppetdb
-    @uri ||= URI(Puppet::Util::Puppetdb.config.server_urls.first)
-    @puppetdb ||= PuppetDB::Connection.new(
-      @uri.host,
-      @uri.port,
-      @uri.scheme == 'https'
-    )
   end
 
   def puppetdb_lookup_key(key, options, context)
