@@ -265,6 +265,15 @@ or a hash:
       query: 'Class[Ntp::Server]'
       fact: 'ipaddress'
 
+Sometimes puppetdb doesn't return items in the same order every run - hiera 5 only:
+
+    ntp::servers::_nodequery: ['Class[Ntp::Server]', 'ipaddress', true]
+
+    ntp::servers::_nodequery:
+      query: 'Class[Ntp::Server]'
+      fact: 'ipaddress'
+      sort: true
+
 When returning facts only nodes that actually have the fact are returned, even if more nodes would in fact match the query itself.
 
 Related projects

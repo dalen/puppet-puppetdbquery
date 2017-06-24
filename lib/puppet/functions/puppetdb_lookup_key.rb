@@ -17,17 +17,15 @@ Puppet::Functions.create_function(:puppetdb_lookup_key) do
 
     if !key.end_with?('::_nodequery') && nodequery = call_function('lookup', "#{key}::_nodequery", 'merge' => 'first', 'default_value' => nil)
       # Support specifying the query in a few different ways
-      query, fact = case nodequery
-                    when Hash then [nodequery['query'], nodequery['fact']]
-                    when Array then nodequery
-                    else [nodequery.to_s, nil]
-                    end
+      query, fact, sort = case nodequery
+                          when Hash then [nodequery['query'], nodequery['fact'], nodequery['sort']]
+                          when Array then nodequery
+                          else [nodequery.to_s, nil, nil]
+                          end
 
-      if fact
-        result = call_function('query_nodes', query, fact)
-      else
-        result = call_function('query_nodes', query)
-      end
+      paramz = [query, fact].compact
+      result = call_function('query_nodes', *paramz)
+      result.sort! if sort
       context.cache(key, result)
     else
       context.not_found
