@@ -218,6 +218,33 @@ Hiera backend
 
 The hiera backend can be used to return an array with results from a puppetdb query. It requires another hiera backend to be active at the same time, and that will be used to define the actual puppetdb query to be used. It does not matter which backend that is, there can even be several of them. To enable add the backend `puppetdb`to the backends list in `hiera.yaml`.
 
+### hiera 3
+
+```yaml
+---
+:backends:
+  - yaml
+  - puppetdb
+```
+
+### hiera 5
+
+```yaml
+---
+version: 5
+
+hierarchy:
+  - name: Puppetdb
+    lookup_key: puppetdb_lookup_key
+```
+
+### Note: hiera 5 is not backward compatible
+
+You can not use the hiera 3 backed at all in hiera 5. Backwards compatibility is broken.
+You must switch to hiera 5 config to use this in hiera 5.
+
+### Examples
+
 So instead of writing something like this in for example your `hiera-data/common.yaml`:
 
     ntp::servers:
@@ -237,6 +264,15 @@ or a hash:
     ntp::servers::_nodequery:
       query: 'Class[Ntp::Server]'
       fact: 'ipaddress'
+
+Sometimes puppetdb doesn't return items in the same order every run - hiera 5 only:
+
+    ntp::servers::_nodequery: ['Class[Ntp::Server]', 'ipaddress', true]
+
+    ntp::servers::_nodequery:
+      query: 'Class[Ntp::Server]'
+      fact: 'ipaddress'
+      sort: true
 
 When returning facts only nodes that actually have the fact are returned, even if more nodes would in fact match the query itself.
 
