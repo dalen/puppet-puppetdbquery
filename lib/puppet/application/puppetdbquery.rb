@@ -1,6 +1,6 @@
 require 'puppet/application/face_base'
 
-class Puppet::Application::Query < Puppet::Application::FaceBase
+class Puppet::Application::Puppetdbquery < Puppet::Application::FaceBase
   def self.setting
     use_ssl = true
     begin

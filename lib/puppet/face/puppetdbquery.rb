@@ -2,13 +2,13 @@ require 'puppet/application/query'
 require 'puppet/face'
 require 'puppet/util/colors'
 
-Puppet::Face.define(:query, '1.0.0') do
+Puppet::Face.define(:puppetdbquery, '1.0.0') do
   require 'puppetdb/connection'
   PuppetDB::Connection.check_version
 
   extend Puppet::Util::Colors
 
-  copyright 'Erik Dalen & Puppet Labs', 2012..2015
+  copyright 'Erik Dalen', 2012..2017
   license 'Apache 2 license; see COPYING'
 
   option '--host PUPPETDB' do

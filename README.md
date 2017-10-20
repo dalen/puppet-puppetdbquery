@@ -96,14 +96,14 @@ Nodes that haven't reported in the last 2 hours
 Usage
 ======
 
-To get a list of the supported subcommands for the query face, run:
+To get a list of the supported subcommands for the puppetdbquery face, run:
 
-     $ puppet help query
+     $ puppet help puppetdbquery
 
 You can run `puppet help` on the returned subcommands
 
-    $ puppet help query nodes
-    $ puppet help query facts
+    $ puppet help puppetdbquery nodes
+    $ puppet help puppetdbquery facts
 
 CLI
 ---
@@ -111,24 +111,24 @@ CLI
 Each of the faces uses the following query syntax to return all objects found on a subset of nodes:
 
     # get all nodes that contain the apache package and are in france, or all nodes in the us
-    $ puppet query nodes '(Package[httpd] and country=fr) or country=us'
+    $ puppet puppetdbquery nodes '(Package[httpd] and country=fr) or country=us'
 
 Each of the individual faces returns a different data format:
 
 nodes - a list of nodes identified by a name
 
-     $ puppet query nodes '(Package["mysql-server"] and architecture=amd64)'
+     $ puppet puppetdbquery nodes '(Package["mysql-server"] and architecture=amd64)'
        ["db_node_1", "db_node2"]
 
 facts - a hash of facts per node
 
-     $ puppet query facts '(Package["mysql-server"] and architecture=amd64)'
+     $ puppet puppetdbquery facts '(Package["mysql-server"] and architecture=amd64)'
        db_node_1  {"facterversion":"1.6.9","hostname":"controller",...........}
        db_node_2  {"facterversion":"1.6.9","hostname":"controller",...........}
 
 events - a list of events on the matched nodes
 
-     $ puppet query events '(Package["mysql-server"] and architecture=amd64)' --since='1 hour ago' --until=now --status=success
+     $ puppet puppetdbquery events '(Package["mysql-server"] and architecture=amd64)' --since='1 hour ago' --until=now --status=success
        host.example.com: 2013-06-10T10:58:37.000Z: File[/foo/bar]/content ({md5}5711edf5f5c50bd7845465471d8d39f0 -> {md5}e485e731570b8370f19a2a40489cc24b): content changed '{md5}5711edf5f5c50bd7845465471d8d39f0' to '{md5}e485e731570b8370f19a2a40489cc24b'
 
 Ruby
