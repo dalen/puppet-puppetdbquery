@@ -6,6 +6,11 @@ PuppetDB query tools
 This module implements command line tools and Puppet functions that can be used to query puppetdb.
 There's also a hiera backend that can be used to return query results from puppetdb.
 
+Usage warning
+-------------
+
+You might not need this puppet module anymore. PuppetDB bundles a simplified query language since version 4.0. So unless you really prefer the syntax in this module you can just use PQL instead. See https://puppet.com/blog/introducing-puppet-query-language-pql for more details.
+
 Requirements
 ============
 
