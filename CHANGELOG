@@ -1,3 +1,8 @@
+3.0.0:
+- Added hiera v5 backend (@edestecd)
+- Fix regression on using a regexp pattern in facts query (@unki)
+- Rename `query` face to `puppetdbquery` to avoid clash with bundled query tool in PuppetDB (#105)
+
 2.3.0:
 - query_nodes and query_facts now have versions using the v4 function API.
 
