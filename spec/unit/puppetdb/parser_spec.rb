@@ -1,7 +1,7 @@
 #! /usr/bin/env ruby -S rspec
 
 require 'spec_helper'
-require 'puppetdb/parser'
+require 'puppetdb-2.3/parser'
 
 describe PuppetDB::Parser do
   context 'Query parsing' do

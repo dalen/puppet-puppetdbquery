@@ -1,5 +1,5 @@
 # Helper methods for the parser, included in the parser class
-require 'puppetdb'
+require 'puppetdb-2.3'
 module PuppetDB::ParserHelper
   # Parse a query string into a PuppetDB query
   #

@@ -2,7 +2,7 @@ class Hiera
   module Backend
     class Puppetdb_backend
       def initialize
-        require 'puppetdb/connection'
+        require 'puppetdb-2.3/connection'
         begin
           require 'puppet'
           # This is needed when we run from hiera cli

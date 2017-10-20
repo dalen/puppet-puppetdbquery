@@ -6,10 +6,10 @@
 
 require 'racc/parser.rb'
 
-require 'puppetdb'
-require 'puppetdb/lexer'
-require 'puppetdb/astnode'
-require 'puppetdb/parser_helper'
+require 'puppetdb-2.3'
+require 'puppetdb-2.3/lexer'
+require 'puppetdb-2.3/astnode'
+require 'puppetdb-2.3/parser_helper'
 module PuppetDB
   class Parser < PuppetDB::Lexer
 

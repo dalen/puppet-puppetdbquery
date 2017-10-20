@@ -91,7 +91,7 @@ end
   include PuppetDB::ParserHelper
 
 ---- header
-require 'puppetdb'
-require 'puppetdb/lexer'
-require 'puppetdb/astnode'
-require 'puppetdb/parser_helper'
+require 'puppetdb-2.3'
+require 'puppetdb-2.3/lexer'
+require 'puppetdb-2.3/astnode'
+require 'puppetdb-2.3/parser_helper'
