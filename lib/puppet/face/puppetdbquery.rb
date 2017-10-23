@@ -1,4 +1,4 @@
-require 'puppet/application/query'
+require 'puppet/application/puppetdbquery'
 require 'puppet/face'
 require 'puppet/util/colors'
 
@@ -13,17 +13,17 @@ Puppet::Face.define(:puppetdbquery, '1.0.0') do
 
   option '--host PUPPETDB' do
     summary 'Host running PuppetDB. '
-    default_to { Puppet::Application::Query.setting[:host] }
+    default_to { Puppet::Application::Puppetdbquery.setting[:host] }
   end
 
   option '--port PORT' do
     summary 'Port PuppetDB is running on'
-    default_to { Puppet::Application::Query.setting[:port] }
+    default_to { Puppet::Application::Puppetdbquery.setting[:port] }
   end
 
   option '--no_ssl' do
     summary 'Talk plain HTTP instead of HTTPS'
-    default_to { !Puppet::Application::Query.setting[:use_ssl] }
+    default_to { !Puppet::Application::Puppetdbquery.setting[:use_ssl] }
   end
 
   action :facts do
