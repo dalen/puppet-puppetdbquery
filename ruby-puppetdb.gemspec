@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 3.5'
   s.add_development_dependency 'rspec-expectations', '~> 3.5'
   s.add_development_dependency 'rspec-puppet', '~> 2.4'
-  s.add_development_dependency 'rake', '~> 11.2'
+  s.add_development_dependency 'rake', '~> 12.3'
   s.add_development_dependency 'puppetlabs_spec_helper'
   s.add_development_dependency 'racc', '~> 1.4'
   s.add_development_dependency 'rexical', '~> 1.0'
