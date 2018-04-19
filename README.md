@@ -143,7 +143,7 @@ Ruby
 
     $ irb> require 'puppet/face'
       irb> Puppet.initialize_settings
-      irb> Puppet::Face[:query, :current].nodes('(Package["mysql-server"] and architecture=amd64)')
+      irb> Puppet::Face[:puppetdbquery, :current].nodes('(Package["mysql-server"] and architecture=amd64)')
 
 Puppet functions
 ----------------
