@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'json'
   s.add_dependency 'chronic'
-  s.add_dependency 'puppet', '>= 3.0.0', '< 6.0.0'
+  s.add_dependency 'puppet', '>= 3.0.0', '< 7.0.0'
   s.add_development_dependency 'rspec', '~> 3.5'
   s.add_development_dependency 'rspec-expectations', '~> 3.5'
   s.add_development_dependency 'rspec-puppet', '~> 2.4'
