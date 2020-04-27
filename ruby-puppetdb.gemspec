@@ -31,5 +31,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'puppetlabs_spec_helper'
   s.add_development_dependency 'racc', '~> 1.4'
   s.add_development_dependency 'rexical', '~> 1.0'
-  s.add_development_dependency 'puppet-blacksmith', '~> 4.1'
+  s.add_development_dependency 'puppet-blacksmith', '~> 6.0'
 end
