@@ -60,7 +60,11 @@ EOT
     end
 
     uri = "/pdb/query/#{version}/#{endpoint}"
-    uri += URI.escape "?query=#{query.to_json}" unless query.nil? || query.empty?
+    if Gem::Version.new(Puppet.version) < Gem::Version.new('6.16.0')
+      uri += URI.escape "?query=#{query.to_json}" unless query.nil? || query.empty?
+    else
+      uri += "?query=#{query.to_json}" unless query.nil? || query.empty?
+    end
 
     debug("PuppetDB query: #{query.to_json}")
 
