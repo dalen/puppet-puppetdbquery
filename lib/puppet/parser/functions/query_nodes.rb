@@ -36,7 +36,7 @@ EOT
   parser = PuppetDB::Parser.new
   if fact_for_query
     query = parser.facts_query(query, [fact_for_query])
-    response = puppetdb.query(:facts, query, :extract => :value)
+    response = puppetdb.query(:facts, query, { :extract => :value, :source => 'function' })
 
     if fact.split('.').size > 1
       parser.extract_nested_fact(response, fact.split('.')[1..-1])
@@ -45,6 +45,6 @@ EOT
     end
   else
     query = parser.parse(query, :nodes) if query.is_a? String
-    puppetdb.query(:nodes, query, :extract => :certname).collect { |n| n['certname'] }
+    puppetdb.query(:nodes, query, { :extract => :certname, :source => 'function' }).collect { |n| n['certname'] }
   end
 end
