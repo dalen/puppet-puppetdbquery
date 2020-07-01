@@ -38,7 +38,8 @@ EOT
 
     default_options = {
       :http => nil,   # A HTTP object to be used for the connection
-      :extract => nil # An array of fields to extract
+      :extract => nil, # An array of fields to extract
+      :source => 'face' # Source of request (face or function)
     }
 
     if options.is_a? Hash
@@ -48,6 +49,8 @@ EOT
       options = default_options.merge(:http => options)
     end
     http = options[:http]
+
+    source = options[:source]
 
     unless http
       require 'puppet/network/http_pool'
@@ -60,7 +63,7 @@ EOT
     end
 
     uri = "/pdb/query/#{version}/#{endpoint}"
-    if Gem::Version.new(Puppet.version) < Gem::Version.new('6.16.0')
+    if source == 'function'
       uri += URI.escape "?query=#{query.to_json}" unless query.nil? || query.empty?
     else
       uri += "?query=#{query.to_json}" unless query.nil? || query.empty?

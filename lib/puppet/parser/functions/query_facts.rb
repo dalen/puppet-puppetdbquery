@@ -34,5 +34,5 @@ EOT
   puppetdb = PuppetDB::Connection.new(uri.host, uri.port, uri.scheme == 'https')
   parser = PuppetDB::Parser.new
   query = parser.facts_query query, facts_for_query if query.is_a? String
-  parser.facts_hash(puppetdb.query(:facts, query, :extract => [:certname, :name, :value]), facts)
+  parser.facts_hash(puppetdb.query(:facts, query, { :extract => [:certname, :name, :value], :source => 'function' }), facts)
 end

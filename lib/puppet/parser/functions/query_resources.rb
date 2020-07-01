@@ -61,7 +61,7 @@ EOT
   end
 
   # Fetch the results
-  results = puppetdb.query(:resources, q)
+  results = puppetdb.query(:resources, q, { :source => 'function' })
 
   # If grouphosts is true create a nested hash with nodes and resources
   if grouphosts
