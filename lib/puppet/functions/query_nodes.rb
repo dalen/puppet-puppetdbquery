@@ -42,7 +42,7 @@ Puppet::Functions.create_function('query_nodes') do
 
   def query_nodes(query)
     query = parser.parse(query, :nodes) if query.is_a? String
-    puppetdb.query(:nodes, query, :extract => :certname).collect do |n|
+    puppetdb.query(:nodes, query, { :extract => :certname, :source => 'function' }).collect do |n|
       n['certname']
     end
   end
@@ -51,7 +51,7 @@ Puppet::Functions.create_function('query_nodes') do
     fact_for_query = fact.split('.').first
 
     query = parser.facts_query(query, [fact_for_query])
-    response = puppetdb.query(:facts, query, :extract => :value)
+    response = puppetdb.query(:facts, query, { :extract => :value, :source => 'function' })
 
     if fact.split('.').size > 1
       parser.extract_nested_fact(response, fact.split('.')[1..-1])

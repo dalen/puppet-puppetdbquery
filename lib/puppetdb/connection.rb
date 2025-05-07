@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 require 'puppetdb'
+require 'rubygems'
+require 'puppetdb/parser'
+require 'uri'
+require 'puppet'
+require 'puppet/util/logging'
+require 'json'
 
 class PuppetDB::Connection
-  require 'rubygems'
-  require 'puppetdb/parser'
-  require 'uri'
-  require 'puppet'
-  require 'puppet/util/logging'
-
   include Puppet::Util::Logging
 
   def initialize(host = 'puppetdb', port = 443, use_ssl = true)
@@ -34,11 +36,11 @@ EOT
   # @param options [Hash] specify extract values or http connection
   # @return [Array] the results of the query
   def query(endpoint, query = nil, options = {}, version = :v4)
-    require 'json'
 
     default_options = {
       :http => nil,   # A HTTP object to be used for the connection
-      :extract => nil # An array of fields to extract
+      :extract => nil, # An array of fields to extract
+      :source => 'face' # Source of request (face or function)
     }
 
     if options.is_a? Hash
@@ -47,25 +49,22 @@ EOT
       Puppet.deprecation_warning 'Specify http object with :http key instead'
       options = default_options.merge(:http => options)
     end
-    http = options[:http]
 
-    unless http
-      require 'puppet/network/http_pool'
-      http = Puppet::Network::HttpPool.http_instance(@host, @port, @use_ssl)
-    end
+    source = options[:source]
+    http = options[:http] || Puppet.runtime[:http]
     headers = { 'Accept' => 'application/json' }
 
-    if options[:extract]
-      query = PuppetDB::ParserHelper.extract(*Array(options[:extract]), query)
-    end
+    query = PuppetDB::ParserHelper.extract(*Array(options[:extract]), query) if options[:extract]
 
-    uri = "/pdb/query/#{version}/#{endpoint}"
-    uri += URI.escape "?query=#{query.to_json}" unless query.nil? || query.empty?
+    uri = URI("#{@use_ssl ? 'https' : 'http'}://#{@host}:#{@port}/pdb/query/#{version}/#{endpoint}")
+    _query = "#{query.to_json}" unless query.nil? || query.empty?
+    uri.query = (source == 'function' ? URI.encode_www_form(query: _query) : "query=#{_query}") unless _query.empty?
 
+    debug("PuppetDB uri: #{uri.to_s}")
     debug("PuppetDB query: #{query.to_json}")
 
-    resp = http.get(uri, headers)
-    fail "PuppetDB query error: [#{resp.code}] #{resp.msg}, query: #{query.to_json}" unless resp.is_a?(Net::HTTPSuccess)
+    resp = http.get(uri, headers: headers)
+    raise "PuppetDB query error: [#{resp.code}] #{resp.reason}, url: #{uri.to_s}, query: #{query.to_json}" unless resp.success?
     JSON.parse(resp.body)
   end
 end
