@@ -60,7 +60,7 @@ EOT
     end
 
     uri = "/pdb/query/#{version}/#{endpoint}"
-    uri += URI.escape "?query=#{query.to_json}" unless query.nil? || query.empty?
+    uri += "?query=#{URI.encode_www_form_component(query.to_json)}" unless query.nil? || query.empty?
 
     debug("PuppetDB query: #{query.to_json}")
 
