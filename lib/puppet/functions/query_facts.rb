@@ -32,7 +32,7 @@ Puppet::Functions.create_function('query_facts')  do
     uri = URI(Puppet::Util::Puppetdb.config.server_urls.first)
     puppetdb = PuppetDB::Connection.new(uri.host, uri.port, uri.scheme == 'https')
     parser = PuppetDB::Parser.new
-    query = parser.facts_query query, facts_for_query if query.is_a? String
+    query = parser.facts_query query, facts_for_query.uniq if query.is_a? String
     parser.facts_hash(puppetdb.query(:facts, query, :extract => [:certname, :name, :value]), facts)
   end
 end

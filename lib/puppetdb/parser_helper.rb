@@ -52,25 +52,35 @@ module PuppetDB::ParserHelper
 
                       [fact['name'], fact['value']]
                     else
-                      # Find the set of keys where the first value is the fact name
-                      nested_keys = facts.select do |x|
-                        x.is_a?(Array) && x.first == fact['name']
-                      end.flatten
+                      # Group each set of keys individually and create unique names
+                      nested_keys_groups = facts.select { |x| x.is_a?(Array) && x.first == fact['name'] }
+                      nested_results = nested_keys_groups.map do |nested_keys|
+                        [
+                          nested_keys.join("_"),
+                          extract_nested_fact([fact], nested_keys[1..-1]).first
+                        ]
+                      end
 
-                      # Join all the key names together with an underscore to give
-                      # us a unique name, and then send all the keys but the fact
-                      # name (which was already queried out) to extract_nested_fact
-                      [
-                        nested_keys.join("_"),
-                        extract_nested_fact([fact], nested_keys[1..-1]).first
-                      ]
+                      # Return the nested results as an array of hashes to be added individually
+                      nested_results.each do |nested_name, nested_value|
+                        if ret.include? fact['certname']
+                          ret[fact['certname']][nested_name] = nested_value
+                        else
+                          ret[fact['certname']] = { nested_name => nested_value }
+                        end
+                      end
+
+                      ret
                     end
 
-      if ret.include? fact['certname']
-        ret[fact['certname']][name] = value
-      else
-        ret[fact['certname']] = { name => value }
+      if name && value
+        if ret.include? fact['certname']
+          ret[fact['certname']][name] = value
+        else
+          ret[fact['certname']] = { name => value }
+        end
       end
+
       ret
     end
   end
